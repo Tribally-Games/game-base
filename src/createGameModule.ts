@@ -47,6 +47,7 @@ export interface GameModuleExports {
   GameInputType: Record<string, string>
   GameIntent: Record<string, string>
   getVersion: () => string
+  getGameModuleConfig: () => GameModuleConfig
 }
 
 /**
@@ -66,6 +67,7 @@ export function createGameModule(
     GameInputType,
     GameIntent,
     getVersion: () => config.version,
+    getGameModuleConfig: () => config,
   }
 }
 
