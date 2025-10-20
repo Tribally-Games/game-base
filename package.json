@@ -1,0 +1,82 @@
+{
+  "name": "@tribally-games/arcade-games-base",
+  "version": "0.1.0",
+  "description": "Core dependency package for Tribally arcade games - common objectives handling, game snapshot types, and shared utilities",
+  "keywords": [
+    "arcade",
+    "games",
+    "objectives",
+    "gaming",
+    "tribally",
+    "web3"
+  ],
+  "author": "Ramesh Nair <ram@hiddentao.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tribally-games/arcade-games-base.git"
+  },
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "prepare": "husky",
+    "build": "bun run scripts/build.ts",
+    "build:watch": "bun run scripts/build.ts --watch",
+    "test": "bun test",
+    "test:coverage": "bun test --coverage --coverage-reporter=lcov",
+    "test:watch": "bun test --watch",
+    "lint": "biome check --write ./src",
+    "format": "biome format --write ./src",
+    "check": "biome check ./src",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "bun run build && bun run test:coverage",
+    "commit": "cz",
+    "release": "commit-and-tag-version && git push --follow-tags && bun publish",
+    "release:minor": "commit-and-tag-version --release-as minor && git push --follow-tags && bun publish",
+    "release:major": "commit-and-tag-version --release-as major && git push --follow-tags && bun publish",
+    "release:patch": "commit-and-tag-version --release-as patch && git push --follow-tags && bun publish"
+  },
+  "peerDependencies": {
+    "@hiddentao/clockwork-engine": "^1.8.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@hiddentao/clockwork-engine": "^1.8.1",
+    "@types/bun": "latest",
+    "@types/node": "^22.0.0",
+    "commit-and-tag-version": "^12.6.0",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "engineStrict": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}
