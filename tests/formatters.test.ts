@@ -1,7 +1,7 @@
-import { describe, expect, test, beforeEach } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import { GameState } from "@hiddentao/clockwork-engine"
 import { OBJECTIVE_OPERATORS } from "../src/constants"
-import { registerGameModule } from "../src/gameModuleRegistry"
+import type { GameModuleConfig } from "../src/createGameModule"
 import type { BaseGameSnapshot, Objective } from "../src/objectives/types"
 import {
   formatObjectiveDescription,
@@ -11,6 +11,11 @@ import {
 } from "../src/objectives/formatters"
 
 describe("Objective Formatters", () => {
+  const minimalConfig: GameModuleConfig = {
+    version: "1.0.0",
+    objectiveDefinitions: [],
+  }
+
   const createBaseSnapshot = (overrides?: Partial<BaseGameSnapshot>): BaseGameSnapshot => ({
     state: GameState.PLAYING,
     score: 100,
@@ -35,7 +40,7 @@ describe("Objective Formatters", () => {
         prizeValue: 10,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective)).toBe("Reach a score of 100")
+      expect(formatObjectiveDescription(objective, minimalConfig)).toBe("Reach a score of 100")
     })
 
     test("should format SURVIVE objective", () => {
@@ -47,7 +52,7 @@ describe("Objective Formatters", () => {
         prizeValue: 20,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective)).toBe("Survive for 60 seconds")
+      expect(formatObjectiveDescription(objective, minimalConfig)).toBe("Survive for 60 seconds")
     })
 
     test("should format COMBO objective", () => {
@@ -59,7 +64,7 @@ describe("Objective Formatters", () => {
         prizeValue: 15,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective)).toBe("Achieve 5 combos")
+      expect(formatObjectiveDescription(objective, minimalConfig)).toBe("Achieve 5 combos")
     })
 
     test("should format STREAK objective", () => {
@@ -71,29 +76,27 @@ describe("Objective Formatters", () => {
         prizeValue: 30,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective)).toBe("Reach 10 streak")
+      expect(formatObjectiveDescription(objective, minimalConfig)).toBe("Reach 10 streak")
     })
   })
 
   describe("formatObjectiveDescription - custom operators", () => {
-    beforeEach(() => {
-      registerGameModule({
-        version: "1.0.0",
-        objectiveDefinitions: [],
-        operatorMetadata: {
-          APPLE: {
-            name: "Apples",
-            icon: "🍎",
-            description: (threshold: number) => `Eat ${threshold} apple${threshold > 1 ? 's' : ''}`,
-          },
-          POTION: {
-            name: "Potions",
-            icon: "🧪",
-            description: (threshold: number) => `Collect ${threshold} potion${threshold > 1 ? 's' : ''}`,
-          },
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      operatorMetadata: {
+        APPLE: {
+          name: "Apples",
+          icon: "🍎",
+          description: (threshold: number) => `Eat ${threshold} apple${threshold > 1 ? 's' : ''}`,
         },
-      })
-    })
+        POTION: {
+          name: "Potions",
+          icon: "🧪",
+          description: (threshold: number) => `Collect ${threshold} potion${threshold > 1 ? 's' : ''}`,
+        },
+      },
+    }
 
     test("should format custom APPLE objective", () => {
       const objective: Objective = {
@@ -104,7 +107,7 @@ describe("Objective Formatters", () => {
         prizeValue: 10,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective)).toBe("Eat 5 apples")
+      expect(formatObjectiveDescription(objective, config)).toBe("Eat 5 apples")
     })
 
     test("should format custom APPLE objective (singular)", () => {
@@ -116,7 +119,7 @@ describe("Objective Formatters", () => {
         prizeValue: 5,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective)).toBe("Eat 1 apple")
+      expect(formatObjectiveDescription(objective, config)).toBe("Eat 1 apple")
     })
 
     test("should format custom POTION objective", () => {
@@ -128,7 +131,7 @@ describe("Objective Formatters", () => {
         prizeValue: 15,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective)).toBe("Collect 3 potions")
+      expect(formatObjectiveDescription(objective, config)).toBe("Collect 3 potions")
     })
 
     test("should use fallback for unknown operator", () => {
@@ -140,20 +143,20 @@ describe("Objective Formatters", () => {
         prizeValue: 5,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective)).toBe("UNKNOWN 10+")
+      expect(formatObjectiveDescription(objective, config)).toBe("UNKNOWN 10+")
     })
   })
 
   describe("getObjectiveIcon", () => {
     test("should return core operator icons", () => {
-      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.SCORE)).toBe("🎯")
-      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.SURVIVE)).toBe("💪")
-      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.COMBO)).toBe("🔥")
-      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.STREAK)).toBe("⚡")
+      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.SCORE, minimalConfig)).toBe("🎯")
+      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.SURVIVE, minimalConfig)).toBe("💪")
+      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.COMBO, minimalConfig)).toBe("🔥")
+      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.STREAK, minimalConfig)).toBe("⚡")
     })
 
     test("should return custom operator icons", () => {
-      registerGameModule({
+      const config: GameModuleConfig = {
         version: "1.0.0",
         objectiveDefinitions: [],
         operatorMetadata: {
@@ -163,12 +166,12 @@ describe("Objective Formatters", () => {
             description: (threshold) => `Eat ${threshold} apples`,
           },
         },
-      })
-      expect(getObjectiveIcon("APPLE")).toBe("🍎")
+      }
+      expect(getObjectiveIcon("APPLE", config)).toBe("🍎")
     })
 
     test("should return fallback icon for unknown operator", () => {
-      expect(getObjectiveIcon("UNKNOWN")).toBe("❓")
+      expect(getObjectiveIcon("UNKNOWN", minimalConfig)).toBe("❓")
     })
   })
 
@@ -183,7 +186,7 @@ describe("Objective Formatters", () => {
         isComplete: false,
       }
       const snapshot = createBaseSnapshot({ score: 100 })
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, minimalConfig)
 
       expect(progress).toEqual({
         objectiveId: 1,
@@ -203,7 +206,7 @@ describe("Objective Formatters", () => {
         isComplete: false,
       }
       const snapshot = createBaseSnapshot({ survivedSeconds: 45 })
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, minimalConfig)
 
       expect(progress).toEqual({
         objectiveId: 2,
@@ -223,7 +226,7 @@ describe("Objective Formatters", () => {
         isComplete: false,
       }
       const snapshot = createBaseSnapshot({ combos: 7 })
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, minimalConfig)
 
       expect(progress).toEqual({
         objectiveId: 3,
@@ -243,7 +246,7 @@ describe("Objective Formatters", () => {
         isComplete: false,
       }
       const snapshot = createBaseSnapshot({ streak: 15 })
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, minimalConfig)
 
       expect(progress).toEqual({
         objectiveId: 4,
@@ -263,24 +266,22 @@ describe("Objective Formatters", () => {
         isComplete: false,
       }
       const snapshot = createBaseSnapshot({ score: 150 })
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, minimalConfig)
 
       expect(progress.percentage).toBe(100)
     })
   })
 
   describe("calculateProgress - custom operators", () => {
-    beforeEach(() => {
-      registerGameModule({
-        version: "1.0.0",
-        objectiveDefinitions: [],
-        getProgressValue: (operator, snapshot) => {
-          if (operator === "APPLE") return snapshot.applesEaten ?? null
-          if (operator === "POTION") return snapshot.potionsEaten ?? null
-          return null
-        },
-      })
-    })
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      getProgressValue: (operator, snapshot) => {
+        if (operator === "APPLE") return snapshot.applesEaten ?? null
+        if (operator === "POTION") return snapshot.potionsEaten ?? null
+        return null
+      },
+    }
 
     test("should calculate custom APPLE progress", () => {
       const objective: Objective = {
@@ -293,7 +294,7 @@ describe("Objective Formatters", () => {
       }
       const snapshot = createBaseSnapshot()
       ;(snapshot as any).applesEaten = 7
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, config)
 
       expect(progress).toEqual({
         objectiveId: 5,
@@ -314,7 +315,7 @@ describe("Objective Formatters", () => {
       }
       const snapshot = createBaseSnapshot()
       ;(snapshot as any).potionsEaten = 3
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, config)
 
       expect(progress).toEqual({
         objectiveId: 6,
@@ -335,16 +336,16 @@ describe("Objective Formatters", () => {
       }
       const snapshot = createBaseSnapshot()
       ;(snapshot as any).custom = 4
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, config)
 
       expect(progress.currentValue).toBe(4)
     })
 
     test("should fallback to lowercase property when getProgressValue not registered", () => {
-      registerGameModule({
+      const simpleConfig: GameModuleConfig = {
         version: "1.0.0",
         objectiveDefinitions: [],
-      })
+      }
 
       const objective: Objective = {
         id: 8,
@@ -356,7 +357,7 @@ describe("Objective Formatters", () => {
       }
       const snapshot = createBaseSnapshot()
       ;(snapshot as any).gems = 12
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, simpleConfig)
 
       expect(progress).toEqual({
         objectiveId: 8,
@@ -367,10 +368,10 @@ describe("Objective Formatters", () => {
     })
 
     test("should return 0 for unknown operator without matching snapshot property", () => {
-      registerGameModule({
+      const simpleConfig: GameModuleConfig = {
         version: "1.0.0",
         objectiveDefinitions: [],
-      })
+      }
 
       const objective: Objective = {
         id: 9,
@@ -381,7 +382,7 @@ describe("Objective Formatters", () => {
         isComplete: false,
       }
       const snapshot = createBaseSnapshot()
-      const progress = calculateProgress(objective, snapshot)
+      const progress = calculateProgress(objective, snapshot, simpleConfig)
 
       expect(progress.currentValue).toBe(0)
       expect(progress.percentage).toBe(0)

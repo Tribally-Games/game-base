@@ -1,5 +1,5 @@
 import { OBJECTIVE_OPERATORS } from "../constants"
-import { getRegisteredConfig } from "../gameModuleRegistry"
+import type { GameModuleConfig } from "../createGameModule"
 import type { Objective } from "./types"
 
 export function validateCoreObjective(
@@ -27,13 +27,13 @@ export function validateCoreObjective(
 export function validateObjective(
   objective: Objective,
   snapshot: any,
+  config: GameModuleConfig,
 ): boolean {
   if (Object.values(OBJECTIVE_OPERATORS).includes(objective.operator as any)) {
     return validateCoreObjective(objective, snapshot)
   }
 
-  const config = getRegisteredConfig()
-  if (config?.validateCustomObjective) {
+  if (config.validateCustomObjective) {
     return config.validateCustomObjective(
       {
         operator: objective.operator,

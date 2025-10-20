@@ -1,5 +1,4 @@
 import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
-import { registerGameModule } from "./gameModuleRegistry"
 import type { OperatorMetadata } from "./objectives/types"
 
 /**
@@ -61,8 +60,6 @@ export function createGameModule(
   GameIntent: Record<string, string>,
   config: GameModuleConfig,
 ): GameModuleExports {
-  registerGameModule(config)
-
   return {
     GameEngine: GameEngineClass,
     GameCanvas: GameCanvasClass,

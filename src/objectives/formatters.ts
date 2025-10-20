@@ -1,16 +1,18 @@
 import { OBJECTIVE_OPERATORS } from "../constants"
-import { getRegisteredConfig } from "../gameModuleRegistry"
+import type { GameModuleConfig } from "../createGameModule"
 import { CORE_OBJECTIVE_METADATA } from "./constants"
 import type { Objective, ObjectiveProgress } from "./types"
 
-export function formatObjectiveDescription(objective: Objective): string {
+export function formatObjectiveDescription(
+  objective: Objective,
+  config: GameModuleConfig,
+): string {
   const coreMetadata = CORE_OBJECTIVE_METADATA[objective.operator]
   if (coreMetadata) {
     return coreMetadata.description(objective.threshold)
   }
 
-  const config = getRegisteredConfig()
-  const customMetadata = config?.operatorMetadata?.[objective.operator]
+  const customMetadata = config.operatorMetadata?.[objective.operator]
   if (customMetadata) {
     return customMetadata.description(objective.threshold)
   }
@@ -18,14 +20,16 @@ export function formatObjectiveDescription(objective: Objective): string {
   return `${objective.operator} ${objective.threshold}+`
 }
 
-export function getObjectiveIcon(operator: string): string {
+export function getObjectiveIcon(
+  operator: string,
+  config: GameModuleConfig,
+): string {
   const coreMetadata = CORE_OBJECTIVE_METADATA[operator]
   if (coreMetadata) {
     return coreMetadata.icon
   }
 
-  const config = getRegisteredConfig()
-  const customMetadata = config?.operatorMetadata?.[operator]
+  const customMetadata = config.operatorMetadata?.[operator]
   if (customMetadata) {
     return customMetadata.icon
   }
@@ -40,6 +44,7 @@ export function formatProgress(progress: ObjectiveProgress): string {
 export function calculateProgress(
   objective: Objective,
   snapshot: any,
+  config: GameModuleConfig,
 ): ObjectiveProgress {
   let currentValue = 0
 
@@ -57,8 +62,7 @@ export function calculateProgress(
       currentValue = snapshot.streak || 0
       break
     default: {
-      const config = getRegisteredConfig()
-      if (config?.getProgressValue) {
+      if (config.getProgressValue) {
         const value = config.getProgressValue(objective.operator, snapshot)
         if (value !== null) {
           currentValue = value

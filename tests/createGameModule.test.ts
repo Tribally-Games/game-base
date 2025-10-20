@@ -4,7 +4,6 @@ import {
   createGameModule,
   type GameModuleConfig,
 } from "../src/createGameModule"
-import { getRegisteredConfig } from "../src/gameModuleRegistry"
 import {
   validateObjective,
   formatObjectiveDescription,
@@ -45,7 +44,7 @@ describe("createGameModule Integration", () => {
     expect(module.getVersion()).toBe("1.0.0")
   })
 
-  test("should register config automatically", () => {
+  test("should create game module with custom operators config", () => {
     const config: GameModuleConfig = {
       version: "2.0.0",
       customOperators: ["APPLE"],
@@ -61,7 +60,7 @@ describe("createGameModule Integration", () => {
       },
     }
 
-    createGameModule(
+    const module = createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
       MockGameInputType,
@@ -69,12 +68,11 @@ describe("createGameModule Integration", () => {
       config,
     )
 
-    const registered = getRegisteredConfig()
-    expect(registered?.version).toBe("2.0.0")
-    expect(registered?.customOperators).toEqual(["APPLE"])
+    expect(module.getVersion()).toBe("2.0.0")
+    expect(config.customOperators).toEqual(["APPLE"])
   })
 
-  test("should enable custom validation after registration", () => {
+  test("should enable custom validation with config", () => {
     const config: GameModuleConfig = {
       version: "1.0.0",
       customOperators: ["APPLE"],
@@ -111,10 +109,10 @@ describe("createGameModule Integration", () => {
       applesEaten: 10,
     }
 
-    expect(validateObjective(objective, snapshot)).toBe(true)
+    expect(validateObjective(objective, snapshot, config)).toBe(true)
   })
 
-  test("should enable custom metadata after registration", () => {
+  test("should enable custom metadata with config", () => {
     const config: GameModuleConfig = {
       version: "1.0.0",
       objectiveDefinitions: [],
@@ -135,7 +133,7 @@ describe("createGameModule Integration", () => {
       config,
     )
 
-    expect(getObjectiveIcon("POTION")).toBe("🧪")
+    expect(getObjectiveIcon("POTION", config)).toBe("🧪")
 
     const objective: Objective = {
       id: 1,
@@ -145,10 +143,10 @@ describe("createGameModule Integration", () => {
       prizeValue: 10,
       isComplete: false,
     }
-    expect(formatObjectiveDescription(objective)).toBe("Collect 3 potions")
+    expect(formatObjectiveDescription(objective, config)).toBe("Collect 3 potions")
   })
 
-  test("should enable custom progress calculation after registration", () => {
+  test("should enable custom progress calculation with config", () => {
     const config: GameModuleConfig = {
       version: "1.0.0",
       objectiveDefinitions: [],
@@ -186,7 +184,7 @@ describe("createGameModule Integration", () => {
       applesEaten: 7,
     }
 
-    const progress = calculateProgress(objective, snapshot)
+    const progress = calculateProgress(objective, snapshot, config)
     expect(progress.currentValue).toBe(7)
     expect(progress.threshold).toBe(10)
     expect(progress.percentage).toBe(70)
@@ -247,13 +245,11 @@ describe("createGameModule Integration", () => {
     )
 
     expect(module.getVersion()).toBe("1.5.0")
+    expect(config.customOperators).toEqual(["APPLE", "POTION"])
+    expect(config.objectiveDefinitions.length).toBe(3)
+    expect(config.setupInitializationData?.()).toEqual({ mapName: "base_map" })
 
-    const registered = getRegisteredConfig()
-    expect(registered?.customOperators).toEqual(["APPLE", "POTION"])
-    expect(registered?.objectiveDefinitions.length).toBe(3)
-    expect(registered?.setupInitializationData?.()).toEqual({ mapName: "base_map" })
-
-    const stats = registered?.extractGameStats?.({ applesEaten: 5, potionsEaten: 3 })
+    const stats = config.extractGameStats?.({ applesEaten: 5, potionsEaten: 3 })
     expect(stats).toEqual({ applesEaten: 5, potionsEaten: 3 })
   })
 
@@ -281,11 +277,10 @@ describe("createGameModule Integration", () => {
       config,
     )
 
-    const registered = getRegisteredConfig()
-    expect(registered?.formatGameStats).toBeDefined()
+    expect(config.formatGameStats).toBeDefined()
 
     const rawStats = { applesEaten: 10, potionsCollected: 5, enemiesDefeated: 20 }
-    const formatted = registered?.formatGameStats?.(rawStats)
+    const formatted = config.formatGameStats?.(rawStats)
 
     expect(formatted).toEqual([
       { label: "Apples", value: 10 },
@@ -311,7 +306,6 @@ describe("createGameModule Integration", () => {
       config,
     )
 
-    const registered = getRegisteredConfig()
-    expect(registered?.formatGameStats).toBeUndefined()
+    expect(config.formatGameStats).toBeUndefined()
   })
 })

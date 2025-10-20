@@ -1,4 +1,5 @@
 import { OBJECTIVE_TIERS } from "../constants"
+import type { GameModuleConfig } from "../createGameModule"
 import type { BaseGameSnapshot, Objective } from "./types"
 import { validateObjective } from "./validators"
 
@@ -23,6 +24,7 @@ export function calculateActualPayouts(
   potentialJackpotReturn: number,
   jackpotTokenCollected = false,
   jackpotTier: string | null = null,
+  config: GameModuleConfig,
 ): PayoutCalculationResult {
   let actualInstantWinReturn = 0
   let actualHighSkillReturn = 0
@@ -52,7 +54,7 @@ export function calculateActualPayouts(
     if (completedSet.has(objective.id)) {
       isCompleted = true
     } else {
-      isCompleted = validateObjective(objective, gameSnapshot)
+      isCompleted = validateObjective(objective, gameSnapshot, config)
     }
 
     if (isCompleted) {

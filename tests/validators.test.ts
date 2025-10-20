@@ -1,7 +1,7 @@
-import { describe, expect, test, beforeEach } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import { GameState } from "@hiddentao/clockwork-engine"
 import { OBJECTIVE_OPERATORS } from "../src/constants"
-import { registerGameModule } from "../src/gameModuleRegistry"
+import type { GameModuleConfig } from "../src/createGameModule"
 import type { BaseGameSnapshot, Objective } from "../src/objectives/types"
 import {
   validateCoreObjective,
@@ -104,21 +104,19 @@ describe("Objective Validators", () => {
   })
 
   describe("validateObjective with custom operators", () => {
-    beforeEach(() => {
-      registerGameModule({
-        version: "1.0.0",
-        objectiveDefinitions: [],
-        validateCustomObjective: (objective, snapshot) => {
-          if (objective.operator === "APPLE") {
-            return (snapshot.applesEaten || 0) >= objective.threshold
-          }
-          if (objective.operator === "POTION") {
-            return (snapshot.potionsEaten || 0) >= objective.threshold
-          }
-          return false
-        },
-      })
-    })
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      validateCustomObjective: (objective, snapshot) => {
+        if (objective.operator === "APPLE") {
+          return (snapshot.applesEaten || 0) >= objective.threshold
+        }
+        if (objective.operator === "POTION") {
+          return (snapshot.potionsEaten || 0) >= objective.threshold
+        }
+        return false
+      },
+    }
 
     test("should validate core operators", () => {
       const objective: Objective = {
@@ -130,7 +128,7 @@ describe("Objective Validators", () => {
         isComplete: false,
       }
       const snapshot = createBaseSnapshot({ score: 100 })
-      expect(validateObjective(objective, snapshot)).toBe(true)
+      expect(validateObjective(objective, snapshot, config)).toBe(true)
     })
 
     test("should validate custom APPLE operator", () => {
@@ -144,7 +142,7 @@ describe("Objective Validators", () => {
       }
       const snapshot = createBaseSnapshot()
       ;(snapshot as any).applesEaten = 10
-      expect(validateObjective(objective, snapshot)).toBe(true)
+      expect(validateObjective(objective, snapshot, config)).toBe(true)
     })
 
     test("should fail custom APPLE operator when below threshold", () => {
@@ -158,7 +156,7 @@ describe("Objective Validators", () => {
       }
       const snapshot = createBaseSnapshot()
       ;(snapshot as any).applesEaten = 10
-      expect(validateObjective(objective, snapshot)).toBe(false)
+      expect(validateObjective(objective, snapshot, config)).toBe(false)
     })
 
     test("should validate custom POTION operator", () => {
@@ -172,7 +170,7 @@ describe("Objective Validators", () => {
       }
       const snapshot = createBaseSnapshot()
       ;(snapshot as any).potionsEaten = 5
-      expect(validateObjective(objective, snapshot)).toBe(true)
+      expect(validateObjective(objective, snapshot, config)).toBe(true)
     })
 
     test("should return false for unknown custom operator", () => {
@@ -185,17 +183,15 @@ describe("Objective Validators", () => {
         isComplete: false,
       }
       const snapshot = createBaseSnapshot()
-      expect(validateObjective(objective, snapshot)).toBe(false)
+      expect(validateObjective(objective, snapshot, config)).toBe(false)
     })
   })
 
   describe("validateObjective without custom validator", () => {
-    beforeEach(() => {
-      registerGameModule({
-        version: "1.0.0",
-        objectiveDefinitions: [],
-      })
-    })
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+    }
 
     test("should validate core operators", () => {
       const objective: Objective = {
@@ -207,7 +203,7 @@ describe("Objective Validators", () => {
         isComplete: false,
       }
       const snapshot = createBaseSnapshot({ score: 100 })
-      expect(validateObjective(objective, snapshot)).toBe(true)
+      expect(validateObjective(objective, snapshot, config)).toBe(true)
     })
 
     test("should return false for custom operators when validateCustomObjective not provided", () => {
@@ -222,7 +218,7 @@ describe("Objective Validators", () => {
       const snapshot = createBaseSnapshot()
       ;(snapshot as any).diamonds = 10
 
-      expect(validateObjective(objective, snapshot)).toBe(false)
+      expect(validateObjective(objective, snapshot, config)).toBe(false)
     })
   })
 })

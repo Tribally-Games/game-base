@@ -1,11 +1,16 @@
-import { describe, expect, test, beforeEach } from "bun:test"
+import { describe, expect, test } from "bun:test"
 import { GameState } from "@hiddentao/clockwork-engine"
 import { OBJECTIVE_TIERS } from "../src/constants"
-import { registerGameModule } from "../src/gameModuleRegistry"
+import type { GameModuleConfig } from "../src/createGameModule"
 import type { BaseGameSnapshot, Objective } from "../src/objectives/types"
 import { calculateActualPayouts } from "../src/objectives/payoutCalculator"
 
 describe("Payout Calculator", () => {
+  const minimalConfig: GameModuleConfig = {
+    version: "1.0.0",
+    objectiveDefinitions: [],
+  }
+
   const createBaseSnapshot = (overrides?: Partial<BaseGameSnapshot>): BaseGameSnapshot => ({
     state: GameState.ENDED,
     score: 100,
@@ -57,6 +62,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        minimalConfig,
       )
 
       expect(result.actualInstantWinReturn).toBe(10)
@@ -73,6 +79,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        minimalConfig,
       )
 
       expect(result.actualInstantWinReturn).toBe(0)
@@ -88,6 +95,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        minimalConfig,
       )
 
       expect(result.actualInstantWinReturn).toBe(10)
@@ -102,6 +110,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        minimalConfig,
       )
 
       expect(result.actualInstantWinReturn).toBe(35)
@@ -110,21 +119,19 @@ describe("Payout Calculator", () => {
   })
 
   describe("Custom objectives validation", () => {
-    beforeEach(() => {
-      registerGameModule({
-        version: "1.0.0",
-        objectiveDefinitions: [],
-        validateCustomObjective: (objective, snapshot) => {
-          if (objective.operator === "APPLE") {
-            return (snapshot.applesEaten || 0) >= objective.threshold
-          }
-          if (objective.operator === "POTION") {
-            return (snapshot.potionsEaten || 0) >= objective.threshold
-          }
-          return false
-        },
-      })
-    })
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      validateCustomObjective: (objective, snapshot) => {
+        if (objective.operator === "APPLE") {
+          return (snapshot.applesEaten || 0) >= objective.threshold
+        }
+        if (objective.operator === "POTION") {
+          return (snapshot.potionsEaten || 0) >= objective.threshold
+        }
+        return false
+      },
+    }
 
     test("should validate custom objectives", () => {
       const customObjectives: Objective[] = [
@@ -157,6 +164,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        config,
       )
 
       expect(result.actualInstantWinReturn).toBe(35)
@@ -185,6 +193,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        config,
       )
 
       expect(result.actualInstantWinReturn).toBe(22)
@@ -212,6 +221,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        config,
       )
 
       expect(result.actualInstantWinReturn).toBe(0)
@@ -235,6 +245,7 @@ describe("Payout Calculator", () => {
         1000,
         true,
         "RARE",
+        minimalConfig,
       )
 
       expect(result.actualJackpotReturn).toBe(1000)
@@ -249,6 +260,7 @@ describe("Payout Calculator", () => {
         1000,
         false,
         "RARE",
+        minimalConfig,
       )
 
       expect(result.actualJackpotReturn).toBe(0)
@@ -263,6 +275,7 @@ describe("Payout Calculator", () => {
         1000,
         true,
         null,
+        minimalConfig,
       )
 
       expect(result.actualJackpotReturn).toBe(0)
@@ -277,6 +290,7 @@ describe("Payout Calculator", () => {
         0,
         true,
         "RARE",
+        minimalConfig,
       )
 
       expect(result.actualJackpotReturn).toBe(0)
@@ -292,6 +306,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        minimalConfig,
       )
 
       expect(result.actualInstantWinReturn).toBe(0)
@@ -327,6 +342,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        minimalConfig,
       )
 
       expect(result.actualInstantWinReturn).toBe(0)
@@ -341,6 +357,7 @@ describe("Payout Calculator", () => {
         0,
         false,
         null,
+        minimalConfig,
       )
 
       expect(result.actualInstantWinReturn).toBe(0)
