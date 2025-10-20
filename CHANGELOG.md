@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.1](https://github.com/tribally-games/game-base/compare/v0.1.2...v0.2.1) (2025-10-20)
+
+
+### Features
+
+* add game types enums and formatgamestats support with comprehensive tests ([caebbf6](https://github.com/tribally-games/game-base/commit/caebbf625d699070a1d0ad80e574facf8ea80378))
+
+
+### Documentation
+
+* update coverage badge url to match repository organization case ([07d0851](https://github.com/tribally-games/game-base/commit/07d0851732c2efd4f59333002e15abdf3d1660ea))
+
 ## [0.1.2](https://github.com/tribally-games/game-base/compare/v0.1.1...v0.1.2) (2025-10-20)
 
 
