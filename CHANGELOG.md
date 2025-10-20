@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.2](https://github.com/tribally-games/game-base/compare/v0.1.1...v0.1.2) (2025-10-20)
+
+
+### Code Refactoring
+
+* rename package to [@tribally](https://github.com/tribally).games/game-base and update repository ([7ba7701](https://github.com/tribally-games/game-base/commit/7ba7701f0f6ddd64fce0c1eea719cb0340a0b08f))
+
 ## 0.1.1 (2025-10-20)
 
 
