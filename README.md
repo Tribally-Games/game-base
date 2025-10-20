@@ -1,7 +1,7 @@
 # @tribally.games/game-base
 
 [![CI](https://github.com/tribally-games/game-base/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tribally-games/game-base/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/github/tribally-games/game-base/badge.svg?branch=main)](https://coveralls.io/github/tribally-games/game-base?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/tribally-games/game-base/badge.svg?branch=main)](https://coveralls.io/github/Tribally-Games/game-base?branch=main)
 
 Core dependency package for Tribally arcade games providing:
 - Standard game module exports structure
