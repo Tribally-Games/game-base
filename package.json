@@ -1,6 +1,6 @@
 {
   "name": "@tribally.games/game-base",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Core dependency package for Tribally arcade games - common objectives handling, game snapshot types, and shared utilities",
   "keywords": [
     "arcade",

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.4](https://github.com/tribally-games/game-base/compare/v0.2.2...v0.2.4) (2025-10-20)
+
+
+### Features
+
+* add getgamemoduleconfig export to game modules ([fe8d480](https://github.com/tribally-games/game-base/commit/fe8d4802e07e3e9f3554dcf5f4cda4af532cb1e7))
+
 ## [0.2.2](https://github.com/tribally-games/game-base/compare/v0.2.1...v0.2.2) (2025-10-20)
 
 
