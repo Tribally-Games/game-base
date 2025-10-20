@@ -28,9 +28,7 @@ export function validateObjective(
   objective: Objective,
   snapshot: any,
 ): boolean {
-  if (
-    Object.values(OBJECTIVE_OPERATORS).includes(objective.operator as any)
-  ) {
+  if (Object.values(OBJECTIVE_OPERATORS).includes(objective.operator as any)) {
     return validateCoreObjective(objective, snapshot)
   }
 

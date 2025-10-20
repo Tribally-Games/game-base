@@ -3,9 +3,7 @@ import { getRegisteredConfig } from "../gameModuleRegistry"
 import { CORE_OBJECTIVE_METADATA } from "./constants"
 import type { Objective, ObjectiveProgress } from "./types"
 
-export function formatObjectiveDescription(
-  objective: Objective,
-): string {
+export function formatObjectiveDescription(objective: Objective): string {
   const coreMetadata = CORE_OBJECTIVE_METADATA[objective.operator]
   if (coreMetadata) {
     return coreMetadata.description(objective.threshold)

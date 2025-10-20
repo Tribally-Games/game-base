@@ -1,5 +1,5 @@
 {
-  "name": "@tribally-games/arcade-games-base",
+  "name": "@tribally.games/game-base",
   "version": "0.1.1",
   "description": "Core dependency package for Tribally arcade games - common objectives handling, game snapshot types, and shared utilities",
   "keywords": [
@@ -14,7 +14,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tribally-games/arcade-games-base.git"
+    "url": "https://github.com/tribally-games/game-base.git"
   },
   "type": "module",
   "main": "./dist/cjs/index.js",

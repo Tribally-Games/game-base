@@ -1,4 +1,7 @@
-# @tribally-games/arcade-games-base
+# @tribally.games/game-base
+
+[![CI](https://github.com/tribally-games/game-base/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tribally-games/game-base/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/tribally-games/game-base/badge.svg?branch=main)](https://coveralls.io/github/tribally-games/game-base?branch=main)
 
 Core dependency package for Tribally arcade games providing:
 - Standard game module exports structure
@@ -9,9 +12,9 @@ Core dependency package for Tribally arcade games providing:
 ## Installation
 
 ```bash
-bun add @tribally-games/arcade-games-base @hiddentao/clockwork-engine
+bun add @tribally.games/game-base @hiddentao/clockwork-engine
 # or
-npm install @tribally-games/arcade-games-base @hiddentao/clockwork-engine
+npm install @tribally.games/game-base @hiddentao/clockwork-engine
 ```
 
 ## Features
@@ -27,7 +30,7 @@ All games must export a standardized set of exports that the arcade platform exp
 
 ```typescript
 // src/index.ts
-import { createGameModule, OBJECTIVE_TIERS, type ObjectiveDefinition } from '@tribally-games/arcade-games-base'
+import { createGameModule, OBJECTIVE_TIERS, type ObjectiveDefinition } from '@tribally.games/game-base'
 import { GameEngine } from './GameEngine'
 import { GameCanvas } from './GameCanvas'
 import { GameInputType, GameIntent } from './types/game'
@@ -145,7 +148,7 @@ import {
   calculateActualPayouts,
   OBJECTIVE_TIERS,
   OBJECTIVE_OPERATORS,
-} from '@tribally-games/arcade-games-base'
+} from '@tribally.games/game-base'
 
 // Define an objective
 const objective: Objective = {
@@ -184,7 +187,7 @@ const icon = getObjectiveIcon("SCORE")
 Games should extend the base snapshot with their own fields:
 
 ```typescript
-import { BaseGameSnapshot } from '@tribally-games/arcade-games-base'
+import { BaseGameSnapshot } from '@tribally.games/game-base'
 
 // For snakes-on-a-chain game
 interface SnakeGameSnapshot extends BaseGameSnapshot {
@@ -201,7 +204,7 @@ interface SnakeGameSnapshot extends BaseGameSnapshot {
 ### Payout Calculation
 
 ```typescript
-import { calculateActualPayouts } from '@tribally-games/arcade-games-base'
+import { calculateActualPayouts } from '@tribally.games/game-base'
 
 const payouts = calculateActualPayouts(
   objectives,
@@ -226,7 +229,7 @@ const payouts = calculateActualPayouts(
 import {
   OBJECTIVE_TIERS,
   OBJECTIVE_OPERATORS,
-} from '@tribally-games/arcade-games-base'
+} from '@tribally.games/game-base'
 
 // Objective tiers
 OBJECTIVE_TIERS.EASY    // "EASY"
