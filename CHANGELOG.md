@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.2](https://github.com/tribally-games/game-base/compare/v0.2.1...v0.2.2) (2025-10-20)
+
+
+### Code Refactoring
+
+* remove game module registry and require config parameter ([8b2e0fe](https://github.com/tribally-games/game-base/commit/8b2e0fe08a316d427c188b3924e3a9c1c3c2c1cd))
+
 ## [0.2.1](https://github.com/tribally-games/game-base/compare/v0.1.2...v0.2.1) (2025-10-20)
 
 
