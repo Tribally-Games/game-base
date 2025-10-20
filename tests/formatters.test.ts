@@ -213,9 +213,49 @@ describe("Objective Formatters", () => {
       })
     })
 
-    test("should cap percentage at 100", () => {
+    test("should calculate COMBO progress", () => {
       const objective: Objective = {
         id: 3,
+        tier: "MEDIUM",
+        operator: OBJECTIVE_OPERATORS.COMBO,
+        threshold: 10,
+        prizeValue: 15,
+        isComplete: false,
+      }
+      const snapshot = createBaseSnapshot({ combos: 7 })
+      const progress = calculateProgress(objective, snapshot)
+
+      expect(progress).toEqual({
+        objectiveId: 3,
+        currentValue: 7,
+        threshold: 10,
+        percentage: 70,
+      })
+    })
+
+    test("should calculate STREAK progress", () => {
+      const objective: Objective = {
+        id: 4,
+        tier: "HARD",
+        operator: OBJECTIVE_OPERATORS.STREAK,
+        threshold: 20,
+        prizeValue: 30,
+        isComplete: false,
+      }
+      const snapshot = createBaseSnapshot({ streak: 15 })
+      const progress = calculateProgress(objective, snapshot)
+
+      expect(progress).toEqual({
+        objectiveId: 4,
+        currentValue: 15,
+        threshold: 20,
+        percentage: 75,
+      })
+    })
+
+    test("should cap percentage at 100", () => {
+      const objective: Objective = {
+        id: 5,
         tier: "EASY",
         operator: OBJECTIVE_OPERATORS.SCORE,
         threshold: 50,
@@ -298,6 +338,53 @@ describe("Objective Formatters", () => {
       const progress = calculateProgress(objective, snapshot)
 
       expect(progress.currentValue).toBe(4)
+    })
+
+    test("should fallback to lowercase property when getProgressValue not registered", () => {
+      registerGameModule({
+        version: "1.0.0",
+        objectiveDefinitions: [],
+      })
+
+      const objective: Objective = {
+        id: 8,
+        tier: "EASY",
+        operator: "GEMS",
+        threshold: 15,
+        prizeValue: 10,
+        isComplete: false,
+      }
+      const snapshot = createBaseSnapshot()
+      ;(snapshot as any).gems = 12
+      const progress = calculateProgress(objective, snapshot)
+
+      expect(progress).toEqual({
+        objectiveId: 8,
+        currentValue: 12,
+        threshold: 15,
+        percentage: 80,
+      })
+    })
+
+    test("should return 0 for unknown operator without matching snapshot property", () => {
+      registerGameModule({
+        version: "1.0.0",
+        objectiveDefinitions: [],
+      })
+
+      const objective: Objective = {
+        id: 9,
+        tier: "EASY",
+        operator: "UNKNOWN_OP",
+        threshold: 10,
+        prizeValue: 5,
+        isComplete: false,
+      }
+      const snapshot = createBaseSnapshot()
+      const progress = calculateProgress(objective, snapshot)
+
+      expect(progress.currentValue).toBe(0)
+      expect(progress.percentage).toBe(0)
     })
   })
 

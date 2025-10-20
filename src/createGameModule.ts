@@ -30,6 +30,10 @@ export interface GameModuleConfig {
 
   extractGameStats?: (gameSnapshot: any) => Record<string, number>
 
+  formatGameStats?: (
+    gameStats: Record<string, number>,
+  ) => Array<{ label: string; value: number }>
+
   getProgressValue?: (operator: string, gameSnapshot: any) => number | null
 
   setupInitializationData?: () => Record<string, any>

@@ -256,4 +256,62 @@ describe("createGameModule Integration", () => {
     const stats = registered?.extractGameStats?.({ applesEaten: 5, potionsEaten: 3 })
     expect(stats).toEqual({ applesEaten: 5, potionsEaten: 3 })
   })
+
+  test("should support formatGameStats configuration", () => {
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      extractGameStats: (snapshot) => ({
+        applesEaten: snapshot.applesEaten || 0,
+        potionsCollected: snapshot.potionsCollected || 0,
+        enemiesDefeated: snapshot.enemiesDefeated || 0,
+      }),
+      formatGameStats: (gameStats) => [
+        { label: "Apples", value: gameStats.applesEaten },
+        { label: "Potions", value: gameStats.potionsCollected },
+        { label: "Enemies", value: gameStats.enemiesDefeated },
+      ],
+    }
+
+    createGameModule(
+      MockGameEngine as any,
+      MockGameCanvas as any,
+      MockGameInputType,
+      MockGameIntent,
+      config,
+    )
+
+    const registered = getRegisteredConfig()
+    expect(registered?.formatGameStats).toBeDefined()
+
+    const rawStats = { applesEaten: 10, potionsCollected: 5, enemiesDefeated: 20 }
+    const formatted = registered?.formatGameStats?.(rawStats)
+
+    expect(formatted).toEqual([
+      { label: "Apples", value: 10 },
+      { label: "Potions", value: 5 },
+      { label: "Enemies", value: 20 },
+    ])
+  })
+
+  test("should work without formatGameStats when not provided", () => {
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      extractGameStats: (snapshot) => ({
+        score: snapshot.score || 0,
+      }),
+    }
+
+    createGameModule(
+      MockGameEngine as any,
+      MockGameCanvas as any,
+      MockGameInputType,
+      MockGameIntent,
+      config,
+    )
+
+    const registered = getRegisteredConfig()
+    expect(registered?.formatGameStats).toBeUndefined()
+  })
 })

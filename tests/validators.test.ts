@@ -188,4 +188,41 @@ describe("Objective Validators", () => {
       expect(validateObjective(objective, snapshot)).toBe(false)
     })
   })
+
+  describe("validateObjective without custom validator", () => {
+    beforeEach(() => {
+      registerGameModule({
+        version: "1.0.0",
+        objectiveDefinitions: [],
+      })
+    })
+
+    test("should validate core operators", () => {
+      const objective: Objective = {
+        id: 1,
+        tier: "EASY",
+        operator: OBJECTIVE_OPERATORS.SCORE,
+        threshold: 50,
+        prizeValue: 10,
+        isComplete: false,
+      }
+      const snapshot = createBaseSnapshot({ score: 100 })
+      expect(validateObjective(objective, snapshot)).toBe(true)
+    })
+
+    test("should return false for custom operators when validateCustomObjective not provided", () => {
+      const objective: Objective = {
+        id: 9,
+        tier: "EASY",
+        operator: "DIAMOND",
+        threshold: 5,
+        prizeValue: 15,
+        isComplete: false,
+      }
+      const snapshot = createBaseSnapshot()
+      ;(snapshot as any).diamonds = 10
+
+      expect(validateObjective(objective, snapshot)).toBe(false)
+    })
+  })
 })
