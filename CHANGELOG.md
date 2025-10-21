@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.5](https://github.com/tribally-games/game-base/compare/v0.2.4...v0.2.5) (2025-10-21)
+
+
+### Features
+
+* add meta config system for admin ui generation ([7b5517e](https://github.com/tribally-games/game-base/commit/7b5517eb6a71ab71ab45affd8dadae0713f896fb))
+
 ## [0.2.4](https://github.com/tribally-games/game-base/compare/v0.2.2...v0.2.4) (2025-10-20)
 
 
