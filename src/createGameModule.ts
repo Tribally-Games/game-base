@@ -1,4 +1,5 @@
 import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
+import type { GameMetaConfigSchema, GameMetaConfigValues } from "./metaConfig"
 import type { OperatorMetadata } from "./objectives/types"
 
 /**
@@ -35,7 +36,11 @@ export interface GameModuleConfig {
 
   getProgressValue?: (operator: string, gameSnapshot: any) => number | null
 
-  setupInitializationData?: () => Record<string, any>
+  setupInitializationData?: (
+    metaConfig?: GameMetaConfigValues,
+  ) => Record<string, any>
+
+  getMetaConfigSchema?: () => GameMetaConfigSchema
 }
 
 /**

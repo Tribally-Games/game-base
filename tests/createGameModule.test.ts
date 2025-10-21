@@ -11,6 +11,10 @@ import {
   calculateProgress,
 } from "../src/objectives"
 import type { Objective } from "../src/objectives/types"
+import {
+  GameConfigFieldType,
+  type InferMetaConfigValues,
+} from "../src/metaConfig"
 
 describe("createGameModule Integration", () => {
   class MockGameEngine {}
@@ -307,5 +311,240 @@ describe("createGameModule Integration", () => {
     )
 
     expect(config.formatGameStats).toBeUndefined()
+  })
+
+  test("should support getMetaConfigSchema configuration", () => {
+    const metaConfigSchema = {
+      snakeColor: {
+        type: GameConfigFieldType.COLOR,
+        label: "Snake Color",
+        description: "Custom snake color",
+        format: "hex" as const,
+      },
+      mapSelection: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Map Selection",
+        description: "Choose a map",
+        items: ["map1", "map2", "map3"],
+        defaultIndex: null,
+      },
+    } as const
+
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      getMetaConfigSchema: () => metaConfigSchema,
+    }
+
+    const module = createGameModule(
+      MockGameEngine as any,
+      MockGameCanvas as any,
+      MockGameInputType,
+      MockGameIntent,
+      config,
+    )
+
+    expect(module.getGameModuleConfig().getMetaConfigSchema).toBeDefined()
+    const schema = module.getGameModuleConfig().getMetaConfigSchema?.()
+    expect(schema?.snakeColor.type).toBe(GameConfigFieldType.COLOR)
+    expect(schema?.mapSelection.type).toBe(GameConfigFieldType.STRING_LIST)
+  })
+
+  test("should support setupInitializationData with metaConfig parameter", () => {
+    const metaConfigSchema = {
+      playerName: {
+        type: GameConfigFieldType.STRING,
+        label: "Player Name",
+        description: "Your name",
+      },
+      startingLevel: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Starting Level",
+        description: "Choose starting level",
+        items: ["level1", "level2", "level3"],
+        defaultIndex: 0,
+      },
+    } as const
+
+    type MetaValues = InferMetaConfigValues<typeof metaConfigSchema>
+
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      getMetaConfigSchema: () => metaConfigSchema,
+      setupInitializationData: (metaConfig?: MetaValues) => {
+        const gameConfig: Record<string, any> = {}
+
+        if (metaConfig?.playerName) {
+          gameConfig.playerName = metaConfig.playerName
+        }
+
+        if (metaConfig?.startingLevel) {
+          const { items, selectedIndex } = metaConfig.startingLevel
+          if (selectedIndex !== null) {
+            gameConfig.level = items[selectedIndex]
+          } else {
+            gameConfig.level = items[Math.floor(Math.random() * items.length)]
+          }
+        }
+
+        return gameConfig
+      },
+    }
+
+    const module = createGameModule(
+      MockGameEngine as any,
+      MockGameCanvas as any,
+      MockGameInputType,
+      MockGameIntent,
+      config,
+    )
+
+    const setupFn = module.getGameModuleConfig().setupInitializationData
+    expect(setupFn).toBeDefined()
+
+    const metaConfig: MetaValues = {
+      playerName: "TestPlayer",
+      startingLevel: {
+        items: ["level1", "level2", "level3"],
+        selectedIndex: 1,
+      },
+    }
+
+    const gameConfig = setupFn?.(metaConfig)
+    expect(gameConfig?.playerName).toBe("TestPlayer")
+    expect(gameConfig?.level).toBe("level2")
+  })
+
+  test("should handle setupInitializationData with random STRING_LIST selection", () => {
+    const metaConfigSchema = {
+      mapName: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Map",
+        description: "Select map",
+        items: ["forest", "desert", "mountain"],
+        defaultIndex: null,
+      },
+    } as const
+
+    type MetaValues = InferMetaConfigValues<typeof metaConfigSchema>
+
+    const MAPS = ["forest", "desert", "mountain"]
+
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      setupInitializationData: (metaConfig?: MetaValues) => {
+        if (metaConfig?.mapName) {
+          const { items, selectedIndex } = metaConfig.mapName
+          if (selectedIndex === null) {
+            const randomIndex = Math.floor(Math.random() * items.length)
+            return { mapName: items[randomIndex] }
+          }
+          return { mapName: items[selectedIndex] }
+        }
+        return { mapName: MAPS[0] }
+      },
+    }
+
+    createGameModule(
+      MockGameEngine as any,
+      MockGameCanvas as any,
+      MockGameInputType,
+      MockGameIntent,
+      config,
+    )
+
+    const metaConfig: MetaValues = {
+      mapName: {
+        items: MAPS,
+        selectedIndex: null,
+      },
+    }
+
+    const gameConfig = config.setupInitializationData?.(metaConfig)
+    expect(MAPS).toContain(gameConfig?.mapName)
+  })
+
+  test("should handle setupInitializationData with COLOR field values", () => {
+    const metaConfigSchema = {
+      backgroundColor: {
+        type: GameConfigFieldType.COLOR,
+        label: "Background Color",
+        description: "Choose background color",
+        format: "hex" as const,
+      },
+      textColor: {
+        type: GameConfigFieldType.COLOR,
+        label: "Text Color",
+        description: "Choose text color",
+        format: "hex" as const,
+        optional: true,
+      },
+    } as const
+
+    type MetaValues = InferMetaConfigValues<typeof metaConfigSchema>
+
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      setupInitializationData: (metaConfig?: MetaValues) => {
+        const gameConfig: Record<string, any> = {}
+
+        if (metaConfig?.backgroundColor) {
+          gameConfig.bgColor = metaConfig.backgroundColor
+        }
+
+        if (metaConfig?.textColor) {
+          gameConfig.txtColor = metaConfig.textColor
+        }
+
+        return gameConfig
+      },
+    }
+
+    createGameModule(
+      MockGameEngine as any,
+      MockGameCanvas as any,
+      MockGameInputType,
+      MockGameIntent,
+      config,
+    )
+
+    const metaConfig: MetaValues = {
+      backgroundColor: "#FFFFFF",
+      textColor: "#000000",
+    }
+
+    const gameConfig = config.setupInitializationData?.(metaConfig)
+    expect(gameConfig?.bgColor).toBe("#FFFFFF")
+    expect(gameConfig?.txtColor).toBe("#000000")
+  })
+
+  test("should handle setupInitializationData without metaConfig", () => {
+    const config: GameModuleConfig = {
+      version: "1.0.0",
+      objectiveDefinitions: [],
+      setupInitializationData: (metaConfig) => {
+        if (!metaConfig) {
+          return { defaultValue: true }
+        }
+        return { defaultValue: false }
+      },
+    }
+
+    createGameModule(
+      MockGameEngine as any,
+      MockGameCanvas as any,
+      MockGameInputType,
+      MockGameIntent,
+      config,
+    )
+
+    const gameConfig1 = config.setupInitializationData?.()
+    const gameConfig2 = config.setupInitializationData?.(undefined)
+
+    expect(gameConfig1?.defaultValue).toBe(true)
+    expect(gameConfig2?.defaultValue).toBe(true)
   })
 })
