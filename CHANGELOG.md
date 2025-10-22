@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.7](https://github.com/tribally-games/game-base/compare/v0.2.6...v0.2.7) (2025-10-22)
+
+
+### Code Refactoring
+
+* upgrade clockwork engine ([631d2de](https://github.com/tribally-games/game-base/commit/631d2de35af0863460d4a272c214d2ca21f192e3))
+
 ## [0.2.6](https://github.com/tribally-games/game-base/compare/v0.2.5...v0.2.6) (2025-10-22)
 
 
