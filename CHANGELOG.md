@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.8](https://github.com/tribally-games/game-base/compare/v0.2.7...v0.2.8) (2025-10-22)
+
+
+### Code Refactoring
+
+* peer dep ([80a6eca](https://github.com/tribally-games/game-base/commit/80a6ecaa6c9e15f7e1abe2f9e081f401601de842))
+
 ## [0.2.7](https://github.com/tribally-games/game-base/compare/v0.2.6...v0.2.7) (2025-10-22)
 
 
