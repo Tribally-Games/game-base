@@ -52,13 +52,12 @@
     "release:patch": "commit-and-tag-version --release-as patch && git push --follow-tags && bun publish"
   },
   "peerDependencies": {
-    "@hiddentao/clockwork-engine": "^1.8.0"
+    "@hiddentao/clockwork-engine": "^1.9.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@hiddentao/clockwork-engine": "^1.9.1",
     "@types/bun": "latest",
     "@types/node": "^22.0.0",
     "commit-and-tag-version": "^12.6.0",
