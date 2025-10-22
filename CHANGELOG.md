@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.6](https://github.com/tribally-games/game-base/compare/v0.2.5...v0.2.6) (2025-10-22)
+
+
+### Code Refactoring
+
+* standardize string list field naming to use selected index ([0c3acbd](https://github.com/tribally-games/game-base/commit/0c3acbd0dc562e2f59dd8127a621b46efbe1bf8f))
+
 ## [0.2.5](https://github.com/tribally-games/game-base/compare/v0.2.4...v0.2.5) (2025-10-21)
 
 
