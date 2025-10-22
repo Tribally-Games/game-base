@@ -9,7 +9,9 @@ import {
 } from "../src/objectives/validators"
 
 describe("Objective Validators", () => {
-  const createBaseSnapshot = (overrides?: Partial<BaseGameSnapshot>): BaseGameSnapshot => ({
+  const createBaseSnapshot = (
+    overrides?: Partial<BaseGameSnapshot>,
+  ): BaseGameSnapshot => ({
     state: GameState.PLAYING,
     score: 100,
     survivedSeconds: 30,

@@ -30,7 +30,7 @@ export interface StringFieldConfig extends GameConfigFieldBase {
 export interface StringListFieldConfig extends GameConfigFieldBase {
   type: GameConfigFieldType.STRING_LIST
   items: string[]
-  defaultIndex?: number | null
+  selectedIndex?: number | null
 }
 
 export type GameConfigFieldDefinition =
@@ -214,4 +214,31 @@ export function validateMetaConfigValues(
   }
 
   return errors
+}
+
+/**
+ * Merge input values with schema defaults.
+ * Used when initializing meta config values with defaults from the schema
+ */
+export function mergeWithDefaults(
+  schema: GameMetaConfigSchema,
+  inputValues: GameMetaConfigValues | null | undefined,
+): GameMetaConfigValues {
+  const merged: GameMetaConfigValues = {}
+  const values = inputValues || {}
+
+  for (const [fieldName, fieldDef] of Object.entries(schema)) {
+    if (values[fieldName] !== undefined) {
+      merged[fieldName] = values[fieldName]
+    } else if (fieldDef.type === GameConfigFieldType.STRING_LIST) {
+      merged[fieldName] = {
+        items: fieldDef.items,
+        selectedIndex: fieldDef.selectedIndex ?? null,
+      }
+    } else if (fieldDef.defaultValue !== undefined) {
+      merged[fieldName] = fieldDef.defaultValue
+    }
+  }
+
+  return merged
 }

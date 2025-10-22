@@ -1,12 +1,13 @@
 import { describe, expect, test } from "bun:test"
 import {
-  GameConfigFieldType,
   type ColorFieldConfig,
-  type StringFieldConfig,
-  type StringListFieldConfig,
+  GameConfigFieldType,
   type GameMetaConfigSchema,
   type InferMetaConfigValues,
+  type StringFieldConfig,
+  type StringListFieldConfig,
   type StringListValue,
+  mergeWithDefaults,
   validateMetaConfigValues,
 } from "../src/metaConfig"
 
@@ -149,10 +150,10 @@ describe("MetaConfig - StringListFieldConfig", () => {
       label: "Theme",
       description: "Select theme",
       items: ["light", "dark", "auto"],
-      defaultIndex: 2,
+      selectedIndex: 2,
     }
 
-    expect(config.defaultIndex).toBe(2)
+    expect(config.selectedIndex).toBe(2)
   })
 
   test("should support null default index for random selection", () => {
@@ -161,10 +162,10 @@ describe("MetaConfig - StringListFieldConfig", () => {
       label: "Starting Map",
       description: "Pick a starting map (or random)",
       items: ["forest", "desert", "mountain"],
-      defaultIndex: null,
+      selectedIndex: null,
     }
 
-    expect(config.defaultIndex).toBe(null)
+    expect(config.selectedIndex).toBe(null)
   })
 })
 
@@ -209,7 +210,7 @@ describe("MetaConfig - GameMetaConfigSchema", () => {
         label: "Map",
         description: "Select a map",
         items: ["map1", "map2"],
-        defaultIndex: 0,
+        selectedIndex: 0,
       },
     }
 
@@ -294,7 +295,7 @@ describe("MetaConfig - InferMetaConfigValues", () => {
         label: "Maps",
         description: "Map selection",
         items: ["map1", "map2", "map3"],
-        defaultIndex: null,
+        selectedIndex: null,
       },
     } as const
 
@@ -402,7 +403,7 @@ describe("MetaConfig - Real World Scenarios", () => {
         label: "Map",
         description: "Starting map",
         items: ["forest", "desert", "ice"],
-        defaultIndex: null,
+        selectedIndex: null,
       },
       difficulty: {
         type: GameConfigFieldType.STRING,
@@ -716,7 +717,9 @@ describe("MetaConfig - Validation", () => {
     const errors = validateMetaConfigValues(schema, invalidValues)
     expect(errors).toHaveLength(1)
     expect(errors[0].field).toBe("levels")
-    expect(errors[0].message).toContain("must only contain items from the schema")
+    expect(errors[0].message).toContain(
+      "must only contain items from the schema",
+    )
   })
 
   test("should validate multiple fields with multiple errors", () => {
@@ -819,5 +822,297 @@ describe("MetaConfig - Validation", () => {
     expect(errors).toHaveLength(1)
     expect(errors[0].field).toBe("name")
     expect(errors[0].message).toContain("must be a string")
+  })
+})
+
+describe("MetaConfig - mergeWithDefaults", () => {
+  test("should preserve explicit values over defaults", () => {
+    const schema: GameMetaConfigSchema = {
+      color: {
+        type: GameConfigFieldType.COLOR,
+        label: "Color",
+        description: "Pick color",
+        defaultValue: "#000000",
+      },
+      name: {
+        type: GameConfigFieldType.STRING,
+        label: "Name",
+        description: "Enter name",
+        defaultValue: "default",
+      },
+    }
+
+    const values = {
+      color: "#FF0000",
+      name: "custom",
+    }
+
+    const merged = mergeWithDefaults(schema, values)
+    expect(merged.color).toBe("#FF0000")
+    expect(merged.name).toBe("custom")
+  })
+
+  test("should use defaults when values are not provided", () => {
+    const schema: GameMetaConfigSchema = {
+      color: {
+        type: GameConfigFieldType.COLOR,
+        label: "Color",
+        description: "Pick color",
+        defaultValue: "#123456",
+      },
+      text: {
+        type: GameConfigFieldType.STRING,
+        label: "Text",
+        description: "Enter text",
+        defaultValue: "hello",
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, {})
+    expect(merged.color).toBe("#123456")
+    expect(merged.text).toBe("hello")
+  })
+
+  test("should handle STRING_LIST with explicit selectedIndex", () => {
+    const schema: GameMetaConfigSchema = {
+      maps: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Maps",
+        description: "Select map",
+        items: ["map1", "map2", "map3"],
+        selectedIndex: 1,
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, {})
+    expect(merged.maps).toEqual({
+      items: ["map1", "map2", "map3"],
+      selectedIndex: 1,
+    })
+  })
+
+  test("should handle STRING_LIST with selectedIndex as null", () => {
+    const schema: GameMetaConfigSchema = {
+      themes: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Themes",
+        description: "Select theme",
+        items: ["light", "dark"],
+        selectedIndex: null,
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, {})
+    expect(merged.themes).toEqual({
+      items: ["light", "dark"],
+      selectedIndex: null,
+    })
+  })
+
+  test("should handle STRING_LIST without selectedIndex (defaults to null)", () => {
+    const schema: GameMetaConfigSchema = {
+      levels: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Levels",
+        description: "Select level",
+        items: ["easy", "hard"],
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, {})
+    expect(merged.levels).toEqual({
+      items: ["easy", "hard"],
+      selectedIndex: null,
+    })
+  })
+
+  test("should preserve provided STRING_LIST value over schema default", () => {
+    const schema: GameMetaConfigSchema = {
+      maps: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Maps",
+        description: "Select map",
+        items: ["map1", "map2", "map3"],
+        selectedIndex: 0,
+      },
+    }
+
+    const values = {
+      maps: {
+        items: ["map1", "map2", "map3"],
+        selectedIndex: 2,
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, values)
+    expect(merged.maps).toEqual({
+      items: ["map1", "map2", "map3"],
+      selectedIndex: 2,
+    })
+  })
+
+  test("should handle mixed schema with partial values", () => {
+    const schema: GameMetaConfigSchema = {
+      bgColor: {
+        type: GameConfigFieldType.COLOR,
+        label: "Background",
+        description: "Background color",
+        defaultValue: "#FFFFFF",
+      },
+      playerName: {
+        type: GameConfigFieldType.STRING,
+        label: "Name",
+        description: "Player name",
+        defaultValue: "Player",
+      },
+      difficulty: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Difficulty",
+        description: "Select difficulty",
+        items: ["easy", "medium", "hard"],
+        selectedIndex: 1,
+      },
+    }
+
+    const values = {
+      playerName: "CustomPlayer",
+    }
+
+    const merged = mergeWithDefaults(schema, values)
+    expect(merged.bgColor).toBe("#FFFFFF")
+    expect(merged.playerName).toBe("CustomPlayer")
+    expect(merged.difficulty).toEqual({
+      items: ["easy", "medium", "hard"],
+      selectedIndex: 1,
+    })
+  })
+
+  test("should handle null input values", () => {
+    const schema: GameMetaConfigSchema = {
+      color: {
+        type: GameConfigFieldType.COLOR,
+        label: "Color",
+        description: "Pick color",
+        defaultValue: "#000000",
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, null)
+    expect(merged.color).toBe("#000000")
+  })
+
+  test("should handle undefined input values", () => {
+    const schema: GameMetaConfigSchema = {
+      name: {
+        type: GameConfigFieldType.STRING,
+        label: "Name",
+        description: "Enter name",
+        defaultValue: "default",
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, undefined)
+    expect(merged.name).toBe("default")
+  })
+
+  test("should not include fields without defaults or values", () => {
+    const schema: GameMetaConfigSchema = {
+      requiredColor: {
+        type: GameConfigFieldType.COLOR,
+        label: "Color",
+        description: "Required color",
+      },
+      optionalName: {
+        type: GameConfigFieldType.STRING,
+        label: "Name",
+        description: "Optional name",
+        optional: true,
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, {})
+    expect(merged.requiredColor).toBeUndefined()
+    expect(merged.optionalName).toBeUndefined()
+  })
+
+  test("should handle complex real-world scenario", () => {
+    const schema: GameMetaConfigSchema = {
+      snakeColor: {
+        type: GameConfigFieldType.COLOR,
+        label: "Snake Color",
+        description: "Custom snake color",
+        format: "hex",
+        defaultValue: "#00FF00",
+      },
+      obstacleColor: {
+        type: GameConfigFieldType.COLOR,
+        label: "Obstacle Color",
+        description: "Custom obstacle color",
+        format: "hex",
+        optional: true,
+      },
+      mapSelection: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Map",
+        description: "Starting map",
+        items: ["forest", "desert", "ice"],
+        selectedIndex: null,
+      },
+      difficulty: {
+        type: GameConfigFieldType.STRING,
+        label: "Difficulty",
+        description: "Game difficulty",
+        allowedValues: ["easy", "medium", "hard"],
+        defaultValue: "medium",
+      },
+    }
+
+    const values = {
+      obstacleColor: "#FF0000",
+    }
+
+    const merged = mergeWithDefaults(schema, values)
+    expect(merged.snakeColor).toBe("#00FF00")
+    expect(merged.obstacleColor).toBe("#FF0000")
+    expect(merged.mapSelection).toEqual({
+      items: ["forest", "desert", "ice"],
+      selectedIndex: null,
+    })
+    expect(merged.difficulty).toBe("medium")
+  })
+
+  test("should handle empty schema", () => {
+    const schema: GameMetaConfigSchema = {}
+    const merged = mergeWithDefaults(schema, {})
+    expect(merged).toEqual({})
+  })
+
+  test("should handle schema with only STRING_LIST fields", () => {
+    const schema: GameMetaConfigSchema = {
+      maps: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Maps",
+        description: "Map selection",
+        items: ["a", "b", "c"],
+        selectedIndex: 0,
+      },
+      themes: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Themes",
+        description: "Theme selection",
+        items: ["light", "dark"],
+        selectedIndex: null,
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, {})
+    expect(merged.maps).toEqual({
+      items: ["a", "b", "c"],
+      selectedIndex: 0,
+    })
+    expect(merged.themes).toEqual({
+      items: ["light", "dark"],
+      selectedIndex: null,
+    })
   })
 })

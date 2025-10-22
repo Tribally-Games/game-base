@@ -2,8 +2,8 @@ import { describe, expect, test } from "bun:test"
 import { GameState } from "@hiddentao/clockwork-engine"
 import { OBJECTIVE_TIERS } from "../src/constants"
 import type { GameModuleConfig } from "../src/createGameModule"
-import type { BaseGameSnapshot, Objective } from "../src/objectives/types"
 import { calculateActualPayouts } from "../src/objectives/payoutCalculator"
+import type { BaseGameSnapshot, Objective } from "../src/objectives/types"
 
 describe("Payout Calculator", () => {
   const minimalConfig: GameModuleConfig = {
@@ -11,7 +11,9 @@ describe("Payout Calculator", () => {
     objectiveDefinitions: [],
   }
 
-  const createBaseSnapshot = (overrides?: Partial<BaseGameSnapshot>): BaseGameSnapshot => ({
+  const createBaseSnapshot = (
+    overrides?: Partial<BaseGameSnapshot>,
+  ): BaseGameSnapshot => ({
     state: GameState.ENDED,
     score: 100,
     survivedSeconds: 30,

@@ -2,13 +2,13 @@ import { describe, expect, test } from "bun:test"
 import { GameState } from "@hiddentao/clockwork-engine"
 import { OBJECTIVE_OPERATORS } from "../src/constants"
 import type { GameModuleConfig } from "../src/createGameModule"
-import type { BaseGameSnapshot, Objective } from "../src/objectives/types"
 import {
-  formatObjectiveDescription,
-  getObjectiveIcon,
   calculateProgress,
+  formatObjectiveDescription,
   formatProgress,
+  getObjectiveIcon,
 } from "../src/objectives/formatters"
+import type { BaseGameSnapshot, Objective } from "../src/objectives/types"
 
 describe("Objective Formatters", () => {
   const minimalConfig: GameModuleConfig = {
@@ -16,7 +16,9 @@ describe("Objective Formatters", () => {
     objectiveDefinitions: [],
   }
 
-  const createBaseSnapshot = (overrides?: Partial<BaseGameSnapshot>): BaseGameSnapshot => ({
+  const createBaseSnapshot = (
+    overrides?: Partial<BaseGameSnapshot>,
+  ): BaseGameSnapshot => ({
     state: GameState.PLAYING,
     score: 100,
     survivedSeconds: 30,
@@ -40,7 +42,9 @@ describe("Objective Formatters", () => {
         prizeValue: 10,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective, minimalConfig)).toBe("Reach a score of 100")
+      expect(formatObjectiveDescription(objective, minimalConfig)).toBe(
+        "Reach a score of 100",
+      )
     })
 
     test("should format SURVIVE objective", () => {
@@ -52,7 +56,9 @@ describe("Objective Formatters", () => {
         prizeValue: 20,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective, minimalConfig)).toBe("Survive for 60 seconds")
+      expect(formatObjectiveDescription(objective, minimalConfig)).toBe(
+        "Survive for 60 seconds",
+      )
     })
 
     test("should format COMBO objective", () => {
@@ -64,7 +70,9 @@ describe("Objective Formatters", () => {
         prizeValue: 15,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective, minimalConfig)).toBe("Achieve 5 combos")
+      expect(formatObjectiveDescription(objective, minimalConfig)).toBe(
+        "Achieve 5 combos",
+      )
     })
 
     test("should format STREAK objective", () => {
@@ -76,7 +84,9 @@ describe("Objective Formatters", () => {
         prizeValue: 30,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective, minimalConfig)).toBe("Reach 10 streak")
+      expect(formatObjectiveDescription(objective, minimalConfig)).toBe(
+        "Reach 10 streak",
+      )
     })
   })
 
@@ -88,12 +98,14 @@ describe("Objective Formatters", () => {
         APPLE: {
           name: "Apples",
           icon: "🍎",
-          description: (threshold: number) => `Eat ${threshold} apple${threshold > 1 ? 's' : ''}`,
+          description: (threshold: number) =>
+            `Eat ${threshold} apple${threshold > 1 ? "s" : ""}`,
         },
         POTION: {
           name: "Potions",
           icon: "🧪",
-          description: (threshold: number) => `Collect ${threshold} potion${threshold > 1 ? 's' : ''}`,
+          description: (threshold: number) =>
+            `Collect ${threshold} potion${threshold > 1 ? "s" : ""}`,
         },
       },
     }
@@ -131,7 +143,9 @@ describe("Objective Formatters", () => {
         prizeValue: 15,
         isComplete: false,
       }
-      expect(formatObjectiveDescription(objective, config)).toBe("Collect 3 potions")
+      expect(formatObjectiveDescription(objective, config)).toBe(
+        "Collect 3 potions",
+      )
     })
 
     test("should use fallback for unknown operator", () => {
@@ -149,10 +163,18 @@ describe("Objective Formatters", () => {
 
   describe("getObjectiveIcon", () => {
     test("should return core operator icons", () => {
-      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.SCORE, minimalConfig)).toBe("🎯")
-      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.SURVIVE, minimalConfig)).toBe("💪")
-      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.COMBO, minimalConfig)).toBe("🔥")
-      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.STREAK, minimalConfig)).toBe("⚡")
+      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.SCORE, minimalConfig)).toBe(
+        "🎯",
+      )
+      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.SURVIVE, minimalConfig)).toBe(
+        "💪",
+      )
+      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.COMBO, minimalConfig)).toBe(
+        "🔥",
+      )
+      expect(getObjectiveIcon(OBJECTIVE_OPERATORS.STREAK, minimalConfig)).toBe(
+        "⚡",
+      )
     })
 
     test("should return custom operator icons", () => {

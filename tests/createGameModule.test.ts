@@ -1,20 +1,20 @@
 import { describe, expect, test } from "bun:test"
 import { GameState } from "@hiddentao/clockwork-engine"
 import {
-  createGameModule,
   type GameModuleConfig,
+  createGameModule,
 } from "../src/createGameModule"
-import {
-  validateObjective,
-  formatObjectiveDescription,
-  getObjectiveIcon,
-  calculateProgress,
-} from "../src/objectives"
-import type { Objective } from "../src/objectives/types"
 import {
   GameConfigFieldType,
   type InferMetaConfigValues,
 } from "../src/metaConfig"
+import {
+  calculateProgress,
+  formatObjectiveDescription,
+  getObjectiveIcon,
+  validateObjective,
+} from "../src/objectives"
+import type { Objective } from "../src/objectives/types"
 
 describe("createGameModule Integration", () => {
   class MockGameEngine {}
@@ -52,9 +52,7 @@ describe("createGameModule Integration", () => {
     const config: GameModuleConfig = {
       version: "2.0.0",
       customOperators: ["APPLE"],
-      objectiveDefinitions: [
-        { tier: "EASY", operator: "APPLE", threshold: 5 },
-      ],
+      objectiveDefinitions: [{ tier: "EASY", operator: "APPLE", threshold: 5 }],
       operatorMetadata: {
         APPLE: {
           name: "Apples",
@@ -147,7 +145,9 @@ describe("createGameModule Integration", () => {
       prizeValue: 10,
       isComplete: false,
     }
-    expect(formatObjectiveDescription(objective, config)).toBe("Collect 3 potions")
+    expect(formatObjectiveDescription(objective, config)).toBe(
+      "Collect 3 potions",
+    )
   })
 
   test("should enable custom progress calculation with config", () => {
@@ -283,7 +283,11 @@ describe("createGameModule Integration", () => {
 
     expect(config.formatGameStats).toBeDefined()
 
-    const rawStats = { applesEaten: 10, potionsCollected: 5, enemiesDefeated: 20 }
+    const rawStats = {
+      applesEaten: 10,
+      potionsCollected: 5,
+      enemiesDefeated: 20,
+    }
     const formatted = config.formatGameStats?.(rawStats)
 
     expect(formatted).toEqual([
@@ -326,7 +330,7 @@ describe("createGameModule Integration", () => {
         label: "Map Selection",
         description: "Choose a map",
         items: ["map1", "map2", "map3"],
-        defaultIndex: null,
+        selectedIndex: null,
       },
     } as const
 
@@ -362,7 +366,7 @@ describe("createGameModule Integration", () => {
         label: "Starting Level",
         description: "Choose starting level",
         items: ["level1", "level2", "level3"],
-        defaultIndex: 0,
+        selectedIndex: 0,
       },
     } as const
 
@@ -423,7 +427,7 @@ describe("createGameModule Integration", () => {
         label: "Map",
         description: "Select map",
         items: ["forest", "desert", "mountain"],
-        defaultIndex: null,
+        selectedIndex: null,
       },
     } as const
 
