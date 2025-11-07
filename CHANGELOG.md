@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.3.0](https://github.com/tribally-games/game-base/compare/v0.2.12...v0.3.0) (2025-11-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Removed MobileControlScheme enum and simplified
+createGameModule function signature. Games using createGameModule should
+remove GameInputType and GameIntent parameters from their calls.
+
+### Features
+
+* add clockwise/counter-clockwise intents and simplify game module api ([cef6db2](https://github.com/tribally-games/game-base/commit/cef6db28acc24007b663a8bd92f19d0e6dd95eac))
+
 ## [0.2.12](https://github.com/tribally-games/game-base/compare/v0.2.11...v0.2.12) (2025-11-07)
 
 
