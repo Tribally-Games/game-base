@@ -94,7 +94,7 @@ Games extend with **custom operators** by providing:
 
 ### Base Types
 
-[src/types.ts](src/types.ts) defines standard enums (GameInputType, GameIntent, MobileControlScheme).
+[src/types.ts](src/types.ts) defines standard enums (GameInputType, GameIntent).
 
 [src/objectives/types.ts](src/objectives/types.ts) defines:
 - `BaseGameSnapshot` - Base interface all games extend with their state

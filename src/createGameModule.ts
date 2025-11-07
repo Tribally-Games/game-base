@@ -1,6 +1,7 @@
 import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
 import type { GameMetaConfigSchema, GameMetaConfigValues } from "./metaConfig"
 import type { OperatorMetadata } from "./objectives/types"
+import { GameInputType, GameIntent } from "./types"
 
 /**
  * Definition of a single objective
@@ -62,8 +63,6 @@ export interface GameModuleExports {
 export function createGameModule(
   GameEngineClass: typeof GameEngine,
   GameCanvasClass: typeof GameCanvas,
-  GameInputType: Record<string, string>,
-  GameIntent: Record<string, string>,
   config: GameModuleConfig,
 ): GameModuleExports {
   return {

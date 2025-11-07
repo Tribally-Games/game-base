@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { GameInputType, GameIntent, MobileControlScheme } from "../src/types"
+import { GameInputType, GameIntent } from "../src/types"
 
 describe("Types - GameInputType", () => {
   test("should have INTENT enum value", () => {
@@ -30,6 +30,14 @@ describe("Types - GameIntent", () => {
     expect(GameIntent.RIGHT).toBe("right")
   })
 
+  test("should have CLOCKWISE intent", () => {
+    expect(GameIntent.CLOCKWISE).toBe("clockwise")
+  })
+
+  test("should have COUNTER_CLOCKWISE intent", () => {
+    expect(GameIntent.COUNTER_CLOCKWISE).toBe("counter_clockwise")
+  })
+
   test("should have ACTION intent", () => {
     expect(GameIntent.ACTION).toBe("action")
   })
@@ -50,27 +58,15 @@ describe("Types - GameIntent", () => {
     expect(GameIntent.RESET).toBe("reset")
   })
 
-  test("should have exactly 9 enum values", () => {
+  test("should have exactly 11 enum values", () => {
     const values = Object.values(GameIntent)
-    expect(values).toHaveLength(9)
+    expect(values).toHaveLength(11)
   })
 
   test("should have all unique string values", () => {
     const values = Object.values(GameIntent)
     const uniqueValues = new Set(values)
     expect(uniqueValues.size).toBe(values.length)
-  })
-})
-
-describe("Types - MobileControlScheme", () => {
-  test("should have TWO_BUTTON scheme", () => {
-    expect(MobileControlScheme.TWO_BUTTON).toBe("two_button")
-  })
-
-  test("should only have one enum value", () => {
-    const values = Object.values(MobileControlScheme)
-    expect(values).toHaveLength(1)
-    expect(values).toContain("two_button")
   })
 })
 
@@ -84,14 +80,12 @@ describe("Types - Enum key-value consistency", () => {
     expect(GameIntent).toHaveProperty("DOWN")
     expect(GameIntent).toHaveProperty("LEFT")
     expect(GameIntent).toHaveProperty("RIGHT")
+    expect(GameIntent).toHaveProperty("CLOCKWISE")
+    expect(GameIntent).toHaveProperty("COUNTER_CLOCKWISE")
     expect(GameIntent).toHaveProperty("ACTION")
     expect(GameIntent).toHaveProperty("PAUSE")
     expect(GameIntent).toHaveProperty("RESUME")
     expect(GameIntent).toHaveProperty("START")
     expect(GameIntent).toHaveProperty("RESET")
-  })
-
-  test("MobileControlScheme keys should match expected pattern", () => {
-    expect(MobileControlScheme).toHaveProperty("TWO_BUTTON")
   })
 })

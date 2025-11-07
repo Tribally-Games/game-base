@@ -15,17 +15,11 @@ import {
   validateObjective,
 } from "../src/objectives"
 import type { Objective } from "../src/objectives/types"
+import { GameInputType, GameIntent } from "../src/types"
 
 describe("createGameModule Integration", () => {
   class MockGameEngine {}
   class MockGameCanvas {}
-  const MockGameInputType = { INTENT: "intent" }
-  const MockGameIntent = {
-    UP: "up",
-    DOWN: "down",
-    LEFT: "left",
-    RIGHT: "right",
-  }
 
   test("should create game module with all required exports", () => {
     const config: GameModuleConfig = {
@@ -36,15 +30,13 @@ describe("createGameModule Integration", () => {
     const module = createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
     expect(module.GameEngine).toBe(MockGameEngine)
     expect(module.GameCanvas).toBe(MockGameCanvas)
-    expect(module.GameInputType).toEqual(MockGameInputType)
-    expect(module.GameIntent).toEqual(MockGameIntent)
+    expect(module.GameInputType).toEqual(GameInputType)
+    expect(module.GameIntent).toEqual(GameIntent)
     expect(module.getVersion()).toBe("1.0.0")
   })
 
@@ -65,8 +57,6 @@ describe("createGameModule Integration", () => {
     const module = createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -86,8 +76,6 @@ describe("createGameModule Integration", () => {
     createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -130,8 +118,6 @@ describe("createGameModule Integration", () => {
     createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -163,8 +149,6 @@ describe("createGameModule Integration", () => {
     createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -243,8 +227,6 @@ describe("createGameModule Integration", () => {
     const module = createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -276,8 +258,6 @@ describe("createGameModule Integration", () => {
     createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -309,8 +289,6 @@ describe("createGameModule Integration", () => {
     createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -343,8 +321,6 @@ describe("createGameModule Integration", () => {
     const module = createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -399,8 +375,6 @@ describe("createGameModule Integration", () => {
     const module = createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -454,8 +428,6 @@ describe("createGameModule Integration", () => {
     createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -510,8 +482,6 @@ describe("createGameModule Integration", () => {
     createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 
@@ -540,8 +510,6 @@ describe("createGameModule Integration", () => {
     createGameModule(
       MockGameEngine as any,
       MockGameCanvas as any,
-      MockGameInputType,
-      MockGameIntent,
       config,
     )
 

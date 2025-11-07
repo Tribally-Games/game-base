@@ -7,13 +7,11 @@ export enum GameIntent {
   DOWN = "down",
   LEFT = "left",
   RIGHT = "right",
+  CLOCKWISE = "clockwise",
+  COUNTER_CLOCKWISE = "counter_clockwise",
   ACTION = "action",
   PAUSE = "pause",
   RESUME = "resume",
   START = "start",
   RESET = "reset",
-}
-
-export enum MobileControlScheme {
-  TWO_BUTTON = "two_button",
 }

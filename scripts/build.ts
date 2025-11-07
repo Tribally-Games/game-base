@@ -9,6 +9,7 @@ import {
   writeFileSync,
   chmodSync,
 } from "node:fs"
+import { watch } from "node:fs/promises"
 import { join } from "node:path"
 
 const isWatch = process.argv.includes("--watch")
@@ -145,11 +146,11 @@ async function build() {
 async function watchBuild() {
   console.log("👀 Watching for changes...\n")
 
-  const watcher = new Bun.FileWatcher(["src"])
+  const watcher = watch("src", { recursive: true })
 
   for await (const event of watcher) {
-    if (event.path.endsWith(".ts")) {
-      console.log(`\n🔄 File changed: ${event.path}`)
+    if (event.filename && event.filename.endsWith(".ts")) {
+      console.log(`\n🔄 File changed: ${event.filename}`)
       console.log("🔄 Rebuilding...\n")
 
       try {
