@@ -249,7 +249,7 @@ This package includes full TypeScript definitions. All exports are fully typed.
 
 ## CLI
 
-This package includes a command-line interface for asset compression.
+This package includes a command-line interface for various tasks.
 
 ### Prerequisites
 
