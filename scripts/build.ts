@@ -5,7 +5,11 @@ import {
   rmSync,
   mkdirSync,
   existsSync,
+  readFileSync,
+  writeFileSync,
+  chmodSync,
 } from "node:fs"
+import { join } from "node:path"
 
 const isWatch = process.argv.includes("--watch")
 
@@ -15,6 +19,10 @@ async function clean() {
   if (existsSync("dist")) {
     rmSync("dist", { recursive: true, force: true })
   }
+
+  if (existsSync("bin")) {
+    rmSync("bin", { recursive: true, force: true })
+  }
 }
 
 async function createDirectories() {
@@ -23,6 +31,8 @@ async function createDirectories() {
   mkdirSync("dist/esm", { recursive: true })
   mkdirSync("dist/cjs", { recursive: true })
   mkdirSync("dist/types", { recursive: true })
+  mkdirSync("dist/cli", { recursive: true })
+  mkdirSync("bin", { recursive: true })
 }
 
 async function buildTypes() {
@@ -73,6 +83,42 @@ async function buildCJS() {
   }
 }
 
+async function buildCLI() {
+  console.log("⚡ Building CLI executable...")
+
+  const result = await Bun.build({
+    entrypoints: ["src/cli/index.ts"],
+    outdir: "dist/cli",
+    format: "esm",
+    target: "node",
+    minify: true,
+    sourcemap: "inline",
+  })
+
+  if (!result.success) {
+    console.error("❌ CLI build failed:")
+    for (const log of result.logs) {
+      console.error(log)
+    }
+    process.exit(1)
+  }
+
+  const cliPath = join("dist", "cli", "index.js")
+  const targetPath = join("bin", "game-base.js")
+
+  if (existsSync(cliPath)) {
+    const content = readFileSync(cliPath, "utf-8")
+    const finalContent = content.startsWith("#!")
+      ? content
+      : `#!/usr/bin/env node\n${content}`
+
+    writeFileSync(targetPath, finalContent)
+    chmodSync(targetPath, 0o755)
+
+    console.log("✅ CLI executable created with shebang")
+  }
+}
+
 async function build() {
   console.log("🚀 Starting build process...\n")
 
@@ -82,11 +128,14 @@ async function build() {
   try {
     await Promise.all([buildTypes(), buildESM(), buildCJS()])
 
+    await buildCLI()
+
     console.log("\n✅ Build completed successfully!")
     console.log("📁 Output:")
     console.log("  - dist/esm/     (ES modules)")
     console.log("  - dist/cjs/     (CommonJS)")
     console.log("  - dist/types/   (TypeScript declarations)")
+    console.log("  - bin/          (CLI executable)")
   } catch (error) {
     console.error("\n❌ Build failed:", error)
     process.exit(1)

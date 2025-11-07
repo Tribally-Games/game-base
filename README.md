@@ -247,6 +247,67 @@ OBJECTIVE_OPERATORS.STREAK   // "STREAK"
 
 This package includes full TypeScript definitions. All exports are fully typed.
 
+## CLI
+
+This package includes a command-line interface for various tasks.
+
+### Prerequisites
+
+The CLI requires external tools to be installed:
+
+- **cwebp**: For converting PNG/JPG images to WebP
+- **opusenc**: For converting WAV audio to Opus
+
+#### macOS
+```bash
+brew install webp opus-tools
+```
+
+#### Ubuntu/Debian
+```bash
+sudo apt-get install webp opus-tools
+```
+
+### compress command
+
+Compress image and audio files using modern formats (WebP and Opus) with customizable quality settings.
+
+```bash
+game-base compress <pattern> -o <output-dir> [options]
+```
+
+#### Arguments
+
+- `<pattern>`: Glob pattern to match files (e.g., `"assets/**/*.{png,jpg,wav}"`)
+
+#### Options
+
+- `-o, --output <dir>`: Output directory (required)
+- `--webp-quality <number>`: WebP quality 0-100 (default: 25)
+- `--opus-bitrate <number>`: Opus bitrate in kbps (default: 24)
+
+#### Examples
+
+Compress all PNG, JPG, and WAV files in the assets directory:
+```bash
+game-base compress "assets/**/*.{png,jpg,wav}" -o compressed/
+```
+
+Compress with custom quality settings:
+```bash
+game-base compress "assets/*.png" -o output/ --webp-quality 80
+```
+
+Compress audio with higher bitrate:
+```bash
+game-base compress "sounds/*.wav" -o audio/ --opus-bitrate 96
+```
+
+#### File Type Support
+
+- **Images**: PNG, JPG, JPEG → WebP
+- **Audio**: WAV → Opus
+
 ## Development
 
 ```bash
