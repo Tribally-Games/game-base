@@ -20,6 +20,9 @@
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
+  "bin": {
+    "game-base": "./bin/game-base.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
@@ -29,6 +32,7 @@
   },
   "files": [
     "dist",
+    "bin",
     "README.md",
     "LICENSE.md",
     "CHANGELOG.md"
@@ -36,6 +40,7 @@
   "scripts": {
     "prepare": "husky",
     "build": "bun run scripts/build.ts",
+    "postbuild": "chmod +x bin/game-base.js",
     "build:watch": "bun run scripts/build.ts --watch",
     "test": "bun test",
     "test:coverage": "bun test --coverage --coverage-reporter=lcov",
@@ -52,7 +57,10 @@
     "release:patch": "commit-and-tag-version --release-as patch && git push --follow-tags && bun publish"
   },
   "peerDependencies": {
-    "@hiddentao/clockwork-engine": "^1.9.2"
+    "@hiddentao/clockwork-engine": "^1.9.4"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
