@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.12](https://github.com/tribally-games/game-base/compare/v0.2.11...v0.2.12) (2025-11-07)
+
+
+### Bug Fixes
+
+* correct typescript types path in package.json ([de59dc3](https://github.com/tribally-games/game-base/commit/de59dc33340ee14d203279739d834a6f56287243))
+
 ## [0.2.11](https://github.com/tribally-games/game-base/compare/v0.2.10...v0.2.11) (2025-11-07)
 
 ## [0.2.10](https://github.com/tribally-games/game-base/compare/v0.2.9...v0.2.10) (2025-11-07)
