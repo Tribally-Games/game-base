@@ -92,6 +92,7 @@ async function buildCLI() {
     format: "esm",
     target: "node",
     minify: true,
+    sourcemap: "inline",
   })
 
   if (!result.success) {
