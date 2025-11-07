@@ -3,7 +3,7 @@ import { existsSync } from "node:fs"
 import { mkdtemp, readdir, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { compress } from "../../src/cli/compress"
+import { execa } from "execa"
 
 describe("compress command", () => {
   let tempDir: string
@@ -21,11 +21,16 @@ describe("compress command", () => {
   test("should compress PNG files to WebP", async () => {
     const pattern = "tests/assets/*.png"
 
-    await compress(pattern, {
-      output: tempDir,
-      webpQuality: "25",
-      opusBitrate: "24",
-    })
+    await execa("./bin/game-base.js", [
+      "compress",
+      pattern,
+      "-o",
+      tempDir,
+      "--webp-quality",
+      "25",
+      "--opus-bitrate",
+      "24",
+    ])
 
     const files = await readdir(tempDir)
     const webpFiles = files.filter((f) => f.endsWith(".webp"))
@@ -35,11 +40,16 @@ describe("compress command", () => {
   test("should compress JPG files to WebP", async () => {
     const pattern = "tests/assets/*.jpg"
 
-    await compress(pattern, {
-      output: tempDir,
-      webpQuality: "25",
-      opusBitrate: "24",
-    })
+    await execa("./bin/game-base.js", [
+      "compress",
+      pattern,
+      "-o",
+      tempDir,
+      "--webp-quality",
+      "25",
+      "--opus-bitrate",
+      "24",
+    ])
 
     const files = await readdir(tempDir)
     const webpFiles = files.filter((f) => f.endsWith(".webp"))
@@ -49,11 +59,16 @@ describe("compress command", () => {
   test("should compress WAV files to Opus", async () => {
     const pattern = "tests/assets/*.wav"
 
-    await compress(pattern, {
-      output: tempDir,
-      webpQuality: "25",
-      opusBitrate: "24",
-    })
+    await execa("./bin/game-base.js", [
+      "compress",
+      pattern,
+      "-o",
+      tempDir,
+      "--webp-quality",
+      "25",
+      "--opus-bitrate",
+      "24",
+    ])
 
     const files = await readdir(tempDir)
     const opusFiles = files.filter((f) => f.endsWith(".opus"))
@@ -63,27 +78,43 @@ describe("compress command", () => {
   test("should compress multiple file types", async () => {
     const pattern = "tests/assets/*.{png,jpg,wav}"
 
-    await compress(pattern, {
-      output: tempDir,
-      webpQuality: "50",
-      opusBitrate: "48",
-    })
+    await execa("./bin/game-base.js", [
+      "compress",
+      pattern,
+      "-o",
+      tempDir,
+      "--webp-quality",
+      "50",
+      "--opus-bitrate",
+      "48",
+    ])
 
     const files = await readdir(tempDir)
     const webpFiles = files.filter((f) => f.endsWith(".webp"))
     const opusFiles = files.filter((f) => f.endsWith(".opus"))
-    expect(webpFiles.length).toBeGreaterThan(0)
-    expect(opusFiles.length).toBeGreaterThan(0)
+
+    expect(webpFiles.length).toBe(3)
+    expect(opusFiles.length).toBe(1)
+
+    expect(files).toContain("chest-spritesheet.webp")
+    expect(files).toContain("fireball-spritesheet.webp")
+    expect(files).toContain("level-bg-1.webp")
+    expect(files).toContain("enemy-death.opus")
   })
 
   test("should respect custom WebP quality setting", async () => {
     const pattern = "tests/assets/chest-spritesheet.png"
 
-    await compress(pattern, {
-      output: tempDir,
-      webpQuality: "80",
-      opusBitrate: "24",
-    })
+    await execa("./bin/game-base.js", [
+      "compress",
+      pattern,
+      "-o",
+      tempDir,
+      "--webp-quality",
+      "80",
+      "--opus-bitrate",
+      "24",
+    ])
 
     const files = await readdir(tempDir)
     const webpFiles = files.filter((f) => f.endsWith(".webp"))
@@ -94,11 +125,16 @@ describe("compress command", () => {
   test("should respect custom Opus bitrate setting", async () => {
     const pattern = "tests/assets/enemy-death.wav"
 
-    await compress(pattern, {
-      output: tempDir,
-      webpQuality: "25",
-      opusBitrate: "96",
-    })
+    await execa("./bin/game-base.js", [
+      "compress",
+      pattern,
+      "-o",
+      tempDir,
+      "--webp-quality",
+      "25",
+      "--opus-bitrate",
+      "96",
+    ])
 
     const files = await readdir(tempDir)
     const opusFiles = files.filter((f) => f.endsWith(".opus"))
@@ -110,11 +146,16 @@ describe("compress command", () => {
     const nonExistentDir = join(tempDir, "nested", "output")
     const pattern = "tests/assets/nonexistent.png"
 
-    await compress(pattern, {
-      output: nonExistentDir,
-      webpQuality: "25",
-      opusBitrate: "24",
-    })
+    await execa("./bin/game-base.js", [
+      "compress",
+      pattern,
+      "-o",
+      nonExistentDir,
+      "--webp-quality",
+      "25",
+      "--opus-bitrate",
+      "24",
+    ])
 
     expect(existsSync(nonExistentDir)).toBe(true)
   })
@@ -122,11 +163,16 @@ describe("compress command", () => {
   test("should handle empty pattern gracefully", async () => {
     const pattern = "tests/assets/*.nonexistent"
 
-    await compress(pattern, {
-      output: tempDir,
-      webpQuality: "25",
-      opusBitrate: "24",
-    })
+    await execa("./bin/game-base.js", [
+      "compress",
+      pattern,
+      "-o",
+      tempDir,
+      "--webp-quality",
+      "25",
+      "--opus-bitrate",
+      "24",
+    ])
 
     expect(existsSync(tempDir)).toBe(true)
   })
