@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.10](https://github.com/tribally-games/game-base/compare/v0.2.9...v0.2.10) (2025-11-07)
+
+
+### Features
+
+* cli for converting wav png and jpg to webp etc ([#2](https://github.com/tribally-games/game-base/issues/2)) ([2e65859](https://github.com/tribally-games/game-base/commit/2e658591c8cc927374a4b3d9105fe3fae3c4e1e3))
+
 ## [0.2.9](https://github.com/tribally-games/game-base/compare/v0.2.8...v0.2.9) (2025-11-04)
 
 ## [0.2.8](https://github.com/tribally-games/game-base/compare/v0.2.7...v0.2.8) (2025-10-22)
