@@ -27,7 +27,7 @@ describe("createGameModule Integration", () => {
     version: "1.0.0",
     customOperators: [],
     objectiveDefinitions: [],
-    operatorMetadata: {},
+    objectiveMetadata: {},
     validateCustomObjective: () => false,
     getProgressValue: () => null,
     setupInitializationData: () => ({}),
@@ -58,7 +58,7 @@ describe("createGameModule Integration", () => {
       version: "2.0.0",
       customOperators: ["APPLE"],
       objectiveDefinitions: [{ tier: "EASY", operator: "APPLE", threshold: 5 }],
-      operatorMetadata: {
+      objectiveMetadata: {
         APPLE: {
           name: "Apples",
           icon: "🍎",
@@ -119,7 +119,7 @@ describe("createGameModule Integration", () => {
     const config = createDefaultConfig({
       version: "1.0.0",
       objectiveDefinitions: [],
-      operatorMetadata: {
+      objectiveMetadata: {
         POTION: {
           name: "Potions",
           icon: "🧪",
@@ -200,7 +200,7 @@ describe("createGameModule Integration", () => {
         { tier: "EASY", operator: "APPLE", threshold: 3 },
         { tier: "MEDIUM", operator: "POTION", threshold: 2 },
       ],
-      operatorMetadata: {
+      objectiveMetadata: {
         APPLE: {
           name: "Apples",
           icon: "🍎",

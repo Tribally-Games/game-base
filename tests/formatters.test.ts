@@ -94,7 +94,7 @@ describe("Objective Formatters", () => {
     const config: GameModuleConfig = {
       version: "1.0.0",
       objectiveDefinitions: [],
-      operatorMetadata: {
+      objectiveMetadata: {
         APPLE: {
           name: "Apples",
           icon: "🍎",
@@ -181,7 +181,7 @@ describe("Objective Formatters", () => {
       const config: GameModuleConfig = {
         version: "1.0.0",
         objectiveDefinitions: [],
-        operatorMetadata: {
+        objectiveMetadata: {
           APPLE: {
             name: "Apples",
             icon: "🍎",

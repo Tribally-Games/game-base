@@ -81,7 +81,7 @@ Located in [src/objectives/](src/objectives/) - the core feature this package pr
 Games extend with **custom operators** by providing:
 - `customOperators` array in config
 - `validateCustomObjective()` function
-- `operatorMetadata` with name/icon/description
+- `objectiveMetadata` with name/icon/description
 - `getProgressValue()` to extract progress from game snapshot
 
 ### Meta Configuration System

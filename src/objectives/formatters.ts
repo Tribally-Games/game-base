@@ -12,7 +12,7 @@ export function formatObjectiveDescription(
     return coreMetadata.description(objective.threshold)
   }
 
-  const customMetadata = config.operatorMetadata?.[objective.operator]
+  const customMetadata = config.objectiveMetadata?.[objective.operator]
   if (customMetadata) {
     return customMetadata.description(objective.threshold)
   }
@@ -29,7 +29,7 @@ export function getObjectiveIcon(
     return coreMetadata.icon
   }
 
-  const customMetadata = config.operatorMetadata?.[operator]
+  const customMetadata = config.objectiveMetadata?.[operator]
   if (customMetadata) {
     return customMetadata.icon
   }

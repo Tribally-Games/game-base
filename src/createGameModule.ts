@@ -22,7 +22,7 @@ export interface GameModuleConfig {
 
   objectiveDefinitions: ObjectiveDefinition[]
 
-  operatorMetadata: Record<string, OperatorMetadata>
+  objectiveMetadata: Record<string, OperatorMetadata>
 
   validateCustomObjective: (
     objective: { operator: string; threshold: number },

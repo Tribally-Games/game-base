@@ -94,6 +94,7 @@ async function buildCLI() {
     target: "node",
     minify: true,
     sourcemap: "inline",
+    external: ["vite", "@vitejs/plugin-react", "react", "react-dom", "react-toastify"],
   })
 
   if (!result.success) {
