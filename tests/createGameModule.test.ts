@@ -21,11 +21,24 @@ describe("createGameModule Integration", () => {
   class MockGameEngine {}
   class MockGameCanvas {}
 
+  const createDefaultConfig = (
+    overrides: Partial<GameModuleConfig> = {},
+  ): GameModuleConfig => ({
+    version: "1.0.0",
+    customOperators: [],
+    objectiveDefinitions: [],
+    operatorMetadata: {},
+    validateCustomObjective: () => false,
+    getProgressValue: () => null,
+    setupInitializationData: () => ({}),
+    getMetaConfigSchema: () => ({}),
+    extractGameSnapshotInfo: () => ({}),
+    formatGameSnapshotInfo: () => [],
+    ...overrides,
+  })
+
   test("should create game module with all required exports", () => {
-    const config: GameModuleConfig = {
-      version: "1.0.0",
-      objectiveDefinitions: [],
-    }
+    const config = createDefaultConfig()
 
     const module = createGameModule(
       MockGameEngine as any,
@@ -41,7 +54,7 @@ describe("createGameModule Integration", () => {
   })
 
   test("should create game module with custom operators config", () => {
-    const config: GameModuleConfig = {
+    const config = createDefaultConfig({
       version: "2.0.0",
       customOperators: ["APPLE"],
       objectiveDefinitions: [{ tier: "EASY", operator: "APPLE", threshold: 5 }],
@@ -52,7 +65,7 @@ describe("createGameModule Integration", () => {
           description: (threshold) => `Eat ${threshold} apples`,
         },
       },
-    }
+    })
 
     const module = createGameModule(
       MockGameEngine as any,
@@ -65,13 +78,13 @@ describe("createGameModule Integration", () => {
   })
 
   test("should enable custom validation with config", () => {
-    const config: GameModuleConfig = {
+    const config = createDefaultConfig({
       version: "1.0.0",
       customOperators: ["APPLE"],
       objectiveDefinitions: [],
       validateCustomObjective: (objective, snapshot) =>
         (snapshot.applesEaten || 0) >= objective.threshold,
-    }
+    })
 
     createGameModule(
       MockGameEngine as any,
@@ -103,7 +116,7 @@ describe("createGameModule Integration", () => {
   })
 
   test("should enable custom metadata with config", () => {
-    const config: GameModuleConfig = {
+    const config = createDefaultConfig({
       version: "1.0.0",
       objectiveDefinitions: [],
       operatorMetadata: {
@@ -113,7 +126,7 @@ describe("createGameModule Integration", () => {
           description: (threshold) => `Collect ${threshold} potions`,
         },
       },
-    }
+    })
 
     createGameModule(
       MockGameEngine as any,
@@ -137,14 +150,14 @@ describe("createGameModule Integration", () => {
   })
 
   test("should enable custom progress calculation with config", () => {
-    const config: GameModuleConfig = {
+    const config = createDefaultConfig({
       version: "1.0.0",
       objectiveDefinitions: [],
       getProgressValue: (operator, snapshot) => {
         if (operator === "APPLE") return snapshot.applesEaten ?? null
         return null
       },
-    }
+    })
 
     createGameModule(
       MockGameEngine as any,
@@ -179,7 +192,7 @@ describe("createGameModule Integration", () => {
   })
 
   test("should support full game configuration", () => {
-    const config: GameModuleConfig = {
+    const config = createDefaultConfig({
       version: "1.5.0",
       customOperators: ["APPLE", "POTION"],
       objectiveDefinitions: [
@@ -210,10 +223,18 @@ describe("createGameModule Integration", () => {
         }
         return false
       },
-      extractGameStats: (snapshot) => ({
+      extractGameSnapshotInfo: (snapshot) => ({
         applesEaten: snapshot.applesEaten || 0,
         potionsEaten: snapshot.potionsEaten || 0,
+        state: snapshot.state,
+        level: snapshot.level,
       }),
+      formatGameSnapshotInfo: (info) => [
+        { label: "State", value: info.state },
+        { label: "Level", value: info.level },
+        { label: "Apples", value: info.applesEaten },
+        { label: "Potions", value: info.potionsEaten },
+      ],
       getProgressValue: (operator, snapshot) => {
         if (operator === "APPLE") return snapshot.applesEaten ?? null
         if (operator === "POTION") return snapshot.potionsEaten ?? null
@@ -222,7 +243,7 @@ describe("createGameModule Integration", () => {
       setupInitializationData: () => ({
         mapName: "base_map",
       }),
-    }
+    })
 
     const module = createGameModule(
       MockGameEngine as any,
@@ -233,27 +254,32 @@ describe("createGameModule Integration", () => {
     expect(module.getVersion()).toBe("1.5.0")
     expect(config.customOperators).toEqual(["APPLE", "POTION"])
     expect(config.objectiveDefinitions.length).toBe(3)
-    expect(config.setupInitializationData?.()).toEqual({ mapName: "base_map" })
+    expect(config.setupInitializationData()).toEqual({ mapName: "base_map" })
 
-    const stats = config.extractGameStats?.({ applesEaten: 5, potionsEaten: 3 })
-    expect(stats).toEqual({ applesEaten: 5, potionsEaten: 3 })
+    const info = config.extractGameSnapshotInfo({ applesEaten: 5, potionsEaten: 3, state: "PLAYING", level: 2 })
+    expect(info).toEqual({ applesEaten: 5, potionsEaten: 3, state: "PLAYING", level: 2 })
   })
 
-  test("should support formatGameStats configuration", () => {
-    const config: GameModuleConfig = {
+  test("should support extractGameSnapshotInfo and formatGameSnapshotInfo configuration", () => {
+    const config = createDefaultConfig({
       version: "1.0.0",
       objectiveDefinitions: [],
-      extractGameStats: (snapshot) => ({
+      extractGameSnapshotInfo: (snapshot) => ({
+        state: snapshot.state,
+        level: snapshot.level,
+        levelName: snapshot.levelName,
         applesEaten: snapshot.applesEaten || 0,
         potionsCollected: snapshot.potionsCollected || 0,
         enemiesDefeated: snapshot.enemiesDefeated || 0,
       }),
-      formatGameStats: (gameStats) => [
-        { label: "Apples", value: gameStats.applesEaten },
-        { label: "Potions", value: gameStats.potionsCollected },
-        { label: "Enemies", value: gameStats.enemiesDefeated },
+      formatGameSnapshotInfo: (info) => [
+        { label: "State", value: info.state },
+        { label: "Level", value: `${info.level} - ${info.levelName}` },
+        { label: "Apples", value: info.applesEaten },
+        { label: "Potions", value: info.potionsCollected },
+        { label: "Enemies", value: info.enemiesDefeated },
       ],
-    }
+    })
 
     createGameModule(
       MockGameEngine as any,
@@ -261,62 +287,57 @@ describe("createGameModule Integration", () => {
       config,
     )
 
-    expect(config.formatGameStats).toBeDefined()
+    expect(config.extractGameSnapshotInfo).toBeDefined()
+    expect(config.formatGameSnapshotInfo).toBeDefined()
 
-    const rawStats = {
+    const snapshot = {
+      state: "PLAYING",
+      level: 5,
+      levelName: "Forest",
       applesEaten: 10,
       potionsCollected: 5,
       enemiesDefeated: 20,
     }
-    const formatted = config.formatGameStats?.(rawStats)
+    const extractedInfo = config.extractGameSnapshotInfo(snapshot)
+    expect(extractedInfo).toEqual({
+      state: "PLAYING",
+      level: 5,
+      levelName: "Forest",
+      applesEaten: 10,
+      potionsCollected: 5,
+      enemiesDefeated: 20,
+    })
 
+    const formatted = config.formatGameSnapshotInfo(extractedInfo)
     expect(formatted).toEqual([
+      { label: "State", value: "PLAYING" },
+      { label: "Level", value: "5 - Forest" },
       { label: "Apples", value: 10 },
       { label: "Potions", value: 5 },
       { label: "Enemies", value: 20 },
     ])
   })
 
-  test("should work without formatGameStats when not provided", () => {
-    const config: GameModuleConfig = {
-      version: "1.0.0",
-      objectiveDefinitions: [],
-      extractGameStats: (snapshot) => ({
-        score: snapshot.score || 0,
-      }),
-    }
-
-    createGameModule(
-      MockGameEngine as any,
-      MockGameCanvas as any,
-      config,
-    )
-
-    expect(config.formatGameStats).toBeUndefined()
-  })
-
   test("should support getMetaConfigSchema configuration", () => {
-    const metaConfigSchema = {
-      snakeColor: {
-        type: GameConfigFieldType.COLOR,
-        label: "Snake Color",
-        description: "Custom snake color",
-        format: "hex" as const,
-      },
-      mapSelection: {
-        type: GameConfigFieldType.STRING_LIST,
-        label: "Map Selection",
-        description: "Choose a map",
-        items: ["map1", "map2", "map3"],
-        selectedIndex: null,
-      },
-    } as const
-
-    const config: GameModuleConfig = {
+    const config = createDefaultConfig({
       version: "1.0.0",
       objectiveDefinitions: [],
-      getMetaConfigSchema: () => metaConfigSchema,
-    }
+      getMetaConfigSchema: () => ({
+        snakeColor: {
+          type: GameConfigFieldType.COLOR,
+          label: "Snake Color",
+          description: "Custom snake color",
+          format: "hex" as const,
+        },
+        mapSelection: {
+          type: GameConfigFieldType.STRING_LIST,
+          label: "Map Selection",
+          description: "Choose a map",
+          items: ["map1", "map2", "map3"],
+          selectedIndex: null,
+        },
+      }),
+    })
 
     const module = createGameModule(
       MockGameEngine as any,
@@ -325,9 +346,9 @@ describe("createGameModule Integration", () => {
     )
 
     expect(module.getGameModuleConfig().getMetaConfigSchema).toBeDefined()
-    const schema = module.getGameModuleConfig().getMetaConfigSchema?.()
-    expect(schema?.snakeColor.type).toBe(GameConfigFieldType.COLOR)
-    expect(schema?.mapSelection.type).toBe(GameConfigFieldType.STRING_LIST)
+    const schema = module.getGameModuleConfig().getMetaConfigSchema()
+    expect(schema.snakeColor.type).toBe(GameConfigFieldType.COLOR)
+    expect(schema.mapSelection.type).toBe(GameConfigFieldType.STRING_LIST)
   })
 
   test("should support setupInitializationData with metaConfig parameter", () => {
@@ -348,7 +369,7 @@ describe("createGameModule Integration", () => {
 
     type MetaValues = InferMetaConfigValues<typeof metaConfigSchema>
 
-    const config: GameModuleConfig = {
+    const config = createDefaultConfig({
       version: "1.0.0",
       objectiveDefinitions: [],
       getMetaConfigSchema: () => metaConfigSchema,
@@ -370,7 +391,7 @@ describe("createGameModule Integration", () => {
 
         return gameConfig
       },
-    }
+    })
 
     const module = createGameModule(
       MockGameEngine as any,
