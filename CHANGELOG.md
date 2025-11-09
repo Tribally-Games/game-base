@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.4.0](https://github.com/tribally-games/game-base/compare/v0.3.0...v0.4.0) (2025-11-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* GameModuleConfig now requires all previously optional
+properties (customOperators, operatorMetadata, validateCustomObjective,
+getProgressValue, setupInitializationData, getMetaConfigSchema).
+Additionally, extractGameStats/formatGameStats have been renamed to
+extractGameSnapshotInfo/formatGameSnapshotInfo with updated return types
+to support non-numeric values.
+
+- Make all GameModuleConfig properties required for API clarity
+- Rename extractGameStats → extractGameSnapshotInfo
+- Rename formatGameStats → formatGameSnapshotInfo
+- Change return types from number to any for richer game state info
+- Add createDefaultConfig() test helper to reduce test verbosity
+- Include CLAUDE.md in published package files
+
+Migration: Games must provide all config properties and update method
+names.
+
+* feat(cli): add interactive demo development server with react template
+
+- Add 'demo' CLI command for running games in development mode
+- Include Vite-based dev server with hot module replacement
+- Add production build mode for demo distributions
+- Provide React 19 template with game controls and state management
+- Support recording/replay with variable speed playback
+- Add live objectives tracking and completion notifications
+- Include meta-configuration modal for game settings
+- Display rendering statistics (FPS, tick rate)
+- Externalize React/Vite dependencies from CLI bundle
+- Add dependencies: vite@^7, react@^19, @vitejs/plugin-react@^4
+
+### Features
+
+* demo scaffolding for games ([#3](https://github.com/tribally-games/game-base/issues/3)) ([eaed9e6](https://github.com/tribally-games/game-base/commit/eaed9e678c44406898f5c6ee80785696956f5d9e))
+
 ## [0.3.0](https://github.com/tribally-games/game-base/compare/v0.2.12...v0.3.0) (2025-11-07)
 
 
