@@ -18,30 +18,30 @@ export interface ObjectiveDefinition {
 export interface GameModuleConfig {
   version: string
 
-  customOperators?: readonly string[]
+  customOperators: readonly string[]
 
   objectiveDefinitions: ObjectiveDefinition[]
 
-  operatorMetadata?: Record<string, OperatorMetadata>
+  objectiveMetadata: Record<string, OperatorMetadata>
 
-  validateCustomObjective?: (
+  validateCustomObjective: (
     objective: { operator: string; threshold: number },
     gameSnapshot: any,
   ) => boolean
 
-  extractGameStats?: (gameSnapshot: any) => Record<string, number>
+  getProgressValue: (operator: string, gameSnapshot: any) => number | null
 
-  formatGameStats?: (
-    gameStats: Record<string, number>,
-  ) => Array<{ label: string; value: number }>
-
-  getProgressValue?: (operator: string, gameSnapshot: any) => number | null
-
-  setupInitializationData?: (
+  setupInitializationData: (
     metaConfig?: GameMetaConfigValues,
   ) => Record<string, any>
 
-  getMetaConfigSchema?: () => GameMetaConfigSchema
+  getMetaConfigSchema: () => GameMetaConfigSchema
+
+  extractGameSnapshotInfo: (gameSnapshot: any) => Record<string, any>
+
+  formatGameSnapshotInfo: (
+    gameSnapshotInfo: Record<string, any>,
+  ) => Array<{ label: string; value: any }>
 }
 
 /**

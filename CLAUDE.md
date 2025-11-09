@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `@tribally.games/game-base` is a core dependency package for Tribally arcade games, providing standardized game module structure, objectives handling, and shared utilities. It acts as a framework that individual games extend.
 
+It's for games built on `@hiddentao/clockwork-engine` dependency. Look in `node_modules/@hiddentao/clockwork-engine/docs/engine.md` for documentation on best practices when using the engine and how the engine is structured.
+
 ## Development Commands
 
 ### Building
@@ -79,7 +81,7 @@ Located in [src/objectives/](src/objectives/) - the core feature this package pr
 Games extend with **custom operators** by providing:
 - `customOperators` array in config
 - `validateCustomObjective()` function
-- `operatorMetadata` with name/icon/description
+- `objectiveMetadata` with name/icon/description
 - `getProgressValue()` to extract progress from game snapshot
 
 ### Meta Configuration System

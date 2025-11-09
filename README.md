@@ -75,7 +75,7 @@ export const { GameEngine: ExportedGameEngine, GameCanvas: ExportedGameCanvas, G
     version: "1.0.0",
     customOperators: Object.values(CUSTOM_OPERATORS),
     objectiveDefinitions: OBJECTIVE_DEFINITIONS,
-    operatorMetadata: CUSTOM_OPERATOR_METADATA,
+    objectiveMetadata: CUSTOM_OPERATOR_METADATA,
 
     // Validate custom objectives
     validateCustomObjective: (objective, gameSnapshot) => {
