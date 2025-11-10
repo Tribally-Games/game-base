@@ -280,6 +280,20 @@ game-base compress <pattern> -o <output-dir> [options]
 
 - `<pattern>`: Glob pattern to match files (e.g., `"assets/**/*.{png,jpg,wav}"`)
 
+#### Important: Quote Your Patterns
+
+**Always quote the pattern argument** to prevent shell glob expansion:
+
+```bash
+# ✓ Correct - quotes prevent shell expansion
+game-base compress "*.wav" -o compressed/
+
+# ✗ Wrong - shell expands *.wav before passing to command
+game-base compress *.wav -o compressed/
+```
+
+Without quotes, your shell (bash/zsh) expands the glob pattern before passing it to the command. This means the command only receives the first matching filename instead of the pattern, resulting in only one file being processed.
+
 #### Options
 
 - `-o, --output <dir>`: Output directory (required)

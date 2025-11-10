@@ -2,7 +2,11 @@ import { mkdir } from "node:fs/promises"
 import chalk from "chalk"
 import { checkCommands } from "./utils/commandCheck.js"
 import { convertToOpus, convertToWebP } from "./utils/converters.js"
-import { findFiles, groupFilesByType } from "./utils/fileUtils.js"
+import {
+  findFiles,
+  formatSavings,
+  groupFilesByType,
+} from "./utils/fileUtils.js"
 
 export interface CompressOptions {
   output: string
@@ -43,12 +47,16 @@ export async function compress(
 
   for (const imagePath of images) {
     try {
-      const outputPath = await convertToWebP(
+      const { outputPath, sizeInfo } = await convertToWebP(
         imagePath,
         options.output,
         webpQuality,
       )
-      console.log(chalk.green("✓"), chalk.gray(outputPath))
+      console.log(
+        chalk.green("✓"),
+        chalk.gray(outputPath),
+        chalk.dim(formatSavings(sizeInfo)),
+      )
       successCount++
     } catch (error) {
       console.error(
@@ -62,12 +70,16 @@ export async function compress(
 
   for (const audioPath of audio) {
     try {
-      const outputPath = await convertToOpus(
+      const { outputPath, sizeInfo } = await convertToOpus(
         audioPath,
         options.output,
         opusBitrate,
       )
-      console.log(chalk.green("✓"), chalk.gray(outputPath))
+      console.log(
+        chalk.green("✓"),
+        chalk.gray(outputPath),
+        chalk.dim(formatSavings(sizeInfo)),
+      )
       successCount++
     } catch (error) {
       console.error(

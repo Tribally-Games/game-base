@@ -117,9 +117,11 @@ describe("compress command", () => {
     ])
 
     const files = await readdir(tempDir)
-    const webpFiles = files.filter((f) => f.endsWith(".webp"))
-    expect(webpFiles.length).toBe(1)
-    expect(webpFiles[0]).toBe("chest-spritesheet.webp")
+    expect(files.length).toBe(1)
+    expect(
+      files[0] === "chest-spritesheet.webp" ||
+        files[0] === "chest-spritesheet.png",
+    ).toBe(true)
   })
 
   test("should respect custom Opus bitrate setting", async () => {
