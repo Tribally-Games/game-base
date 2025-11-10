@@ -265,9 +265,7 @@ export function GameRenderer({
         width: canvasSize.width,
         height: canvasSize.height,
         background: "#000",
-        borderRadius: "8px",
-        border: "2px solid #4a4a7e",
-        outline: "none",
+        outline: "2px solid #4a4a7e",
       }}
       tabIndex={0}
     />
