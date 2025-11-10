@@ -8,6 +8,7 @@ interface ServerOptions {
   host: string
   open: boolean
   outDir: string
+  assetsDir?: string
 }
 
 export async function startDevServer(
@@ -29,6 +30,7 @@ export async function startDevServer(
         host: options.host,
         open: options.open,
         outDir: options.outDir,
+        ...(options.assetsDir && { assetsDir: options.assetsDir }),
       },
       "development",
     )

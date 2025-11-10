@@ -9,6 +9,7 @@ interface BuildOptions {
   host: string
   open: boolean
   outDir: string
+  assetsDir?: string
 }
 
 export async function buildDemo(
@@ -29,6 +30,7 @@ export async function buildDemo(
         host: options.host,
         open: options.open,
         outDir: options.outDir,
+        ...(options.assetsDir && { assetsDir: options.assetsDir }),
       },
       "build",
     )

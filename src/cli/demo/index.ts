@@ -10,6 +10,7 @@ export function registerDemoCommand(program: Command): void {
     .option("--port <number>", "Dev server port", "5173")
     .option("--host <string>", "Dev server host", "localhost")
     .option("--out-dir <path>", "Build output directory", "dist-demo")
+    .option("--assets-dir <path>", "Assets directory for @assets/* aliases")
     .option("--open", "Open browser automatically", false)
     .action(async (path, options) => {
       const gamePath = path || process.cwd()
