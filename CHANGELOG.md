@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.0](https://github.com/tribally-games/game-base/compare/v0.4.1...v0.5.0) (2025-11-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* **demo:** DemoLoader constructor no longer accepts fileSystemLoader
+parameter. Asset loading now uses Vite aliases via @assets/* imports.
+* **demo:** Game imports now use @game prefix directly instead
+of @game-module and @game-demo
+* **demo-template:** DemoFileSystemLoader now requires a baseUrl parameter (defaults to /@fs/)
+and works in browser environments only. For Node.js environments, use a different approach.
+
+### Features
+
+* **cli:** add --assets-dir option to demo command for dynamic asset aliasing ([0934245](https://github.com/tribally-games/game-base/commit/0934245228923e7349661762a1096993cade14c3))
+* **demo-template:** add filesystem asset loader for node.js environments ([d8190dd](https://github.com/tribally-games/game-base/commit/d8190ddb94c121add751878315b4a9af99cd49ac))
+
+
+### Bug Fixes
+
+* **demo-template:** convert asset loader to use http via vite dev server ([cf95196](https://github.com/tribally-games/game-base/commit/cf951969b7f5abb70ace6c99b5f2b3bc2d03d031))
+* **demo:** add /src to [@game](https://github.com/game) imports since alias now points to game root ([e7cb856](https://github.com/tribally-games/game-base/commit/e7cb8562b5b99801861c2135566c080633777720))
+* **demo:** replace asset module imports with http middleware serving ([382f88f](https://github.com/tribally-games/game-base/commit/382f88f00f9cdf711994eb49b6d4d8252bd057ef))
+
+
+### Code Refactoring
+
+* **demo:** revert to multi-alias pattern and add dynamic asset aliasing ([2fcc74b](https://github.com/tribally-games/game-base/commit/2fcc74b49532afe722ffecab82cbf2bbbc8ef92b))
+* **demo:** simplify to single [@game](https://github.com/game) alias pointing to game root ([bdbf29d](https://github.com/tribally-games/game-base/commit/bdbf29d9ae7c9e891742465fc5ea584c8472ab7c))
+
 ## [0.4.1](https://github.com/tribally-games/game-base/compare/v0.4.0...v0.4.1) (2025-11-10)
 
 
