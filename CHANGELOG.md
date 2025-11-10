@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.4.1](https://github.com/tribally-games/game-base/compare/v0.4.0...v0.4.1) (2025-11-10)
+
+
+### Features
+
+* **cli:** add file size tracking and smart compression to compress command ([16102f4](https://github.com/tribally-games/game-base/commit/16102f458a7a070e1eef617f81139d84956fa2aa))
+
 ## [0.4.0](https://github.com/tribally-games/game-base/compare/v0.3.0...v0.4.0) (2025-11-09)
 
 
