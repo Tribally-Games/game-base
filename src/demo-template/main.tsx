@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client"
 import { App } from "./App"
+import { DemoFileSystemLoader } from "./DemoFileSystemLoader"
 import { GameModuleProvider } from "./contexts/GameModuleContext"
 
 const root = document.getElementById("root")
@@ -11,9 +12,14 @@ async function initializeApp() {
 
   const gameModule = await import("@game-module")
   const { DemoLoader } = await import("@game-demo/DemoLoader")
+  const fileSystemLoader = new DemoFileSystemLoader()
 
   createRoot(root).render(
-    <GameModuleProvider module={gameModule} DemoLoader={DemoLoader}>
+    <GameModuleProvider
+      module={gameModule}
+      DemoLoader={DemoLoader}
+      fileSystemLoader={fileSystemLoader}
+    >
       <App />
     </GameModuleProvider>,
   )

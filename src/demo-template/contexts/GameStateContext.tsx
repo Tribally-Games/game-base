@@ -24,14 +24,18 @@ export interface GameStateContextValue {
 const GameStateContext = createContext<GameStateContextValue | null>(null)
 
 export function GameStateProvider({ children }: { children: ReactNode }) {
-  const { GameEngine: GameEngineClass, DemoLoader } = useGameModule()
+  const {
+    GameEngine: GameEngineClass,
+    DemoLoader,
+    fileSystemLoader,
+  } = useGameModule()
   const [playEngine, setPlayEngine] = useState<GameEngine | null>(null)
   const [replayEngine, setReplayEngine] = useState<GameEngine | null>(null)
   const [activeEngine, setActiveEngine] = useState<GameEngine | null>(null)
   const [gameState, setGameState] = useState<GameState | null>(null)
 
   useEffect(() => {
-    const loader = new DemoLoader()
+    const loader = new DemoLoader(fileSystemLoader)
     const play = new GameEngineClass(loader)
     const replay = new GameEngineClass(loader)
 
@@ -53,7 +57,7 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
         replay.end()
       }
     }
-  }, [GameEngineClass, DemoLoader])
+  }, [GameEngineClass, DemoLoader, fileSystemLoader])
 
   useEffect(() => {
     if (!activeEngine) return
