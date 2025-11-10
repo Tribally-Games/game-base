@@ -1,6 +1,5 @@
 import { createRoot } from "react-dom/client"
 import { App } from "./App"
-import { DemoFileSystemLoader } from "./DemoFileSystemLoader"
 import { GameModuleProvider } from "./contexts/GameModuleContext"
 
 const root = document.getElementById("root")
@@ -10,16 +9,11 @@ async function initializeApp() {
     throw new Error("Root element not found")
   }
 
-  const gameModule = await import("@game/src")
-  const { DemoLoader } = await import("@game/src/demo/DemoLoader")
-  const fileSystemLoader = new DemoFileSystemLoader()
+  const gameModule = await import("@game-module")
+  const { DemoLoader } = await import("@game-demo/DemoLoader")
 
   createRoot(root).render(
-    <GameModuleProvider
-      module={gameModule}
-      DemoLoader={DemoLoader}
-      fileSystemLoader={fileSystemLoader}
-    >
+    <GameModuleProvider module={gameModule} DemoLoader={DemoLoader}>
       <App />
     </GameModuleProvider>,
   )

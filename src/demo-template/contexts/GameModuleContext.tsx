@@ -1,12 +1,10 @@
 import { type ReactNode, createContext, useContext } from "react"
-import type { IDemoFileSystemLoader } from "../types"
 
 export interface GameModuleContextValue {
   GameEngine: any
   GameCanvas: any
   getGameModuleConfig: () => any
   DemoLoader: any
-  fileSystemLoader: IDemoFileSystemLoader
   objectiveMetadata?: Record<string, any>
 }
 
@@ -15,12 +13,10 @@ const GameModuleContext = createContext<GameModuleContextValue | null>(null)
 export function GameModuleProvider({
   module,
   DemoLoader,
-  fileSystemLoader,
   children,
 }: {
   module: any
   DemoLoader: any
-  fileSystemLoader: IDemoFileSystemLoader
   children: ReactNode
 }) {
   const contextValue: GameModuleContextValue = {
@@ -28,7 +24,6 @@ export function GameModuleProvider({
     GameCanvas: module.GameCanvas,
     getGameModuleConfig: module.getGameModuleConfig,
     DemoLoader,
-    fileSystemLoader,
     objectiveMetadata: module.objectiveMetadata,
   }
 
