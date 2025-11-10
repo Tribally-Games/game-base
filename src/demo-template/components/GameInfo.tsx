@@ -1,4 +1,4 @@
-import type { PowerUpEffect } from "@game/types/game"
+import type { PowerUpEffect } from "@game/src/types/game"
 
 export interface GameInfoProps {
   formattedInfo: Array<{ label: string; value: any }>

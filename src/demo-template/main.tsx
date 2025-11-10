@@ -10,8 +10,8 @@ async function initializeApp() {
     throw new Error("Root element not found")
   }
 
-  const gameModule = await import("@game")
-  const { DemoLoader } = await import("@game/demo/DemoLoader")
+  const gameModule = await import("@game/src")
+  const { DemoLoader } = await import("@game/src/demo/DemoLoader")
   const fileSystemLoader = new DemoFileSystemLoader()
 
   createRoot(root).render(
