@@ -22,9 +22,7 @@ export function generateViteConfig(
 
     resolve: {
       alias: {
-        "@game": path.resolve(gamePath, "src"),
-        "@game-module": path.resolve(gamePath, "src/index.ts"),
-        "@game-demo": path.resolve(gamePath, "src/demo"),
+        "@game": gamePath,
       },
       dedupe: ["react", "react-dom"],
     },

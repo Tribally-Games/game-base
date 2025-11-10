@@ -10,12 +10,9 @@ async function initializeApp() {
     throw new Error("Root element not found")
   }
 
-  const gameModule = await import("@game-module")
-  const { DemoLoader } = await import("@game-demo/DemoLoader")
-
-  // Use Vite's /@fs/ prefix with the injected project root path
-  const baseUrl = `/@fs/${__GAME_PROJECT_ROOT__}/`
-  const fileSystemLoader = new DemoFileSystemLoader(baseUrl)
+  const gameModule = await import("@game")
+  const { DemoLoader } = await import("@game/demo/DemoLoader")
+  const fileSystemLoader = new DemoFileSystemLoader()
 
   createRoot(root).render(
     <GameModuleProvider
