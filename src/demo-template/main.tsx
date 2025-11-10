@@ -12,7 +12,10 @@ async function initializeApp() {
 
   const gameModule = await import("@game-module")
   const { DemoLoader } = await import("@game-demo/DemoLoader")
-  const fileSystemLoader = new DemoFileSystemLoader()
+
+  // Use Vite's /@fs/ prefix with the injected project root path
+  const baseUrl = `/@fs/${__GAME_PROJECT_ROOT__}/`
+  const fileSystemLoader = new DemoFileSystemLoader(baseUrl)
 
   createRoot(root).render(
     <GameModuleProvider

@@ -11,7 +11,8 @@
   "javascript": {
     "formatter": {
       "semicolons": "asNeeded"
-    }
+    },
+    "globals": ["__GAME_PROJECT_ROOT__"]
   },
   "linter": {
     "enabled": true,
