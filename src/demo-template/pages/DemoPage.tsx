@@ -63,7 +63,6 @@ export function DemoPage() {
     (engine: any) => {
       if (gameCanvas) {
         ;(gameCanvas as any).setGameEngine(engine)
-        ;(gameCanvas as any).reset()
       }
     },
     [gameCanvas],
