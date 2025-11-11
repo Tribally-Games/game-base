@@ -1,9 +1,9 @@
 import {
+  type GameCanvasOptions,
   GameEngineEventType,
   GameRecorder,
   type GameRecording,
   GameState,
-  Vector2D,
 } from "@hiddentao/clockwork-engine"
 import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
 import { GameInputType, GameIntent } from "@tribally.games/game-base"
@@ -71,11 +71,20 @@ export function GameRenderer({
       const size = calculateCanvasSize()
       setCanvasSize(size)
 
-      const canvas = await GameCanvasClass.createWithGameEngine(
+      const canvasOptions: GameCanvasOptions = {
+        width: size.width,
+        height: size.height,
+        worldWidth: size.width,
+        worldHeight: size.height,
+        backgroundColor: 0x000000,
+      }
+
+      const canvas = await (GameCanvasClass as any).create(
         containerRef.current,
-        activeEngineRef.current,
-        new Vector2D(size.width, size.height),
+        canvasOptions,
       )
+
+      canvas.setGameEngine(activeEngineRef.current)
 
       setGameCanvas(canvas)
       setIsInitialized(true)
@@ -112,7 +121,7 @@ export function GameRenderer({
     const handleStateChange = (newState: GameState, _oldState: GameState) => {
       if (newState === GameState.READY) {
         recorderRef.current!.reset()
-        playEngine.setGameRecorder(recorderRef.current)
+        playEngine.setGameRecorder(recorderRef.current!)
         isRecordingRef.current = false
       }
 

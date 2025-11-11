@@ -31,7 +31,7 @@
         "typescript": "^5.8.3",
       },
       "peerDependencies": {
-        "@hiddentao/clockwork-engine": "^1.9.4",
+        "@hiddentao/clockwork-engine": "^1.9.5",
       },
     },
   },
@@ -190,7 +190,7 @@
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.12", "", { "os": "win32", "cpu": "x64" }, "sha512-alJC0uCZpTFrSL0CCDjcgleBXPnCrEAhTBILpeAp7M/OFgoqtAetfBzX0xM00MUsVVPpVjlPuMbREqnZCXaTnA=="],
 
-    "@hiddentao/clockwork-engine": ["@hiddentao/clockwork-engine@1.9.4", "", { "dependencies": { "alea": "=1.0.1", "pixi-viewport": "=6.0.3", "pixi.js": "=8.13.2" } }, "sha512-/BPmFkFqkgczfqCoGYNM5JnnQ79h+GIG8EQEcb8jnKvyPb6+d3OYu4C+GmsPpY4a9DLCTa2E+zG0xIxOvAxIeQ=="],
+    "@hiddentao/clockwork-engine": ["@hiddentao/clockwork-engine@1.9.5", "", { "dependencies": { "alea": "=1.0.1", "pixi-viewport": "=6.0.3", "pixi.js": "=8.13.2" } }, "sha512-7edzbUgyGHbLMT8WxY2kpVbVU6IWsZteepdGOgy3lM/GCZXNw3INXueqTwHMCAO/HfOwp7oP8KBqXc/WSyhIHA=="],
 
     "@hutson/parse-repository-url": ["@hutson/parse-repository-url@3.0.2", "", {}, "sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q=="],
 

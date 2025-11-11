@@ -1,4 +1,5 @@
 import {
+  type GameCanvas,
   type GameConfig,
   type GameRecording,
   GameState,
@@ -26,7 +27,9 @@ import { useRenderingStats } from "../hooks/useRenderingStats"
 import { useReplayManager } from "../hooks/useReplayManager"
 
 export function DemoPage() {
-  const { getGameModuleConfig, objectiveMetadata } = useGameModule()
+  const { getGameModuleConfig } = useGameModule()
+  const gameModuleConfig = getGameModuleConfig()
+  const objectiveMetadata = gameModuleConfig.objectiveMetadata
   const { playEngine, replayEngine, activeEngine, gameState, setActiveEngine } =
     useGameState()
 
@@ -47,7 +50,7 @@ export function DemoPage() {
   )
   const [isRecording, setIsRecording] = useState(false)
   const [isReplaying, setIsReplaying] = useState(false)
-  const [gameCanvas, setGameCanvas] = useState<any>(null)
+  const [gameCanvas, setGameCanvas] = useState<GameCanvas | null>(null)
   const [objectiveProgress, setObjectiveProgress] = useState<
     Record<string, number>
   >({})
@@ -66,7 +69,6 @@ export function DemoPage() {
     [gameCanvas],
   )
 
-  const gameModuleConfig = getGameModuleConfig()
   const metaConfigSchema = gameModuleConfig.getMetaConfigSchema!()
 
   const gameConfig: GameConfig | null = useMemo(() => {

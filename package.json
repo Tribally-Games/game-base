@@ -59,7 +59,7 @@
     "release:patch": "commit-and-tag-version --release-as patch && git push --follow-tags && bun publish"
   },
   "peerDependencies": {
-    "@hiddentao/clockwork-engine": "^1.9.4"
+    "@hiddentao/clockwork-engine": "^1.9.5"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

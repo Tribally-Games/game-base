@@ -1,11 +1,8 @@
 import { type ReactNode, createContext, useContext } from "react"
+import type { GameModuleExports } from "../../createGameModule"
 
-export interface GameModuleContextValue {
-  GameEngine: any
-  GameCanvas: any
-  getGameModuleConfig: () => any
+export interface GameModuleContextValue extends GameModuleExports {
   DemoLoader: any
-  objectiveMetadata?: Record<string, any>
 }
 
 const GameModuleContext = createContext<GameModuleContextValue | null>(null)
@@ -15,16 +12,13 @@ export function GameModuleProvider({
   DemoLoader,
   children,
 }: {
-  module: any
+  module: GameModuleExports
   DemoLoader: any
   children: ReactNode
 }) {
   const contextValue: GameModuleContextValue = {
-    GameEngine: module.GameEngine,
-    GameCanvas: module.GameCanvas,
-    getGameModuleConfig: module.getGameModuleConfig,
+    ...module,
     DemoLoader,
-    objectiveMetadata: module.objectiveMetadata,
   }
 
   return (
