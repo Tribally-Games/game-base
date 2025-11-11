@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.2](https://github.com/tribally-games/game-base/compare/v0.5.1...v0.5.2) (2025-11-11)
+
+
+### Code Refactoring
+
+* **demo:** update for clockwork-engine v1.9.5 gamecanvas api changes ([7d10cae](https://github.com/tribally-games/game-base/commit/7d10caece8bb14c64b701666070fc847af22285c))
+
 ## [0.5.1](https://github.com/tribally-games/game-base/compare/v0.5.0...v0.5.1) (2025-11-10)
 
 
