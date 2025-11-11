@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.3](https://github.com/tribally-games/game-base/compare/v0.5.2...v0.5.3) (2025-11-11)
+
+
+### Code Refactoring
+
+* **demo:** remove redundant canvas reset call ([36cf910](https://github.com/tribally-games/game-base/commit/36cf91004721afba83f6532c7a24d49f2bec0e7e))
+
 ## [0.5.2](https://github.com/tribally-games/game-base/compare/v0.5.1...v0.5.2) (2025-11-11)
 
 
