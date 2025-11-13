@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.7](https://github.com/tribally-games/game-base/compare/v0.5.6...v0.5.7) (2025-11-13)
+
+
+### Features
+
+* add spritesheet support to demo configurator ([23b833f](https://github.com/tribally-games/game-base/commit/23b833f28d64da3fc6b341dc460333bbc070000f))
+
 ## [0.5.6](https://github.com/tribally-games/game-base/compare/v0.5.5...v0.5.6) (2025-11-13)
 
 
