@@ -21,6 +21,7 @@ export interface GameRendererProps {
   onRecordingStart?: () => void
   onRecordingSave?: (recording: GameRecording) => void
   onKeyboardInput?: (key: string) => void
+  onReset?: () => void
 }
 
 export function GameRenderer({
@@ -33,6 +34,7 @@ export function GameRenderer({
   onRecordingStart,
   onRecordingSave,
   onKeyboardInput,
+  onReset,
 }: GameRendererProps) {
   const { GameCanvas: GameCanvasClass } = useGameModule()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -159,6 +161,13 @@ export function GameRenderer({
       const engine = activeEngineRef.current
       if (!engine) return
 
+      // Handle reset (R key) regardless of game state
+      if (event.code === "KeyR") {
+        event.preventDefault()
+        onReset?.()
+        return
+      }
+
       const state = engine.getState()
       if (
         state !== GameState.PLAYING &&
@@ -199,18 +208,10 @@ export function GameRenderer({
         case "KeyE":
           intent = GameIntent.CLOCKWISE
           break
-        case "KeyR":
-          intent = GameIntent.RESET
-          break
       }
 
       if (intent !== null) {
         event.preventDefault()
-
-        if (intent === GameIntent.RESET) {
-          engine.reset(gameConfig)
-          return
-        }
 
         if (isReplaying) return
 

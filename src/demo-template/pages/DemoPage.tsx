@@ -297,6 +297,7 @@ export function DemoPage() {
             onRecordingStart={handleRecordingStart}
             onRecordingSave={handleRecordingSave}
             onKeyboardInput={handleKeyboardInput}
+            onReset={handleReset}
           />
         </div>
 
