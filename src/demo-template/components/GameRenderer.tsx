@@ -174,8 +174,6 @@ export function GameRenderer({
         return
       }
 
-      if (isReplaying) return
-
       let intent: GameIntent | null = null
 
       switch (event.code) {
@@ -201,10 +199,20 @@ export function GameRenderer({
         case "KeyE":
           intent = GameIntent.CLOCKWISE
           break
+        case "KeyR":
+          intent = GameIntent.RESET
+          break
       }
 
       if (intent !== null) {
         event.preventDefault()
+
+        if (intent === GameIntent.RESET) {
+          engine.reset(gameConfig)
+          return
+        }
+
+        if (isReplaying) return
 
         const state = engine.getState()
         if (state === GameState.READY) {
@@ -231,7 +239,7 @@ export function GameRenderer({
     return () => {
       inputCleanupRef.current?.()
     }
-  }, [isReplaying, onKeyboardInput, disableKeyboardInput])
+  }, [isReplaying, onKeyboardInput, disableKeyboardInput, gameConfig])
 
   useEffect(() => {
     if (!gameCanvas) return

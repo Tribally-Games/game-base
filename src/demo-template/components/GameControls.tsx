@@ -79,6 +79,7 @@ export function GameControls({
       <div style={{ marginTop: "10px", fontSize: "12px", color: "#aaa" }}>
         <div>Keyboard: WASD or Arrows = Move</div>
         <div>Q/E = Rotate, Space = Pause/Resume</div>
+        <div>R = Reset</div>
       </div>
     </div>
   )
