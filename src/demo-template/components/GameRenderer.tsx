@@ -42,6 +42,7 @@ export function GameRenderer({
   const [canvasSize, setCanvasSize] = useState(() => calculateCanvasSize())
   const [isInitialized, setIsInitialized] = useState(false)
   const [creatingCanvas, setCreatingCanvas] = useState(false)
+  const [showStartOverlay, setShowStartOverlay] = useState(false)
   const hasInitializedWithConfig = useRef(false)
 
   const activeEngineRef = useRef(activeEngine)
@@ -53,6 +54,30 @@ export function GameRenderer({
 
   useEffect(() => {
     activeEngineRef.current = activeEngine
+  }, [activeEngine])
+
+  useEffect(() => {
+    if (!activeEngine) {
+      setShowStartOverlay(false)
+      return
+    }
+
+    const updateOverlayVisibility = () => {
+      const state = activeEngine.getState()
+      setShowStartOverlay(state === GameState.READY)
+    }
+
+    updateOverlayVisibility()
+
+    const handleStateChange = (newState: GameState) => {
+      setShowStartOverlay(newState === GameState.READY)
+    }
+
+    activeEngine.on(GameEngineEventType.STATE_CHANGE, handleStateChange)
+
+    return () => {
+      activeEngine.off(GameEngineEventType.STATE_CHANGE, handleStateChange)
+    }
   }, [activeEngine])
 
   const initializeCanvas = useCallback(async () => {
@@ -161,8 +186,14 @@ export function GameRenderer({
       const engine = activeEngineRef.current
       if (!engine) return
 
-      // Handle reset (R key) regardless of game state
-      if (event.code === "KeyR") {
+      // Handle reset (R key) regardless of game state, but only without modifier keys
+      if (
+        event.code === "KeyR" &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey &&
+        !event.altKey
+      ) {
         event.preventDefault()
         onReset?.()
         return
@@ -280,12 +311,38 @@ export function GameRenderer({
       ref={containerRef}
       className="game-canvas-container"
       style={{
+        position: "relative",
         width: canvasSize.width,
         height: canvasSize.height,
         background: "#000",
         outline: "2px solid #4a4a7e",
       }}
       tabIndex={0}
-    />
+    >
+      {showStartOverlay && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontSize: "18px",
+            fontFamily: "Arial, sans-serif",
+            fontWeight: "500",
+            textAlign: "center",
+            pointerEvents: "none",
+            zIndex: 1000,
+          }}
+        >
+          Press a movement key to start playing
+        </div>
+      )}
+    </div>
   )
 }
