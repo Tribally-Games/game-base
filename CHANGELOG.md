@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.6](https://github.com/tribally-games/game-base/compare/v0.5.5...v0.5.6) (2025-11-13)
+
+
+### Features
+
+* add translucent start overlay to game canvas ([7380af8](https://github.com/tribally-games/game-base/commit/7380af8cdf1fd74f57bb5a9bd1afb3170b8700a3))
+
 ## [0.5.5](https://github.com/tribally-games/game-base/compare/v0.5.4...v0.5.5) (2025-11-13)
 
 
