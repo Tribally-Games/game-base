@@ -2,9 +2,18 @@ import {
   GameConfigFieldType,
   type GameMetaConfigSchema,
   type GameMetaConfigValues,
+  type SpritesheetValue,
+  type StringListValue,
   mergeWithDefaults,
 } from "@tribally.games/game-base"
-import { type CSSProperties, type FormEvent, useEffect, useState } from "react"
+// biome-ignore lint/correctness/noUnusedImports: React required for JSX
+import React, {
+  type CSSProperties,
+  type ChangeEvent,
+  type FormEvent,
+  useEffect,
+  useState,
+} from "react"
 
 export type ObjectiveThresholds = Record<string, number>
 
@@ -106,9 +115,10 @@ export function ConfiguratorModal({
         )
 
       case GameConfigFieldType.STRING_LIST: {
+        const listValue = value as StringListValue | undefined
         const selectedIndex =
-          value?.selectedIndex !== undefined
-            ? value.selectedIndex
+          listValue?.selectedIndex !== undefined
+            ? listValue.selectedIndex
             : fieldDef.selectedIndex
         return (
           <select
@@ -132,6 +142,177 @@ export function ConfiguratorModal({
               </option>
             ))}
           </select>
+        )
+      }
+
+      case GameConfigFieldType.SPRITESHEET: {
+        const spritesheetValue = (value as SpritesheetValue) || {
+          img: "",
+          json: "",
+        }
+
+        const handleFileUpload = async (
+          file: File,
+          _fileType: "img" | "json",
+        ) => {
+          return new Promise<string>((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              const result = e.target?.result
+              if (typeof result === "string") {
+                resolve(result)
+              } else {
+                reject(new Error("Failed to read file"))
+              }
+            }
+            reader.onerror = () => reject(new Error("Error reading file"))
+            reader.readAsDataURL(file)
+          })
+        }
+
+        const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+          const file = e.target.files?.[0]
+          if (!file) return
+
+          const validImageTypes = [".png", ".jpg", ".jpeg", ".webp"]
+          const fileName = file.name.toLowerCase()
+          const isValidType = validImageTypes.some((type) =>
+            fileName.endsWith(type),
+          )
+
+          if (!isValidType) {
+            alert("Please select a valid image file (.png, .jpg, .jpeg, .webp)")
+            e.target.value = ""
+            return
+          }
+
+          try {
+            const dataUrl = await handleFileUpload(file, "img")
+            handleFieldChange(fieldName, {
+              ...spritesheetValue,
+              img: dataUrl,
+            })
+          } catch (_error) {
+            alert("Error loading image file")
+            e.target.value = ""
+          }
+        }
+
+        const handleJsonUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+          const file = e.target.files?.[0]
+          if (!file) return
+
+          if (!file.name.toLowerCase().endsWith(".json")) {
+            alert("Please select a valid JSON file (.json)")
+            e.target.value = ""
+            return
+          }
+
+          try {
+            const dataUrl = await handleFileUpload(file, "json")
+            handleFieldChange(fieldName, {
+              ...spritesheetValue,
+              json: dataUrl,
+            })
+          } catch (_error) {
+            alert("Error loading JSON file")
+            e.target.value = ""
+          }
+        }
+
+        const clearFiles = () => {
+          handleFieldChange(fieldName, { img: "", json: "" })
+        }
+
+        return (
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
+            <div>
+              <label
+                style={{ ...labelStyle, fontSize: "12px", marginBottom: "4px" }}
+              >
+                Image (.png, .jpg, .jpeg, .webp)
+              </label>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+              >
+                <input
+                  type="text"
+                  placeholder="Enter image URL or upload file below"
+                  value={spritesheetValue.img}
+                  onChange={(e) =>
+                    handleFieldChange(fieldName, {
+                      ...spritesheetValue,
+                      img: e.target.value,
+                    })
+                  }
+                  style={inputStyle}
+                />
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <span style={{ fontSize: "11px", color: "#aaa" }}>or</span>
+                  <input
+                    type="file"
+                    accept=".png,.jpg,.jpeg,.webp"
+                    onChange={handleImageUpload}
+                    style={{ ...inputStyle, flex: 1 }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label
+                style={{ ...labelStyle, fontSize: "12px", marginBottom: "4px" }}
+              >
+                JSON (.json)
+              </label>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+              >
+                <input
+                  type="text"
+                  placeholder="Enter JSON URL or upload file below"
+                  value={spritesheetValue.json}
+                  onChange={(e) =>
+                    handleFieldChange(fieldName, {
+                      ...spritesheetValue,
+                      json: e.target.value,
+                    })
+                  }
+                  style={inputStyle}
+                />
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <span style={{ fontSize: "11px", color: "#aaa" }}>or</span>
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleJsonUpload}
+                    style={{ ...inputStyle, flex: 1 }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {(spritesheetValue.img || spritesheetValue.json) && (
+              <button
+                type="button"
+                onClick={clearFiles}
+                style={{
+                  ...buttonStyle,
+                  backgroundColor: "#d9534f",
+                  fontSize: "12px",
+                  padding: "6px 12px",
+                }}
+              >
+                Clear All
+              </button>
+            )}
+          </div>
         )
       }
 

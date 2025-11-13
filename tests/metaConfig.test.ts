@@ -4,6 +4,8 @@ import {
   GameConfigFieldType,
   type GameMetaConfigSchema,
   type InferMetaConfigValues,
+  type SpritesheetFieldConfig,
+  type SpritesheetValue,
   type StringFieldConfig,
   type StringListFieldConfig,
   type StringListValue,
@@ -24,9 +26,13 @@ describe("MetaConfig - Field Types", () => {
     expect(GameConfigFieldType.STRING_LIST).toBe("STRING_LIST")
   })
 
-  test("should have exactly 3 field types", () => {
+  test("should have SPRITESHEET field type", () => {
+    expect(GameConfigFieldType.SPRITESHEET).toBe("SPRITESHEET")
+  })
+
+  test("should have exactly 4 field types", () => {
     const values = Object.values(GameConfigFieldType)
-    expect(values).toHaveLength(3)
+    expect(values).toHaveLength(4)
   })
 })
 
@@ -169,6 +175,121 @@ describe("MetaConfig - StringListFieldConfig", () => {
   })
 })
 
+describe("MetaConfig - SpritesheetFieldConfig", () => {
+  test("should create valid spritesheet field config", () => {
+    const config: SpritesheetFieldConfig = {
+      type: GameConfigFieldType.SPRITESHEET,
+      label: "Character Sprites",
+      description: "Choose character spritesheet",
+    }
+
+    expect(config.type).toBe(GameConfigFieldType.SPRITESHEET)
+    expect(config.label).toBe("Character Sprites")
+    expect(config.description).toBe("Choose character spritesheet")
+  })
+
+  test("should support optional fields", () => {
+    const config: SpritesheetFieldConfig = {
+      type: GameConfigFieldType.SPRITESHEET,
+      label: "UI Sprites",
+      description: "UI spritesheet",
+      optional: true,
+      defaultValue: {
+        img: "https://example.com/ui.png",
+        json: "https://example.com/ui.json",
+      },
+    }
+
+    expect(config.optional).toBe(true)
+    expect(config.defaultValue?.img).toBe("https://example.com/ui.png")
+    expect(config.defaultValue?.json).toBe("https://example.com/ui.json")
+  })
+
+  test("should support different image formats in default value", () => {
+    const pngConfig: SpritesheetFieldConfig = {
+      type: GameConfigFieldType.SPRITESHEET,
+      label: "PNG Sprites",
+      description: "PNG spritesheet",
+      defaultValue: {
+        img: "sprites.png",
+        json: "sprites.json",
+      },
+    }
+
+    const jpgConfig: SpritesheetFieldConfig = {
+      type: GameConfigFieldType.SPRITESHEET,
+      label: "JPG Sprites",
+      description: "JPG spritesheet",
+      defaultValue: {
+        img: "background.jpg",
+        json: "background.json",
+      },
+    }
+
+    const webpConfig: SpritesheetFieldConfig = {
+      type: GameConfigFieldType.SPRITESHEET,
+      label: "WebP Sprites",
+      description: "WebP spritesheet",
+      defaultValue: {
+        img: "compressed.webp",
+        json: "compressed.json",
+      },
+    }
+
+    expect(pngConfig.defaultValue?.img).toBe("sprites.png")
+    expect(jpgConfig.defaultValue?.img).toBe("background.jpg")
+    expect(webpConfig.defaultValue?.img).toBe("compressed.webp")
+  })
+})
+
+describe("MetaConfig - SpritesheetValue", () => {
+  test("should create valid spritesheet value", () => {
+    const value: SpritesheetValue = {
+      img: "https://cdn.example.com/sprites.png",
+      json: "https://cdn.example.com/sprites.json",
+    }
+
+    expect(value.img).toBe("https://cdn.example.com/sprites.png")
+    expect(value.json).toBe("https://cdn.example.com/sprites.json")
+  })
+
+  test("should support different image formats", () => {
+    const pngValue: SpritesheetValue = {
+      img: "sprites.png",
+      json: "sprites.json",
+    }
+
+    const jpegValue: SpritesheetValue = {
+      img: "background.jpeg",
+      json: "background.json",
+    }
+
+    const webpValue: SpritesheetValue = {
+      img: "optimized.webp",
+      json: "optimized.json",
+    }
+
+    expect(pngValue.img).toBe("sprites.png")
+    expect(jpegValue.img).toBe("background.jpeg")
+    expect(webpValue.img).toBe("optimized.webp")
+  })
+
+  test("should support relative and absolute URLs", () => {
+    const relativeValue: SpritesheetValue = {
+      img: "./assets/sprites.png",
+      json: "./assets/sprites.json",
+    }
+
+    const absoluteValue: SpritesheetValue = {
+      img: "https://cdn.example.com/game/sprites.png",
+      json: "https://cdn.example.com/game/sprites.json",
+    }
+
+    expect(relativeValue.img).toBe("./assets/sprites.png")
+    expect(absoluteValue.img).toBe("https://cdn.example.com/game/sprites.png")
+  })
+})
+
 describe("MetaConfig - StringListValue", () => {
   test("should create valid string list value with specific selection", () => {
     const value: StringListValue = {
@@ -212,11 +333,21 @@ describe("MetaConfig - GameMetaConfigSchema", () => {
         items: ["map1", "map2"],
         selectedIndex: 0,
       },
+      characterSprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Character Sprites",
+        description: "Character spritesheet",
+        defaultValue: {
+          img: "characters.png",
+          json: "characters.json",
+        },
+      },
     }
 
     expect(schema.backgroundColor.type).toBe(GameConfigFieldType.COLOR)
     expect(schema.playerName.type).toBe(GameConfigFieldType.STRING)
     expect(schema.mapSelection.type).toBe(GameConfigFieldType.STRING_LIST)
+    expect(schema.characterSprites.type).toBe(GameConfigFieldType.SPRITESHEET)
   })
 })
 
@@ -239,6 +370,11 @@ describe("MetaConfig - InferMetaConfigValues", () => {
         description: "Select map",
         items: ["a", "b", "c"],
       },
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
     } as const
 
     type Values = InferMetaConfigValues<typeof schema>
@@ -250,11 +386,17 @@ describe("MetaConfig - InferMetaConfigValues", () => {
         items: ["a", "b", "c"],
         selectedIndex: 1,
       },
+      sprites: {
+        img: "game-sprites.png",
+        json: "game-sprites.json",
+      },
     }
 
     expect(values.color).toBe("#FF0000")
     expect(values.name).toBe("Player1")
     expect(values.mapSelection?.selectedIndex).toBe(1)
+    expect(values.sprites?.img).toBe("game-sprites.png")
+    expect(values.sprites?.json).toBe("game-sprites.json")
   })
 
   test("should allow undefined for optional fields", () => {
@@ -823,6 +965,256 @@ describe("MetaConfig - Validation", () => {
     expect(errors[0].field).toBe("name")
     expect(errors[0].message).toContain("must be a string")
   })
+
+  test("should validate SPRITESHEET structure", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const invalidValues = {
+      sprites: "not an object",
+    }
+
+    const errors = validateMetaConfigValues(schema, invalidValues)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].field).toBe("sprites")
+    expect(errors[0].message).toContain("object with img and json properties")
+  })
+
+  test("should validate SPRITESHEET img property type", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const invalidValues = {
+      sprites: {
+        img: 123,
+        json: "sprites.json",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, invalidValues as any)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].field).toBe("sprites")
+    expect(errors[0].message).toContain("sprites.img' must be a string")
+  })
+
+  test("should validate SPRITESHEET json property type", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const invalidValues = {
+      sprites: {
+        img: "sprites.png",
+        json: 456,
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, invalidValues as any)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].field).toBe("sprites")
+    expect(errors[0].message).toContain("sprites.json' must be a string")
+  })
+
+  test("should validate SPRITESHEET image file extension", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const invalidValues = {
+      sprites: {
+        img: "sprites.gif",
+        json: "sprites.json",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, invalidValues)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].field).toBe("sprites")
+    expect(errors[0].message).toContain("must be a data URL or a URL ending with .jpg, .jpeg, .png, or .webp")
+  })
+
+  test("should validate SPRITESHEET json file extension", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const invalidValues = {
+      sprites: {
+        img: "sprites.png",
+        json: "sprites.xml",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, invalidValues)
+    expect(errors).toHaveLength(1)
+    expect(errors[0].field).toBe("sprites")
+    expect(errors[0].message).toContain("must be a data URL or a URL ending with .json")
+  })
+
+  test("should pass validation for valid SPRITESHEET with PNG", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const validValues = {
+      sprites: {
+        img: "https://example.com/sprites.png",
+        json: "https://example.com/sprites.json",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, validValues)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should pass validation for valid SPRITESHEET with JPG", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const validValues = {
+      sprites: {
+        img: "./assets/background.jpg",
+        json: "./assets/background.json",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, validValues)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should pass validation for valid SPRITESHEET with JPEG", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const validValues = {
+      sprites: {
+        img: "photo.jpeg",
+        json: "photo.json",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, validValues)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should pass validation for valid SPRITESHEET with WebP", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const validValues = {
+      sprites: {
+        img: "optimized.webp",
+        json: "optimized.json",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, validValues)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should pass validation for valid SPRITESHEET with data URLs", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const validValues = {
+      sprites: {
+        img: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+        json: "data:application/json;base64,eyJmcmFtZXMiOnsidGVzdC5wbmciOnsic291cmNlU2l6ZSI6eyJ3IjoxNiwiaCI6MTZ9fX19",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, validValues)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should handle case insensitive file extensions", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const validValues = {
+      sprites: {
+        img: "SPRITES.PNG",
+        json: "SPRITES.JSON",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, validValues)
+    expect(errors).toHaveLength(0)
+  })
+
+  test("should validate multiple SPRITESHEET errors at once", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+      },
+    }
+
+    const invalidValues = {
+      sprites: {
+        img: "sprites.gif",
+        json: "sprites.xml",
+      },
+    }
+
+    const errors = validateMetaConfigValues(schema, invalidValues)
+    expect(errors).toHaveLength(2)
+    expect(errors.map((e) => e.field)).toEqual(["sprites", "sprites"])
+    expect(errors[0].message).toContain("jpg, .jpeg, .png, or .webp")
+    expect(errors[1].message).toContain("ending with .json")
+  })
 })
 
 describe("MetaConfig - mergeWithDefaults", () => {
@@ -1114,5 +1506,117 @@ describe("MetaConfig - mergeWithDefaults", () => {
       items: ["light", "dark"],
       selectedIndex: null,
     })
+  })
+
+  test("should use SPRITESHEET defaults when values are not provided", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+        defaultValue: {
+          img: "default.png",
+          json: "default.json",
+        },
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, {})
+    expect(merged.sprites).toEqual({
+      img: "default.png",
+      json: "default.json",
+    })
+  })
+
+  test("should preserve provided SPRITESHEET value over schema default", () => {
+    const schema: GameMetaConfigSchema = {
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+        defaultValue: {
+          img: "default.png",
+          json: "default.json",
+        },
+      },
+    }
+
+    const values = {
+      sprites: {
+        img: "custom.webp",
+        json: "custom.json",
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, values)
+    expect(merged.sprites).toEqual({
+      img: "custom.webp",
+      json: "custom.json",
+    })
+  })
+
+  test("should handle mixed schema with SPRITESHEET and partial values", () => {
+    const schema: GameMetaConfigSchema = {
+      bgColor: {
+        type: GameConfigFieldType.COLOR,
+        label: "Background",
+        description: "Background color",
+        defaultValue: "#FFFFFF",
+      },
+      sprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Sprites",
+        description: "Game sprites",
+        defaultValue: {
+          img: "game.png",
+          json: "game.json",
+        },
+      },
+      difficulty: {
+        type: GameConfigFieldType.STRING_LIST,
+        label: "Difficulty",
+        description: "Game difficulty",
+        items: ["easy", "medium", "hard"],
+        selectedIndex: 1,
+      },
+    }
+
+    const values = {
+      sprites: {
+        img: "custom.jpg",
+        json: "custom.json",
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, values)
+    expect(merged.bgColor).toBe("#FFFFFF")
+    expect(merged.sprites).toEqual({
+      img: "custom.jpg",
+      json: "custom.json",
+    })
+    expect(merged.difficulty).toEqual({
+      items: ["easy", "medium", "hard"],
+      selectedIndex: 1,
+    })
+  })
+
+  test("should not include SPRITESHEET fields without defaults or values", () => {
+    const schema: GameMetaConfigSchema = {
+      requiredSprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Required Sprites",
+        description: "Required sprites",
+      },
+      optionalSprites: {
+        type: GameConfigFieldType.SPRITESHEET,
+        label: "Optional Sprites",
+        description: "Optional sprites",
+        optional: true,
+      },
+    }
+
+    const merged = mergeWithDefaults(schema, {})
+    expect(merged.requiredSprites).toBeUndefined()
+    expect(merged.optionalSprites).toBeUndefined()
   })
 })

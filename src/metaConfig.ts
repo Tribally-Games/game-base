@@ -2,6 +2,7 @@ export enum GameConfigFieldType {
   COLOR = "COLOR",
   STRING = "STRING",
   STRING_LIST = "STRING_LIST",
+  SPRITESHEET = "SPRITESHEET",
 }
 
 export interface GameConfigFieldBase {
@@ -33,10 +34,21 @@ export interface StringListFieldConfig extends GameConfigFieldBase {
   selectedIndex?: number | null
 }
 
+export interface SpritesheetValue {
+  img: string
+  json: string
+}
+
+export interface SpritesheetFieldConfig extends GameConfigFieldBase {
+  type: GameConfigFieldType.SPRITESHEET
+  defaultValue?: SpritesheetValue
+}
+
 export type GameConfigFieldDefinition =
   | ColorFieldConfig
   | StringFieldConfig
   | StringListFieldConfig
+  | SpritesheetFieldConfig
 
 export type GameMetaConfigSchema = Record<string, GameConfigFieldDefinition>
 
@@ -52,9 +64,14 @@ export type GameMetaConfigFieldValueForType<T extends GameConfigFieldType> =
       ? string
       : T extends GameConfigFieldType.STRING_LIST
         ? StringListValue
-        : never
+        : T extends GameConfigFieldType.SPRITESHEET
+          ? SpritesheetValue
+          : never
 
-export type GameMetaConfigFieldValue = string | StringListValue
+export type GameMetaConfigFieldValue =
+  | string
+  | StringListValue
+  | SpritesheetValue
 
 export type GameMetaConfigValues = Record<string, GameMetaConfigFieldValue>
 
@@ -206,6 +223,60 @@ export function validateMetaConfigValues(
             field: fieldName,
             message: `Field '${fieldName}.items' must only contain items from the schema`,
           })
+        }
+
+        break
+      }
+
+      case GameConfigFieldType.SPRITESHEET: {
+        if (typeof value !== "object" || value === null) {
+          errors.push({
+            field: fieldName,
+            message: `Field '${fieldName}' must be an object with img and json properties`,
+          })
+          break
+        }
+
+        const spritesheetValue = value as SpritesheetValue
+
+        if (typeof spritesheetValue.img !== "string") {
+          errors.push({
+            field: fieldName,
+            message: `Field '${fieldName}.img' must be a string`,
+          })
+        } else {
+          const imgUrl = spritesheetValue.img.toLowerCase()
+          const isDataUrl = imgUrl.startsWith("data:")
+          const hasValidExtension =
+            imgUrl.endsWith(".jpg") ||
+            imgUrl.endsWith(".jpeg") ||
+            imgUrl.endsWith(".png") ||
+            imgUrl.endsWith(".webp")
+
+          if (!isDataUrl && !hasValidExtension) {
+            errors.push({
+              field: fieldName,
+              message: `Field '${fieldName}.img' must be a data URL or a URL ending with .jpg, .jpeg, .png, or .webp`,
+            })
+          }
+        }
+
+        if (typeof spritesheetValue.json !== "string") {
+          errors.push({
+            field: fieldName,
+            message: `Field '${fieldName}.json' must be a string`,
+          })
+        } else {
+          const jsonUrl = spritesheetValue.json.toLowerCase()
+          const isDataUrl = jsonUrl.startsWith("data:")
+          const hasValidExtension = jsonUrl.endsWith(".json")
+
+          if (!isDataUrl && !hasValidExtension) {
+            errors.push({
+              field: fieldName,
+              message: `Field '${fieldName}.json' must be a data URL or a URL ending with .json`,
+            })
+          }
         }
 
         break
