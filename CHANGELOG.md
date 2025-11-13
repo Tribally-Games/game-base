@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.4](https://github.com/tribally-games/game-base/compare/v0.5.3...v0.5.4) (2025-11-13)
+
+
+### Features
+
+* add r key reset functionality to game renderer ([d960435](https://github.com/tribally-games/game-base/commit/d960435018f15af993e7d2539c0231b7a4eb7ef0))
+
 ## [0.5.3](https://github.com/tribally-games/game-base/compare/v0.5.2...v0.5.3) (2025-11-11)
 
 
