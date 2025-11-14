@@ -193,11 +193,6 @@ import { BaseGameSnapshot } from '@tribally.games/game-base'
 interface SnakeGameSnapshot extends BaseGameSnapshot {
   applesEaten: number
   potionsEaten: number
-  jackpotTokensCollected: number
-  jackpotEligible: boolean
-  jackpotTier: string | null
-  potentialJackpotReturn: number
-  jackpotWon: boolean
 }
 ```
 

@@ -24,11 +24,6 @@ describe("Objective Formatters", () => {
     survivedSeconds: 30,
     combos: 5,
     streak: 3,
-    jackpotTokensCollected: 0,
-    jackpotEligible: false,
-    jackpotTier: null,
-    potentialJackpotReturn: 0,
-    jackpotWon: false,
     ...overrides,
   })
 

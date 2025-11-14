@@ -22,11 +22,6 @@ export interface BaseGameSnapshot {
   survivedSeconds?: number
   combos?: number
   streak?: number
-  jackpotTokensCollected: number
-  jackpotEligible: boolean
-  jackpotTier: string | null
-  potentialJackpotReturn: number
-  jackpotWon: boolean
   [key: string]: any
 }
 

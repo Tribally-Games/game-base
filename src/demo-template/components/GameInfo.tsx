@@ -31,19 +31,6 @@ export function GameInfo({ formattedInfo }: GameInfoProps) {
       )
     }
 
-    if (
-      value === "Yes" &&
-      (value === "Jackpot Eligible" || value === "Jackpot Won")
-    ) {
-      return (
-        <span
-          style={{ color: value === "Jackpot Won" ? "#ffd700" : "#4a7c59" }}
-        >
-          {value === "Jackpot Won" ? "🎊 Yes 🎊" : "✨ Yes"}
-        </span>
-      )
-    }
-
     return String(value)
   }
 

@@ -126,11 +126,6 @@ describe("createGameModule Integration", () => {
     const snapshot = {
       state: GameState.PLAYING,
       score: 0,
-      jackpotTokensCollected: 0,
-      jackpotEligible: false,
-      jackpotTier: null,
-      potentialJackpotReturn: 0,
-      jackpotWon: false,
       applesEaten: 10,
     }
 
@@ -199,11 +194,6 @@ describe("createGameModule Integration", () => {
     const snapshot = {
       state: GameState.PLAYING,
       score: 0,
-      jackpotTokensCollected: 0,
-      jackpotEligible: false,
-      jackpotTier: null,
-      potentialJackpotReturn: 0,
-      jackpotWon: false,
       applesEaten: 7,
     }
 
