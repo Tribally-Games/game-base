@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.10](https://github.com/tribally-games/game-base/compare/v0.5.9...v0.5.10) (2025-11-14)
+
+
+### Code Refactoring
+
+* remove jackpot fields from base game snapshot interface ([122fb2a](https://github.com/tribally-games/game-base/commit/122fb2ac757675f7bddfd993dace50a536014282))
+
 ## [0.5.9](https://github.com/tribally-games/game-base/compare/v0.5.8...v0.5.9) (2025-11-14)
 
 
