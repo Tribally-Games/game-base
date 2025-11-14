@@ -4,6 +4,7 @@
     "": {
       "name": "@tribally.games/game-base",
       "dependencies": {
+        "@rwh/keystrokes": "^1.5.6",
         "@vitejs/plugin-react": "^4.3.4",
         "chalk": "^5.3.0",
         "command-exists": "^1.2.9",
@@ -255,6 +256,8 @@
     "@rollup/rollup-win32-x64-gnu": ["@rollup/rollup-win32-x64-gnu@4.53.1", "", { "os": "win32", "cpu": "x64" }, "sha512-2SNj7COIdAf6yliSpLdLG8BEsp5lgzRehgfkP0Av8zKfQFKku6JcvbobvHASPJu4f3BFxej5g+HuQPvqPhHvpQ=="],
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.53.1", "", { "os": "win32", "cpu": "x64" }, "sha512-rLarc1Ofcs3DHtgSzFO31pZsCh8g05R2azN1q3fF+H423Co87My0R+tazOEvYVKXSLh8C4LerMK41/K7wlklcg=="],
+
+    "@rwh/keystrokes": ["@rwh/keystrokes@1.5.6", "", {}, "sha512-w2r2ElGyxYKK0x3SdsYk+mkNBpZcpY+vYNiYqfpGDiatOxEnJFeGoag8OuYjA5quK0aJqQ+aZJzHenaxjIT4cQ=="],
 
     "@sec-ant/readable-stream": ["@sec-ant/readable-stream@0.4.1", "", {}, "sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg=="],
 

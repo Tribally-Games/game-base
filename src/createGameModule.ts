@@ -1,7 +1,7 @@
 import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
 import type { GameMetaConfigSchema, GameMetaConfigValues } from "./metaConfig"
 import type { OperatorMetadata } from "./objectives/types"
-import { GameInputType, GameIntent } from "./types"
+import { type GameInputMapping, GameInputType, GameIntent } from "./types"
 
 /**
  * Definition of a single objective
@@ -42,6 +42,8 @@ export interface GameModuleConfig {
   formatGameSnapshotInfo: (
     gameSnapshotInfo: Record<string, any>,
   ) => Array<{ label: string; value: any }>
+
+  getInputMapping: () => GameInputMapping
 }
 
 /**

@@ -58,9 +58,9 @@ describe("Types - GameIntent", () => {
     expect(GameIntent.RESET).toBe("reset")
   })
 
-  test("should have exactly 11 enum values", () => {
+  test("should have exactly 16 enum values", () => {
     const values = Object.values(GameIntent)
-    expect(values).toHaveLength(11)
+    expect(values).toHaveLength(16)
   })
 
   test("should have all unique string values", () => {

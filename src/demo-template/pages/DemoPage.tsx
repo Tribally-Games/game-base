@@ -305,6 +305,7 @@ export function DemoPage() {
           <GameControls
             gameState={gameState}
             isReplaying={isReplaying}
+            inputMapping={getGameModuleConfig().getInputMapping()}
             onPauseResume={handlePauseResume}
             onReset={handleReset}
             onConfigure={handleConfigure}

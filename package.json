@@ -62,6 +62,7 @@
     "@hiddentao/clockwork-engine": "^1.9.5"
   },
   "dependencies": {
+    "@rwh/keystrokes": "^1.5.6",
     "@vitejs/plugin-react": "^4.3.4",
     "chalk": "^5.3.0",
     "command-exists": "^1.2.9",

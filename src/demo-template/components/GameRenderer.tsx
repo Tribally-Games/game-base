@@ -6,8 +6,8 @@ import {
   GameState,
 } from "@hiddentao/clockwork-engine"
 import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
-import { GameInputType, GameIntent } from "@tribally.games/game-base"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { KeystrokesInputManager } from "../../input/KeystrokesInputManager"
 import { useGameModule } from "../contexts/GameModuleContext"
 import { calculateCanvasSize } from "../hooks/useResponsiveCanvas"
 
@@ -36,7 +36,7 @@ export function GameRenderer({
   onKeyboardInput,
   onReset,
 }: GameRendererProps) {
-  const { GameCanvas: GameCanvasClass } = useGameModule()
+  const { GameCanvas: GameCanvasClass, getGameModuleConfig } = useGameModule()
   const containerRef = useRef<HTMLDivElement>(null)
   const [gameCanvas, setGameCanvas] = useState<GameCanvas | null>(null)
   const [canvasSize, setCanvasSize] = useState(() => calculateCanvasSize())
@@ -49,7 +49,8 @@ export function GameRenderer({
   const recorderRef = useRef<GameRecorder | null>(null)
   const isRecordingRef = useRef(false)
 
-  const inputCleanupRef = useRef<(() => void) | null>(null)
+  const inputManagerRef = useRef<KeystrokesInputManager | null>(null)
+  const prevInputMappingRef = useRef<any | null>(null)
   const canvasCleanupRef = useRef<(() => void) | null>(null)
 
   useEffect(() => {
@@ -180,98 +181,37 @@ export function GameRenderer({
   }, [playEngine, onRecordingStart, onRecordingSave])
 
   useEffect(() => {
-    if (!activeEngineRef.current || disableKeyboardInput) return
+    const newInputMapping = getGameModuleConfig().getInputMapping()
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const engine = activeEngineRef.current
-      if (!engine) return
+    if (!inputManagerRef.current) {
+      // Create new manager only if none exists
+      inputManagerRef.current = new KeystrokesInputManager({
+        engine: activeEngineRef.current,
+        inputMapping: newInputMapping,
+        isReplaying,
+        onKeyboardInput,
+        onReset,
+      })
+      inputManagerRef.current.bind()
+      prevInputMappingRef.current = newInputMapping
+    } else {
+      // Only update if mapping has changed
+      const hasChanged =
+        JSON.stringify(prevInputMappingRef.current) !==
+        JSON.stringify(newInputMapping)
 
-      // Handle reset (R key) regardless of game state, but only without modifier keys
-      if (
-        event.code === "KeyR" &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.shiftKey &&
-        !event.altKey
-      ) {
-        event.preventDefault()
-        onReset?.()
-        return
+      if (hasChanged) {
+        inputManagerRef.current.updateInputMapping(newInputMapping)
+        prevInputMappingRef.current = newInputMapping
       }
 
-      const state = engine.getState()
-      if (
-        state !== GameState.PLAYING &&
-        state !== GameState.PAUSED &&
-        state !== GameState.READY
-      ) {
-        return
-      }
-
-      if (event.code === "Space") {
-        event.preventDefault()
-        onKeyboardInput?.("pause")
-        return
-      }
-
-      let intent: GameIntent | null = null
-
-      switch (event.code) {
-        case "ArrowUp":
-        case "KeyW":
-          intent = GameIntent.UP
-          break
-        case "ArrowDown":
-        case "KeyS":
-          intent = GameIntent.DOWN
-          break
-        case "ArrowLeft":
-        case "KeyA":
-          intent = GameIntent.LEFT
-          break
-        case "ArrowRight":
-        case "KeyD":
-          intent = GameIntent.RIGHT
-          break
-        case "KeyQ":
-          intent = GameIntent.COUNTER_CLOCKWISE
-          break
-        case "KeyE":
-          intent = GameIntent.CLOCKWISE
-          break
-      }
-
-      if (intent !== null) {
-        event.preventDefault()
-
-        if (isReplaying) return
-
-        const state = engine.getState()
-        if (state === GameState.READY) {
-          engine.start()
-        }
-
-        const eventManager = engine.getEventManager()
-        const eventSource = eventManager.getSource() as any
-
-        if (typeof eventSource?.queueInput === "function") {
-          eventSource.queueInput(GameInputType.INTENT, {
-            intent,
-          })
-        }
-      }
+      // Always update engine reference and replay state (lightweight)
+      inputManagerRef.current.updateEngine(activeEngineRef.current)
+      inputManagerRef.current.updateIsReplaying(isReplaying)
+      inputManagerRef.current.updateOnReset(onReset)
+      inputManagerRef.current.updateOnKeyboardInput(onKeyboardInput)
     }
-
-    document.addEventListener("keydown", handleKeyDown)
-
-    inputCleanupRef.current = () => {
-      document.removeEventListener("keydown", handleKeyDown)
-    }
-
-    return () => {
-      inputCleanupRef.current?.()
-    }
-  }, [isReplaying, onKeyboardInput, disableKeyboardInput, gameConfig])
+  }, [gameConfig, disableKeyboardInput, isReplaying, onKeyboardInput, onReset])
 
   useEffect(() => {
     if (!gameCanvas) return
@@ -298,13 +238,6 @@ export function GameRenderer({
       window.removeEventListener("resize", debouncedResize)
     }
   }, [gameCanvas])
-
-  useEffect(() => {
-    return () => {
-      inputCleanupRef.current?.()
-      canvasCleanupRef.current?.()
-    }
-  }, [])
 
   return (
     <div

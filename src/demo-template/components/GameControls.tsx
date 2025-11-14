@@ -1,8 +1,11 @@
 import { GameState } from "@hiddentao/clockwork-engine"
+import { getInputInstructions } from "../../input/getInputInstructions"
+import type { GameInputMapping } from "../../types"
 
 export interface GameControlsProps {
   gameState: GameState | null
   isReplaying: boolean
+  inputMapping: GameInputMapping
   onPauseResume: () => void
   onReset: () => void
   onConfigure: () => void
@@ -11,6 +14,7 @@ export interface GameControlsProps {
 export function GameControls({
   gameState,
   isReplaying,
+  inputMapping,
   onPauseResume,
   onReset,
   onConfigure,
@@ -77,9 +81,9 @@ export function GameControls({
       </div>
 
       <div style={{ marginTop: "10px", fontSize: "12px", color: "#aaa" }}>
-        <div>Keyboard: WASD or Arrows = Move</div>
-        <div>Q/E = Rotate, Space = Pause/Resume</div>
-        <div>R = Reset</div>
+        {getInputInstructions(inputMapping).map((instruction, index) => (
+          <div key={index}>{instruction}</div>
+        ))}
       </div>
     </div>
   )
