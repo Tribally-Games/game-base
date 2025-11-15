@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.12](https://github.com/tribally-games/game-base/compare/v0.5.11...v0.5.12) (2025-11-15)
+
+
+### Features
+
+* export keystrokes input manager with optional reset/pause bindings ([636a3cc](https://github.com/tribally-games/game-base/commit/636a3cc835a129f9143496c2f06e42984324b910))
+
 ## [0.5.11](https://github.com/tribally-games/game-base/compare/v0.5.10...v0.5.11) (2025-11-15)
 
 
