@@ -50,7 +50,6 @@ export function GameRenderer({
   const isRecordingRef = useRef(false)
 
   const inputManagerRef = useRef<KeystrokesInputManager | null>(null)
-  const prevInputMappingRef = useRef<any | null>(null)
   const canvasCleanupRef = useRef<(() => void) | null>(null)
 
   useEffect(() => {
@@ -193,19 +192,9 @@ export function GameRenderer({
         onReset,
       })
       inputManagerRef.current.bind()
-      prevInputMappingRef.current = newInputMapping
     } else {
-      // Only update if mapping has changed
-      const hasChanged =
-        JSON.stringify(prevInputMappingRef.current) !==
-        JSON.stringify(newInputMapping)
-
-      if (hasChanged) {
-        inputManagerRef.current.updateInputMapping(newInputMapping)
-        prevInputMappingRef.current = newInputMapping
-      }
-
       // Always update engine reference and replay state (lightweight)
+      inputManagerRef.current.updateInputMapping(newInputMapping)
       inputManagerRef.current.updateEngine(activeEngineRef.current)
       inputManagerRef.current.updateIsReplaying(isReplaying)
       inputManagerRef.current.updateOnReset(onReset)

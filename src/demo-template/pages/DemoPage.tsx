@@ -266,15 +266,6 @@ export function DemoPage() {
     setSavedRecording(recording)
   }, [])
 
-  const handleKeyboardInput = useCallback(
-    (key: string) => {
-      if (key === "pause") {
-        handlePauseResume()
-      }
-    },
-    [handlePauseResume],
-  )
-
   return (
     <>
       <div
@@ -296,8 +287,8 @@ export function DemoPage() {
             onCanvasReady={setGameCanvas}
             onRecordingStart={handleRecordingStart}
             onRecordingSave={handleRecordingSave}
-            onKeyboardInput={handleKeyboardInput}
             onReset={handleReset}
+            onPauseResume={handlePauseResume}
           />
         </div>
 

@@ -35,19 +35,8 @@ export class KeystrokesInputManager {
   bind(): void {
     this.unbind()
 
-    // Bind reset key if callback is provided
-    if (this.onReset) {
-      const resetHandler = this.createResetHandler()
-      bindKey("r", resetHandler)
-      this.boundHandlers.set("reset:r", resetHandler)
-    }
-
-    // Bind pause/space key if callback is provided
-    if (this.onPauseResume) {
-      const pauseHandler = this.createPauseHandler()
-      bindKey(" ", pauseHandler)
-      this.boundHandlers.set("pause:space", pauseHandler)
-    }
+    this.bindResetHandler()
+    this.bindPauseHandler()
 
     // Bind configured game inputs - combine handlers per key to avoid conflicts
     const keyHandlers = new Map<string, any>()
@@ -212,6 +201,13 @@ export class KeystrokesInputManager {
   }
 
   updateInputMapping(inputMapping: GameInputMapping): void {
+    const hasChanged =
+      JSON.stringify(this.inputMapping) !== JSON.stringify(inputMapping)
+
+    if (!hasChanged) {
+      return
+    }
+
     this.inputMapping = inputMapping
     this.bind() // Re-bind with new mapping
   }
@@ -221,14 +217,42 @@ export class KeystrokesInputManager {
   }
 
   updateOnReset(onReset: (() => void) | undefined): void {
+    if (onReset === this.onReset) {
+      return
+    }
     this.onReset = onReset
-    this.bind()
   }
 
   updateOnPauseResume(
     onPauseResume: ((key: string) => void) | undefined,
   ): void {
+    if (onPauseResume === this.onPauseResume) {
+      return
+    }
     this.onPauseResume = onPauseResume
-    this.bind()
+  }
+
+  bindResetHandler(): void {
+    if (this.onReset) {
+      const existingHandler = this.boundHandlers.get("pause:space")
+      if (existingHandler) {
+        unbindKey(" ", existingHandler)
+      }
+      const resetHandler = this.createResetHandler()
+      bindKey("r", resetHandler)
+      this.boundHandlers.set("reset:r", resetHandler)
+    }
+  }
+
+  bindPauseHandler(): void {
+    if (this.onPauseResume) {
+      const existingHandler = this.boundHandlers.get("pause:space")
+      if (existingHandler) {
+        unbindKey(" ", existingHandler)
+      }
+      const pauseHandler = this.createPauseHandler()
+      bindKey(" ", pauseHandler)
+      this.boundHandlers.set("pause:space", pauseHandler)
+    }
   }
 }
