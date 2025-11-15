@@ -12,7 +12,7 @@ export interface KeystrokesInputManagerOptions {
   engine: GameEngine | null
   inputMapping: GameInputMapping
   isReplaying?: boolean
-  onKeyboardInput?: (key: string) => void | undefined
+  onPauseResume?: (key: string) => void | undefined
   onReset?: (() => void) | undefined
 }
 
@@ -20,7 +20,7 @@ export class KeystrokesInputManager {
   private engine: GameEngine | null
   private inputMapping: GameInputMapping
   private isReplaying: boolean
-  private onKeyboardInput?: ((key: string) => void) | undefined
+  private onPauseResume?: ((key: string) => void) | undefined
   private onReset?: (() => void) | undefined
   private boundHandlers: Map<string, any> = new Map()
 
@@ -28,22 +28,26 @@ export class KeystrokesInputManager {
     this.engine = options.engine
     this.inputMapping = options.inputMapping
     this.isReplaying = options.isReplaying || false
-    this.onKeyboardInput = options.onKeyboardInput
+    this.onPauseResume = options.onPauseResume
     this.onReset = options.onReset
   }
 
   bind(): void {
     this.unbind()
 
-    // Always bind reset key
-    const resetHandler = this.createResetHandler()
-    bindKey("r", resetHandler)
-    this.boundHandlers.set("reset:r", resetHandler)
+    // Bind reset key if callback is provided
+    if (this.onReset) {
+      const resetHandler = this.createResetHandler()
+      bindKey("r", resetHandler)
+      this.boundHandlers.set("reset:r", resetHandler)
+    }
 
-    // Always bind pause/space key
-    const pauseHandler = this.createPauseHandler()
-    bindKey(" ", pauseHandler)
-    this.boundHandlers.set("pause:space", pauseHandler)
+    // Bind pause/space key if callback is provided
+    if (this.onPauseResume) {
+      const pauseHandler = this.createPauseHandler()
+      bindKey(" ", pauseHandler)
+      this.boundHandlers.set("pause:space", pauseHandler)
+    }
 
     // Bind configured game inputs - combine handlers per key to avoid conflicts
     const keyHandlers = new Map<string, any>()
@@ -198,7 +202,7 @@ export class KeystrokesInputManager {
           event.originalEvent.preventDefault()
         }
 
-        this.onKeyboardInput?.("pause")
+        this.onPauseResume?.("pause")
       },
     }
   }
@@ -218,11 +222,13 @@ export class KeystrokesInputManager {
 
   updateOnReset(onReset: (() => void) | undefined): void {
     this.onReset = onReset
+    this.bind()
   }
 
-  updateOnKeyboardInput(
-    onKeyboardInput: ((key: string) => void) | undefined,
+  updateOnPauseResume(
+    onPauseResume: ((key: string) => void) | undefined,
   ): void {
-    this.onKeyboardInput = onKeyboardInput
+    this.onPauseResume = onPauseResume
+    this.bind()
   }
 }

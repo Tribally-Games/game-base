@@ -20,7 +20,7 @@ export interface GameRendererProps {
   onCanvasReady?: (canvas: GameCanvas) => void
   onRecordingStart?: () => void
   onRecordingSave?: (recording: GameRecording) => void
-  onKeyboardInput?: (key: string) => void
+  onPauseResume?: (key: string) => void
   onReset?: () => void
 }
 
@@ -33,7 +33,7 @@ export function GameRenderer({
   onCanvasReady,
   onRecordingStart,
   onRecordingSave,
-  onKeyboardInput,
+  onPauseResume,
   onReset,
 }: GameRendererProps) {
   const { GameCanvas: GameCanvasClass, getGameModuleConfig } = useGameModule()
@@ -189,7 +189,7 @@ export function GameRenderer({
         engine: activeEngineRef.current,
         inputMapping: newInputMapping,
         isReplaying,
-        onKeyboardInput,
+        onPauseResume,
         onReset,
       })
       inputManagerRef.current.bind()
@@ -209,9 +209,9 @@ export function GameRenderer({
       inputManagerRef.current.updateEngine(activeEngineRef.current)
       inputManagerRef.current.updateIsReplaying(isReplaying)
       inputManagerRef.current.updateOnReset(onReset)
-      inputManagerRef.current.updateOnKeyboardInput(onKeyboardInput)
+      inputManagerRef.current.updateOnPauseResume(onPauseResume)
     }
-  }, [gameConfig, disableKeyboardInput, isReplaying, onKeyboardInput, onReset])
+  }, [gameConfig, disableKeyboardInput, isReplaying, onPauseResume, onReset])
 
   useEffect(() => {
     if (!gameCanvas) return
