@@ -1,6 +1,9 @@
-import { describe, expect, test } from "bun:test"
-import { join } from "node:path"
+import { afterEach, beforeEach, describe, expect, test } from "bun:test"
+import { existsSync } from "node:fs"
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises"
+import { join, resolve } from "node:path"
 import {
+  copyDirectory,
   findFiles,
   formatFileSize,
   formatSavings,
@@ -222,6 +225,78 @@ describe("fileUtils", () => {
       expect(formatSavings(sizeInfo)).toBe(
         "10.0 KB → 12.0 KB (-20.0% saved, keeping original)",
       )
+    })
+  })
+
+  describe("copyDirectory", () => {
+    const testTmpDir = resolve("tests/tmp/copy-test")
+    const sourceDir = join(testTmpDir, "source")
+    const destDir = join(testTmpDir, "dest")
+
+    beforeEach(async () => {
+      await rm(testTmpDir, { recursive: true, force: true })
+      await mkdir(sourceDir, { recursive: true })
+    })
+
+    afterEach(async () => {
+      await rm(testTmpDir, { recursive: true, force: true })
+    })
+
+    test("should copy a directory with files", async () => {
+      await writeFile(join(sourceDir, "file1.txt"), "content1")
+      await writeFile(join(sourceDir, "file2.txt"), "content2")
+
+      await copyDirectory(sourceDir, destDir)
+
+      expect(existsSync(join(destDir, "file1.txt"))).toBe(true)
+      expect(existsSync(join(destDir, "file2.txt"))).toBe(true)
+
+      const content1 = await readFile(join(destDir, "file1.txt"), "utf-8")
+      const content2 = await readFile(join(destDir, "file2.txt"), "utf-8")
+      expect(content1).toBe("content1")
+      expect(content2).toBe("content2")
+    })
+
+    test("should recursively copy nested directories", async () => {
+      await mkdir(join(sourceDir, "subdir1/subdir2"), { recursive: true })
+      await writeFile(join(sourceDir, "root.txt"), "root")
+      await writeFile(join(sourceDir, "subdir1/file1.txt"), "file1")
+      await writeFile(join(sourceDir, "subdir1/subdir2/file2.txt"), "file2")
+
+      await copyDirectory(sourceDir, destDir)
+
+      expect(existsSync(join(destDir, "root.txt"))).toBe(true)
+      expect(existsSync(join(destDir, "subdir1/file1.txt"))).toBe(true)
+      expect(existsSync(join(destDir, "subdir1/subdir2/file2.txt"))).toBe(true)
+
+      const content = await readFile(
+        join(destDir, "subdir1/subdir2/file2.txt"),
+        "utf-8",
+      )
+      expect(content).toBe("file2")
+    })
+
+    test("should copy empty directory", async () => {
+      await copyDirectory(sourceDir, destDir)
+
+      expect(existsSync(destDir)).toBe(true)
+    })
+
+    test("should throw error for non-existent source", async () => {
+      const nonExistent = join(testTmpDir, "does-not-exist")
+      await expect(copyDirectory(nonExistent, destDir)).rejects.toThrow()
+    })
+
+    test("should copy directory with various file types", async () => {
+      await writeFile(join(sourceDir, "image.png"), "fake png")
+      await writeFile(join(sourceDir, "audio.wav"), "fake wav")
+      await writeFile(join(sourceDir, "data.json"), '{"test": true}')
+
+      await copyDirectory(sourceDir, destDir)
+
+      expect(existsSync(join(destDir, "image.png"))).toBe(true)
+      expect(existsSync(join(destDir, "audio.wav"))).toBe(true)
+      expect(existsSync(join(destDir, "data.json"))).toBe(true)
     })
   })
 })

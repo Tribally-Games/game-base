@@ -98,7 +98,7 @@ export function generateViteConfig(
   }
 
   if (mode === "build" && assetsPath && fs.existsSync(assetsPath)) {
-    // Copy assets to build output directory
+    // Assets are copied to game-assets/ subdirectory by builder.ts
     if (!config.build) config.build = {}
     config.build.copyPublicDir = false
   }

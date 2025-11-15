@@ -1,6 +1,8 @@
+import { existsSync } from "node:fs"
 import * as path from "node:path"
 import chalk from "chalk"
 import { build } from "vite"
+import { copyDirectory } from "../utils/fileUtils.js"
 import { generateViteConfig } from "./config.js"
 import { getTemplatePath, validateGamePath } from "./utils.js"
 
@@ -38,6 +40,17 @@ export async function buildDemo(
     await build(config)
 
     const outputPath = path.resolve(gamePath, options.outDir)
+
+    if (options.assetsDir) {
+      const assetsPath = path.resolve(gamePath, options.assetsDir)
+      if (existsSync(assetsPath)) {
+        console.log(chalk.blue("Copying game assets..."))
+        const gameAssetsOutput = path.join(outputPath, "game-assets")
+        await copyDirectory(assetsPath, gameAssetsOutput)
+        console.log(chalk.green("✓ Game assets copied"))
+      }
+    }
+
     console.log(chalk.green(`\n✓ Demo built successfully`))
     console.log(chalk.gray(`Output directory: ${outputPath}\n`))
   } catch (error) {

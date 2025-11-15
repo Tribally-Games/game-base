@@ -1,3 +1,4 @@
+import { cp } from "node:fs/promises"
 import { extname } from "node:path"
 import { glob } from "glob"
 
@@ -67,4 +68,11 @@ export function formatSavings(sizeInfo: FileSizeInfo): string {
   }
 
   return `${formatFileSize(inputSize)} → ${formatFileSize(outputSize)} (${savingsPercent.toFixed(1)}% saved)`
+}
+
+export async function copyDirectory(
+  source: string,
+  destination: string,
+): Promise<void> {
+  await cp(source, destination, { recursive: true })
 }
