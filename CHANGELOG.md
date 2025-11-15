@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.11](https://github.com/tribally-games/game-base/compare/v0.5.10...v0.5.11) (2025-11-15)
+
+
+### Features
+
+* add asset copying to demo cli build mode and comprehensive tests ([df0cdbf](https://github.com/tribally-games/game-base/commit/df0cdbf944b5a1dcc8040ac81f7ea1ac79ffacd4))
+
 ## [0.5.10](https://github.com/tribally-games/game-base/compare/v0.5.9...v0.5.10) (2025-11-14)
 
 
