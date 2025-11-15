@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.13](https://github.com/tribally-games/game-base/compare/v0.5.12...v0.5.13) (2025-11-15)
+
+
+### Code Refactoring
+
+* optimize input manager updates and remove redundant state tracking ([0f60f8d](https://github.com/tribally-games/game-base/commit/0f60f8de745dc1a54fcda2c9e34d19717e1b9c44))
+
 ## [0.5.12](https://github.com/tribally-games/game-base/compare/v0.5.11...v0.5.12) (2025-11-15)
 
 
