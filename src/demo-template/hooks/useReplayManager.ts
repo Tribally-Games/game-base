@@ -1,6 +1,7 @@
-import { type GameRecording, ReplayManager } from "@hiddentao/clockwork-engine"
+import type { GameRecording } from "@hiddentao/clockwork-engine"
 import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useGameModule } from "../contexts/GameModuleContext"
 
 export interface UseReplayManagerOptions {
   onReplayComplete?: () => void
@@ -13,18 +14,23 @@ export interface UseReplayManagerReturn {
   stopReplay: () => void
   changeSpeed: (speed: number) => void
   setGameCanvas: (canvas: GameCanvas | null) => void
-  manager: ReplayManager | null
+  manager: InstanceType<
+    ReturnType<typeof useGameModule>["ReplayManager"]
+  > | null
 }
 
 export function useReplayManager(
   replayEngine: GameEngine | null,
   options: UseReplayManagerOptions,
 ): UseReplayManagerReturn {
+  const { ReplayManager } = useGameModule()
   const { onReplayComplete } = options
   const [replaySpeed, setReplaySpeed] = useState(1.0)
   const [replayProgress, setReplayProgress] = useState(0)
 
-  const replayManagerRef = useRef<ReplayManager | null>(null)
+  const replayManagerRef = useRef<InstanceType<typeof ReplayManager> | null>(
+    null,
+  )
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const gameCanvasRef = useRef<GameCanvas | null>(null)
   const onReplayCompleteRef = useRef(onReplayComplete)
@@ -45,7 +51,7 @@ export function useReplayManager(
         progressIntervalRef.current = null
       }
     }
-  }, [replayEngine])
+  }, [replayEngine, ReplayManager])
 
   const startProgressTracking = useCallback(() => {
     if (progressIntervalRef.current) {

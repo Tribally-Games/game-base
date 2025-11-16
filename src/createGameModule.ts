@@ -1,3 +1,4 @@
+import { ReplayManager } from "@hiddentao/clockwork-engine"
 import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
 import type { GameMetaConfigSchema, GameMetaConfigValues } from "./metaConfig"
 import type { OperatorMetadata } from "./objectives/types"
@@ -52,6 +53,7 @@ export interface GameModuleConfig {
 export interface GameModuleExports {
   GameEngine: typeof GameEngine
   GameCanvas: typeof GameCanvas
+  ReplayManager: typeof ReplayManager
   GameInputType: Record<string, string>
   GameIntent: Record<string, string>
   getVersion: () => string
@@ -70,6 +72,7 @@ export function createGameModule(
   return {
     GameEngine: GameEngineClass,
     GameCanvas: GameCanvasClass,
+    ReplayManager,
     GameInputType,
     GameIntent,
     getVersion: () => config.version,
@@ -80,4 +83,5 @@ export function createGameModule(
 export type {
   GameEngine,
   GameCanvas,
+  ReplayManager,
 } from "@hiddentao/clockwork-engine"
