@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.15](https://github.com/tribally-games/game-base/compare/v0.5.14...v0.5.15) (2025-11-16)
+
+
+### Features
+
+* add comprehensive asset loader system with spritesheets ([b3ec461](https://github.com/tribally-games/game-base/commit/b3ec461613baa9b09807df3a37745510410b28fe))
+
 ## [0.5.14](https://github.com/tribally-games/game-base/compare/v0.5.13...v0.5.14) (2025-11-16)
 
 
