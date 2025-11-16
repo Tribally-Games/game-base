@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.17](https://github.com/tribally-games/game-base/compare/v0.5.16...v0.5.17) (2025-11-16)
+
+
+### Features
+
+* add http headers to demo server asset endpoint ([8d8abc6](https://github.com/tribally-games/game-base/commit/8d8abc6c8f1b89f2435ef7ef87c25623e1c54629))
+
 ## [0.5.16](https://github.com/tribally-games/game-base/compare/v0.5.15...v0.5.16) (2025-11-16)
 
 ## [0.5.15](https://github.com/tribally-games/game-base/compare/v0.5.14...v0.5.15) (2025-11-16)
