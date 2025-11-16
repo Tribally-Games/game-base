@@ -11,16 +11,56 @@ interface DemoOptions {
   assetsDir?: string
 }
 
+function getMimeType(ext: string): string | null {
+  const mimeTypes: Record<string, string> = {
+    // Images
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+
+    // Audio
+    ".mp3": "audio/mpeg",
+    ".wav": "audio/wav",
+    ".ogg": "audio/ogg",
+    ".opus": "audio/opus",
+    ".m4a": "audio/mp4",
+
+    // Text/Data
+    ".json": "application/json",
+    ".js": "text/javascript",
+    ".mjs": "text/javascript",
+    ".txt": "text/plain",
+    ".xml": "application/xml",
+
+    // Fonts
+    ".woff": "font/woff",
+    ".woff2": "font/woff2",
+    ".ttf": "font/ttf",
+    ".otf": "font/otf",
+  }
+
+  return mimeTypes[ext] || null
+}
+
 export function generateViteConfig(
   gamePath: string,
   templatePath: string,
   options: DemoOptions,
   mode: "development" | "build",
 ): InlineConfig {
+  const gameDemoPath = path.resolve(gamePath, "src/demo")
+  const hasGameDemo = fs.existsSync(gameDemoPath)
+
   const aliases: Record<string, string> = {
     "@game": path.resolve(gamePath, "src"),
     "@game-module": path.resolve(gamePath, "src/index.ts"),
-    "@game-demo": path.resolve(gamePath, "src/demo"),
+  }
+
+  if (hasGameDemo) {
+    aliases["@game-demo"] = gameDemoPath
   }
 
   const assetsPath = options.assetsDir
@@ -32,6 +72,10 @@ export function generateViteConfig(
     base: "./",
     root: templatePath,
     mode: mode === "development" ? "development" : "production",
+
+    define: {
+      __HAS_GAME_DEMO__: JSON.stringify(hasGameDemo),
+    },
 
     resolve: {
       alias: aliases,
@@ -48,15 +92,33 @@ export function generateViteConfig(
               configureServer(server: any) {
                 server.middlewares.use((req: any, res: any, next: any) => {
                   if (req.url?.startsWith("/game-assets/")) {
+                    // Remove query parameters from URL
+                    const urlPath = req.url.split("?")[0]
                     const assetPath = path.join(
                       assetsPath,
-                      req.url.slice("/game-assets/".length),
+                      urlPath.slice("/game-assets/".length),
                     )
                     if (
                       fs.existsSync(assetPath) &&
                       fs.statSync(assetPath).isFile()
                     ) {
-                      return res.end(fs.readFileSync(assetPath))
+                      const stats = fs.statSync(assetPath)
+                      const fileContent = fs.readFileSync(assetPath)
+                      const ext = path.extname(assetPath).toLowerCase()
+                      const mimeType = getMimeType(ext)
+
+                      if (mimeType) {
+                        res.setHeader("Content-Type", mimeType)
+                      }
+                      res.setHeader("Content-Length", stats.size.toString())
+                      res.setHeader(
+                        "Cache-Control",
+                        "no-cache, no-store, must-revalidate",
+                      )
+                      res.setHeader("Pragma", "no-cache")
+                      res.setHeader("Expires", "0")
+
+                      return res.end(fileContent)
                     }
                   }
                   next()

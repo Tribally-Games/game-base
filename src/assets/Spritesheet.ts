@@ -52,7 +52,7 @@ export class Spritesheet {
     // Load the image via loader
     const imageUrl = await loader.fetchData(imageFilename)
     const texture = await PIXI.Assets.load(imageUrl)
-    const baseTexture = texture.baseTexture
+    const baseTexture = texture.source
 
     // Convert array-based frames to object-based format for PIXI
     const pixiData: any = {

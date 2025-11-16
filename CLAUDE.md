@@ -103,15 +103,36 @@ Games extend with **custom operators** by providing:
 - `Objective` - Objective structure (tier, operator, threshold, etc.)
 - `ObjectiveProgress` - Current progress tracking
 
+### Demo Template System
+
+[src/demo-template/](src/demo-template/) provides a complete React-based demo application for game development:
+
+**DemoLoader** ([DemoLoader.ts](src/demo-template/DemoLoader.ts)) - Asset loader built into the demo template:
+- Loads assets from `/game-assets/` path served by demo dev server
+- Handles text assets (JSON, JavaScript) as strings
+- Converts binary assets (images, audio) to Data URLs for in-memory usage
+- Automatically used by demo template, games can override by providing `src/demo/DemoLoader.ts`
+
+**Fallback behavior**: Demo template checks if game provides `src/demo/DemoLoader.ts`. If present, uses game's custom loader; otherwise uses built-in DemoLoader. Games only need to implement custom DemoLoader if they need special asset loading behavior.
+
 ### CLI Tool
 
-[src/cli/](src/cli/) provides asset compression command:
+[src/cli/](src/cli/) provides commands:
 
+**Asset compression:**
 ```bash
 game-base compress "assets/**/*.{png,jpg,wav}" -o compressed/
 ```
 
 Requires external tools: `cwebp` (WebP conversion) and `opusenc` (Opus audio). Implemented in [compress.ts](src/cli/compress.ts) with quality/bitrate options.
+
+**Demo server:**
+```bash
+game-base demo serve ./path/to/game       # Start dev server
+game-base demo build ./path/to/game       # Build for production
+```
+
+Serves demo-template React app with Vite, provides `/game-assets/` endpoint for asset loading.
 
 ## Key Dependencies
 

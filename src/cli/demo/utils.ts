@@ -21,13 +21,6 @@ export async function validateGamePath(gamePath: string): Promise<void> {
   if (!fs.existsSync(srcIndexPath)) {
     throw new Error(`No src/index.ts found in game directory: ${resolvedPath}`)
   }
-
-  const demoLoaderPath = path.join(resolvedPath, "src", "demo", "DemoLoader.ts")
-  if (!fs.existsSync(demoLoaderPath)) {
-    throw new Error(
-      `No src/demo/DemoLoader.ts found. Each game must provide a DemoLoader for asset loading.`,
-    )
-  }
 }
 
 export function getTemplatePath(): string {
