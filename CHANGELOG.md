@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.5.14](https://github.com/tribally-games/game-base/compare/v0.5.13...v0.5.14) (2025-11-16)
+
+
+### Features
+
+* export replay manager in game module exports ([3effe2f](https://github.com/tribally-games/game-base/commit/3effe2fafe79883982db210a7755d31ffbf81dac))
+
 ## [0.5.13](https://github.com/tribally-games/game-base/compare/v0.5.12...v0.5.13) (2025-11-15)
 
 
