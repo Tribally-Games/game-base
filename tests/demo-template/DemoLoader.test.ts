@@ -1,6 +1,29 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test"
 import { DemoLoader } from "../../src/demo-template/DemoLoader"
 
+// Mock FileReader for testing environment
+class MockFileReader {
+  onload: ((event: any) => void) | null = null
+  onloadend: ((event: any) => void) | null = null
+  onerror: ((event: any) => void) | null = null
+  result: string | null = null
+
+  readAsDataURL(blob: Blob) {
+    setTimeout(async () => {
+      const buffer = await blob.arrayBuffer()
+      const base64 = Buffer.from(buffer).toString("base64")
+      const type = blob.type || "application/octet-stream"
+      this.result = `data:${type};base64,${base64}`
+      if (this.onloadend) {
+        this.onloadend({ target: this })
+      }
+    }, 0)
+  }
+}
+
+// @ts-ignore
+globalThis.FileReader = MockFileReader
+
 describe("DemoLoader", () => {
   let loader: DemoLoader
 
@@ -191,11 +214,15 @@ describe("DemoLoader", () => {
       const mockFetch = async () => mockResponse
 
       const originalFileReader = globalThis.FileReader
-      globalThis.FileReader = class extends FileReader {
+      globalThis.FileReader = class {
+        onload: ((event: any) => void) | null = null
+        onerror: ((event: any) => void) | null = null
+        result: string | null = null
+
         readAsDataURL() {
           setTimeout(() => {
             if (this.onerror) {
-              this.onerror(new ProgressEvent("error"))
+              this.onerror(new Event("error"))
             }
           }, 0)
         }

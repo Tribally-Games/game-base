@@ -7,6 +7,30 @@ import {
   type AssetLoaderHooks,
 } from "../src/assets"
 
+// Mock Audio API for testing environment
+class MockAudio {
+  private listeners: Map<string, Array<(e?: any) => void>> = new Map()
+
+  constructor(public src: string) {
+    setTimeout(() => {
+      const canplaythroughListeners = this.listeners.get("canplaythrough") || []
+      for (const listener of canplaythroughListeners) {
+        listener()
+      }
+    }, 0)
+  }
+
+  addEventListener(event: string, handler: (e?: any) => void, options?: any) {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, [])
+    }
+    this.listeners.get(event)!.push(handler)
+  }
+}
+
+// @ts-ignore
+globalThis.Audio = MockAudio
+
 // Mock Loader for testing
 class MockLoader {
   private mockData: Map<string, string> = new Map()
@@ -93,6 +117,39 @@ describe("Assets System", () => {
     })
 
     it("should execute beforePreload hook", async () => {
+      loader.setMockData("background.png", "data:image/png;base64,bg")
+      loader.setMockData("jump.opus", "data:audio/opus;base64,audio")
+      loader.setMockData("player.png", "data:image/png;base64,player")
+      loader.setMockData("player.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "player.png" },
+      }))
+      loader.setMockData("enemy.png", "data:image/png;base64,enemy")
+      loader.setMockData("enemy.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "enemy.png" },
+      }))
+
+      const mockTexture = { baseTexture: { valid: true } } as any
+      const mockSpritesheet = {
+        textures: { frame1: { test: "texture1" } as any },
+        parse: async () => {},
+      } as any
+
+      mock.module("@hiddentao/clockwork-engine", () => ({
+        PIXI: {
+          Assets: {
+            load: async () => mockTexture,
+          },
+          Spritesheet: class {
+            textures = mockSpritesheet.textures
+            async parse() {
+              await mockSpritesheet.parse()
+            }
+          },
+        },
+      }))
+
       let hookExecuted = false
       const hooks: AssetLoaderHooks<TestAssetLoader> = {
         beforePreload: async () => {
@@ -108,6 +165,39 @@ describe("Assets System", () => {
     })
 
     it("should execute afterPreload hook", async () => {
+      loader.setMockData("background.png", "data:image/png;base64,bg")
+      loader.setMockData("jump.opus", "data:audio/opus;base64,audio")
+      loader.setMockData("player.png", "data:image/png;base64,player")
+      loader.setMockData("player.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "player.png" },
+      }))
+      loader.setMockData("enemy.png", "data:image/png;base64,enemy")
+      loader.setMockData("enemy.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "enemy.png" },
+      }))
+
+      const mockTexture = { baseTexture: { valid: true } } as any
+      const mockSpritesheet = {
+        textures: { frame1: { test: "texture1" } as any },
+        parse: async () => {},
+      } as any
+
+      mock.module("@hiddentao/clockwork-engine", () => ({
+        PIXI: {
+          Assets: {
+            load: async () => mockTexture,
+          },
+          Spritesheet: class {
+            textures = mockSpritesheet.textures
+            async parse() {
+              await mockSpritesheet.parse()
+            }
+          },
+        },
+      }))
+
       let hookExecuted = false
       const hooks: AssetLoaderHooks<TestAssetLoader> = {
         afterPreload: async () => {
@@ -123,6 +213,39 @@ describe("Assets System", () => {
     })
 
     it("should call progress callback during preload", async () => {
+      loader.setMockData("background.png", "data:image/png;base64,bg")
+      loader.setMockData("jump.opus", "data:audio/opus;base64,audio")
+      loader.setMockData("player.png", "data:image/png;base64,player")
+      loader.setMockData("player.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "player.png" },
+      }))
+      loader.setMockData("enemy.png", "data:image/png;base64,enemy")
+      loader.setMockData("enemy.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "enemy.png" },
+      }))
+
+      const mockTexture = { baseTexture: { valid: true } } as any
+      const mockSpritesheet = {
+        textures: { frame1: { test: "texture1" } as any },
+        parse: async () => {},
+      } as any
+
+      mock.module("@hiddentao/clockwork-engine", () => ({
+        PIXI: {
+          Assets: {
+            load: async () => mockTexture,
+          },
+          Spritesheet: class {
+            textures = mockSpritesheet.textures
+            async parse() {
+              await mockSpritesheet.parse()
+            }
+          },
+        },
+      }))
+
       const progressUpdates: Array<{ loaded: number; total: number }> = []
 
       await assetLoader.preloadAssets((loaded, total) => {
@@ -160,11 +283,17 @@ describe("Assets System", () => {
     })
 
     it("should handle load failures gracefully in preload", async () => {
+      const consoleWarnSpy = mock(() => {})
+      const originalWarn = console.warn
+      console.warn = consoleWarnSpy
+
       const progressUpdates: Array<{ loaded: number; total: number }> = []
 
       await assetLoader.preloadAssets((loaded, total) => {
         progressUpdates.push({ loaded, total })
       })
+
+      console.warn = originalWarn
 
       expect(progressUpdates.length).toBeGreaterThan(0)
       const lastUpdate = progressUpdates[progressUpdates.length - 1]
@@ -207,6 +336,39 @@ describe("Assets System", () => {
   describe("Hook Integration", () => {
     it("should allow hooks to load custom assets", async () => {
       const loader = new MockLoader()
+      loader.setMockData("background.png", "data:image/png;base64,bg")
+      loader.setMockData("jump.opus", "data:audio/opus;base64,audio")
+      loader.setMockData("player.png", "data:image/png;base64,player")
+      loader.setMockData("player.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "player.png" },
+      }))
+      loader.setMockData("enemy.png", "data:image/png;base64,enemy")
+      loader.setMockData("enemy.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "enemy.png" },
+      }))
+
+      const mockTexture = { baseTexture: { valid: true } } as any
+      const mockSpritesheet = {
+        textures: { frame1: { test: "texture1" } as any },
+        parse: async () => {},
+      } as any
+
+      mock.module("@hiddentao/clockwork-engine", () => ({
+        PIXI: {
+          Assets: {
+            load: async () => mockTexture,
+          },
+          Spritesheet: class {
+            textures = mockSpritesheet.textures
+            async parse() {
+              await mockSpritesheet.parse()
+            }
+          },
+        },
+      }))
+
       let customAssetLoaded = false
 
       const hooks: AssetLoaderHooks<TestAssetLoader> = {
@@ -224,6 +386,39 @@ describe("Assets System", () => {
 
     it("should execute hooks in correct order", async () => {
       const loader = new MockLoader()
+      loader.setMockData("background.png", "data:image/png;base64,bg")
+      loader.setMockData("jump.opus", "data:audio/opus;base64,audio")
+      loader.setMockData("player.png", "data:image/png;base64,player")
+      loader.setMockData("player.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "player.png" },
+      }))
+      loader.setMockData("enemy.png", "data:image/png;base64,enemy")
+      loader.setMockData("enemy.json", JSON.stringify({
+        frames: { frame1: { frame: { x: 0, y: 0, w: 32, h: 32 } } },
+        meta: { image: "enemy.png" },
+      }))
+
+      const mockTexture = { baseTexture: { valid: true } } as any
+      const mockSpritesheet = {
+        textures: { frame1: { test: "texture1" } as any },
+        parse: async () => {},
+      } as any
+
+      mock.module("@hiddentao/clockwork-engine", () => ({
+        PIXI: {
+          Assets: {
+            load: async () => mockTexture,
+          },
+          Spritesheet: class {
+            textures = mockSpritesheet.textures
+            async parse() {
+              await mockSpritesheet.parse()
+            }
+          },
+        },
+      }))
+
       const executionOrder: string[] = []
 
       const hooks: AssetLoaderHooks<TestAssetLoader> = {

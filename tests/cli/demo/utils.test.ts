@@ -37,11 +37,9 @@ describe("demo/utils", () => {
       )
     })
 
-    test("should throw error when src/demo/DemoLoader.ts is missing", async () => {
+    test("should not throw error when src/demo/DemoLoader.ts is missing (optional)", async () => {
       const gamePath = resolve("tests/fixtures/demo/no-demo-loader")
-      await expect(validateGamePath(gamePath)).rejects.toThrow(
-        "No src/demo/DemoLoader.ts found",
-      )
+      await expect(validateGamePath(gamePath)).resolves.toBeUndefined()
     })
 
     test("should resolve relative paths", async () => {
