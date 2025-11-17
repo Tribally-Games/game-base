@@ -11,7 +11,7 @@ import {
   useMemo,
   useState,
 } from "react"
-import { DummyAudioManager, RealAudioManager } from "../../audio"
+import { RealAudioManager } from "../../audio"
 import { useGameModule } from "./GameModuleContext"
 
 export interface GameStateContextValue {
@@ -34,7 +34,7 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const loader = new DemoLoader()
     const playAudioManager = new RealAudioManager()
-    const replayAudioManager = new DummyAudioManager()
+    const replayAudioManager = new RealAudioManager()
     const play = new GameEngineClass(loader, playAudioManager)
     const replay = new GameEngineClass(loader, replayAudioManager)
 
