@@ -118,7 +118,169 @@ export const { GameEngine: ExportedGameEngine, GameCanvas: ExportedGameCanvas, G
 export { ExportedGameEngine as GameEngine, ExportedGameCanvas as GameCanvas, ExportedGameInputType as GameInputType, ExportedGameIntent as GameIntent }
 ```
 
+## Audio System
+
+game-base provides a complete audio system built on the Web Audio API, supporting both asset-based sounds (from files) and procedurally generated sounds.
+
+### AudioManager Interface
+
+The `AudioManager` interface provides a consistent API for sound playback across all games:
+
+```typescript
+interface AudioManager {
+  loadSound(soundId: string, data: string | AudioBuffer): Promise<void>
+  playSound(soundId: string, volume?: number, loop?: boolean): void
+  stopSound(soundId: string): void
+  stopAll(): void
+  resumeAudioContext(): Promise<void>
+}
+```
+
+### Implementations
+
+**RealAudioManager** - Full Web Audio API implementation:
+- Efficient playback using `AudioContext` and `AudioBuffer`
+- Per-sound volume control (0.0 - 1.0)
+- Looping sound support with individual stop control
+- Automatic cleanup of finished sounds
+- Sound caching to avoid redundant loading
+- Browser autoplay policy compliance via `resumeAudioContext()`
+
+**DummyAudioManager** - No-op implementation for testing/replays:
+- All methods are empty stubs
+- Useful for replay playback or headless testing
+
+### GameEngine Integration
+
+Your `GameEngine` **must** accept `AudioManager` as the second constructor parameter:
+
+```typescript
+import { BaseGameEngine, Loader } from '@hiddentao/clockwork-engine'
+import { AudioManager } from '@tribally.games/game-base'
+
+class MyGameEngine extends BaseGameEngine {
+  private audioManager: AudioManager
+
+  constructor(loader: Loader, audioManager: AudioManager) {
+    super(loader)
+    this.audioManager = audioManager
+  }
+
+  // Load sounds in setup()
+  async setup(gameConfig: MyGameConfig): Promise<void> {
+    await loadAllSounds(this.audioManager, this.assetLoader)
+    // ... rest of setup
+  }
+
+  // Play sounds during gameplay
+  someMethod() {
+    this.audioManager.playSound('jump', 0.8)  // 80% volume
+    this.audioManager.playSound('music', 1.0, true)  // Loop
+  }
+}
+```
+
+### Loading Sounds
+
+Create a `soundDefinitions.ts` file to centralize sound loading:
+
+```typescript
+import { AudioContext } from '@tribally.games/game-base'
+import type { AssetLoader } from './assets/AssetLoader'
+import { AssetType, Sound } from './assets/types'
+
+// For procedurally generated sounds
+function generateJumpSound(): AudioBuffer {
+  const audioContext = new AudioContext()
+  const sampleRate = audioContext.sampleRate
+  const duration = 0.15
+  const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate)
+  const data = buffer.getChannelData(0)
+
+  // Generate sound wave
+  let phase = 0
+  for (let i = 0; i < buffer.length; i++) {
+    const t = i / sampleRate
+    const frequency = 400 * Math.pow(0.5, t / duration)
+    const envelope = Math.exp(-t * 8)
+    data[i] = Math.sin(phase) * envelope * 0.3
+    phase += (2 * Math.PI * frequency) / sampleRate
+  }
+
+  return buffer
+}
+
+// Load all sounds
+export async function loadAllSounds(
+  audioManager: AudioManager,
+  assetLoader: AssetLoader,
+): Promise<void> {
+  // Load asset-based sounds (filter out procedural ones)
+  const soundLoadPromises = Object.values(Sound)
+    .filter((sound) => sound !== Sound.JUMP)
+    .map((sound) =>
+      assetLoader
+        .loadAsset(AssetType.SOUND, sound)
+        .then((dataUri) => audioManager.loadSound(sound, dataUri))
+    )
+
+  await Promise.all(soundLoadPromises)
+
+  // Load procedural sounds
+  const jumpSound = generateJumpSound()
+  await audioManager.loadSound(Sound.JUMP, jumpSound)
+}
+```
+
+### Asset Loading
+
+Your `AssetLoader` should return data URI strings for sounds:
+
+```typescript
+case AssetType.SOUND: {
+  loadedAsset = await this.loader.fetchData(assetName)
+  break
+}
+```
+
+The `RealAudioManager` automatically decodes data URIs using `dataUriToArrayBuffer()` and `AudioContext.decodeAudioData()`.
+
+### Sound Playback
+
+```typescript
+// Play one-shot sound
+this.audioManager.playSound('coinCollect')
+
+// Play with volume control
+this.audioManager.playSound('explosion', 0.5)  // 50% volume
+
+// Play looping sound (e.g., music, invincibility)
+this.audioManager.playSound('backgroundMusic', 1.0, true)
+
+// Stop specific looping sound
+this.audioManager.stopSound('backgroundMusic')
+
+// Stop all sounds
+this.audioManager.stopAll()
+
+// Resume audio context (call on first user interaction)
+await this.audioManager.resumeAudioContext()
+```
+
+### Browser Autoplay Policy
+
+Modern browsers require user interaction before playing audio. Call `resumeAudioContext()` on first user input:
+
+```typescript
+// In your game's input handler
+async handleFirstInput() {
+  await this.audioManager.resumeAudioContext()
+}
+```
+
 ### Required Exports
+
+
 
 The arcade platform expects these exports from every game:
 

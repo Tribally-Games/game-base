@@ -11,6 +11,7 @@ import {
   useMemo,
   useState,
 } from "react"
+import { DummyAudioManager, RealAudioManager } from "../../audio"
 import { useGameModule } from "./GameModuleContext"
 
 export interface GameStateContextValue {
@@ -32,8 +33,10 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const loader = new DemoLoader()
-    const play = new GameEngineClass(loader)
-    const replay = new GameEngineClass(loader)
+    const playAudioManager = new RealAudioManager()
+    const replayAudioManager = new DummyAudioManager()
+    const play = new GameEngineClass(loader, playAudioManager)
+    const replay = new GameEngineClass(loader, replayAudioManager)
 
     setPlayEngine(play)
     setReplayEngine(replay)
@@ -44,6 +47,7 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
       if (playState === GameState.PLAYING || playState === GameState.PAUSED) {
         play.end()
       }
+      playAudioManager.close()
 
       const replayState = replay.getState()
       if (
@@ -52,6 +56,7 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
       ) {
         replay.end()
       }
+      replayAudioManager.close()
     }
   }, [GameEngineClass, DemoLoader])
 

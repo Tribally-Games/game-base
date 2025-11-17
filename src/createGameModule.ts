@@ -1,8 +1,26 @@
 import { ReplayManager } from "@hiddentao/clockwork-engine"
-import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
+import type {
+  GameCanvas,
+  GameEngine,
+  Loader,
+} from "@hiddentao/clockwork-engine"
+import type { AudioManager } from "./audio/types"
 import type { GameMetaConfigSchema, GameMetaConfigValues } from "./metaConfig"
 import type { OperatorMetadata } from "./objectives/types"
 import { type GameInputMapping, GameInputType, GameIntent } from "./types"
+
+/**
+ * Game engine constructor that accepts loader and audio manager
+ */
+export type GameEngineConstructor = new (
+  loader: Loader,
+  audioManager: AudioManager,
+) => GameEngine
+
+/**
+ * Game canvas constructor
+ */
+export type GameCanvasConstructor = new (...args: any[]) => GameCanvas
 
 /**
  * Definition of a single objective
@@ -15,6 +33,31 @@ export interface ObjectiveDefinition {
 
 /**
  * Configuration for game module creation
+ *
+ * @remarks
+ * Games extending this framework must provide a GameEngine class that:
+ * 1. Extends BaseGameEngine from @hiddentao/clockwork-engine
+ * 2. Accepts `(loader: Loader, audioManager: AudioManager)` as constructor parameters
+ *
+ * @example
+ * ```typescript
+ * import { BaseGameEngine, Loader } from '@hiddentao/clockwork-engine'
+ * import { AudioManager } from '@tribally.games/game-base'
+ *
+ * class MyGameEngine extends BaseGameEngine {
+ *   private audioManager: AudioManager
+ *
+ *   constructor(loader: Loader, audioManager: AudioManager) {
+ *     super(loader)
+ *     this.audioManager = audioManager
+ *   }
+ *
+ *   someMethod() {
+ *     // Use audioManager instead of DOM APIs
+ *     this.audioManager.playSound('jump', 0.8)
+ *   }
+ * }
+ * ```
  */
 export interface GameModuleConfig {
   version: string
@@ -51,8 +94,8 @@ export interface GameModuleConfig {
  * Standard game module exports that arcade expects
  */
 export interface GameModuleExports {
-  GameEngine: typeof GameEngine
-  GameCanvas: typeof GameCanvas
+  GameEngine: GameEngineConstructor
+  GameCanvas: GameCanvasConstructor
   ReplayManager: typeof ReplayManager
   GameInputType: Record<string, string>
   GameIntent: Record<string, string>
@@ -65,8 +108,8 @@ export interface GameModuleExports {
  * Games call this with their specific configuration
  */
 export function createGameModule(
-  GameEngineClass: typeof GameEngine,
-  GameCanvasClass: typeof GameCanvas,
+  GameEngineClass: GameEngineConstructor,
+  GameCanvasClass: GameCanvasConstructor,
   config: GameModuleConfig,
 ): GameModuleExports {
   return {

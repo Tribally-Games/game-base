@@ -1,5 +1,8 @@
 {
   "name": "test-game",
   "version": "1.0.0",
-  "type": "module"
+  "type": "module",
+  "peerDependencies": {
+    "@hiddentao/clockwork-engine": "^1.0.0"
+  }
 }
