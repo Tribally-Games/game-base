@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.1.0](https://github.com/tribally-games/game-base/compare/v0.5.17...v2.1.0) (2025-11-17)
+
+
+### Features
+
+* add audio manager system with web audio api support ([2aa6cd4](https://github.com/tribally-games/game-base/commit/2aa6cd47b3870d444d1a8fc9f41289451ccd47ec))
+
+
+### Code Refactoring
+
+* use real audio manager for replay mode ([6d796ba](https://github.com/tribally-games/game-base/commit/6d796ba98212421885923efa841644515e9a6ea0))
+
 ## [2.0.0](https://github.com/tribally-games/game-base/compare/v0.5.17...v2.0.0) (2025-11-17)
 
 ## [1.0.0](https://github.com/tribally-games/game-base/compare/v0.5.17...v1.0.0) (2025-11-17)
