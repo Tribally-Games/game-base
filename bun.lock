@@ -11,7 +11,6 @@
         "commander": "^12.1.0",
         "execa": "^9.5.2",
         "glob": "^10.3.10",
-        "isomorphic-web-audio-api": "^1.0.2",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-toastify": "^11.0.5",
@@ -30,10 +29,11 @@
         "commitizen": "^4.3.1",
         "cz-conventional-changelog": "^3.3.0",
         "husky": "^9.1.7",
+        "isomorphic-web-audio-api": "^1.0.2",
         "typescript": "^5.8.3",
       },
       "peerDependencies": {
-        "@hiddentao/clockwork-engine": "^1.9.5",
+        "@hiddentao/clockwork-engine": "^2.1.1",
       },
     },
   },
@@ -192,7 +192,7 @@
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.12", "", { "os": "win32", "cpu": "x64" }, "sha512-alJC0uCZpTFrSL0CCDjcgleBXPnCrEAhTBILpeAp7M/OFgoqtAetfBzX0xM00MUsVVPpVjlPuMbREqnZCXaTnA=="],
 
-    "@hiddentao/clockwork-engine": ["@hiddentao/clockwork-engine@1.9.5", "", { "dependencies": { "alea": "=1.0.1", "pixi-viewport": "=6.0.3", "pixi.js": "=8.13.2" } }, "sha512-7edzbUgyGHbLMT8WxY2kpVbVU6IWsZteepdGOgy3lM/GCZXNw3INXueqTwHMCAO/HfOwp7oP8KBqXc/WSyhIHA=="],
+    "@hiddentao/clockwork-engine": ["@hiddentao/clockwork-engine@2.1.1", "", { "dependencies": { "alea": "=1.0.1", "pixi-viewport": "=6.0.3", "pixi.js": "=8.13.2" } }, "sha512-FOLDg23Teu6lqXVy8fX/B9+7hN72sWMwhshnhi58VVkrUFA5iWrmTj9OT6p4Sn/qTX3zK3Xi9uFWQ4GwTKGuog=="],
 
     "@hutson/parse-repository-url": ["@hutson/parse-repository-url@3.0.2", "", {}, "sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q=="],
 

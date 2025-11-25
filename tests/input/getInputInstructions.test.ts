@@ -19,7 +19,7 @@ describe("getInputInstructions", () => {
     
     expect(instructions).toContain('W = Move Up')
     expect(instructions).toContain('A = Move Left')
-    expect(instructions).toContain('Space = Pause/Resume')
+    expect(instructions).toContain('P = Pause/Resume')
     expect(instructions).toContain('R = Reset')
   })
 

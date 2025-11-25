@@ -30,8 +30,14 @@ export function DemoPage() {
   const { getGameModuleConfig } = useGameModule()
   const gameModuleConfig = getGameModuleConfig()
   const objectiveMetadata = gameModuleConfig.objectiveMetadata
-  const { playEngine, replayEngine, activeEngine, gameState, setActiveEngine } =
-    useGameState()
+  const {
+    platform,
+    playEngine,
+    replayEngine,
+    activeEngine,
+    gameState,
+    setActiveEngine,
+  } = useGameState()
 
   const {
     metaConfig,
@@ -148,15 +154,9 @@ export function DemoPage() {
     }
   }, [playEngine, setActiveEngine])
 
-  const replayManager = useReplayManager(replayEngine, {
+  const replayManager = useReplayManager(replayEngine, platform, {
     onReplayComplete: handleReplayComplete,
   })
-
-  useEffect(() => {
-    if (gameCanvas) {
-      replayManager.setGameCanvas(gameCanvas)
-    }
-  }, [gameCanvas, replayManager])
 
   const handlePauseResume = useCallback(() => {
     if (!activeEngine) return

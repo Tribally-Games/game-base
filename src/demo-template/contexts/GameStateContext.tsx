@@ -2,6 +2,8 @@ import {
   type GameEngine,
   GameEngineEventType,
   GameState,
+  type PlatformLayer,
+  WebPlatformLayer,
 } from "@hiddentao/clockwork-engine"
 import {
   type ReactNode,
@@ -9,12 +11,15 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react"
-import { RealAudioManager } from "../../audio"
+import { calculateCanvasSize } from "../hooks/useResponsiveCanvas"
 import { useGameModule } from "./GameModuleContext"
 
 export interface GameStateContextValue {
+  platform: PlatformLayer | null
+  platformContainer: HTMLDivElement | null
   playEngine: GameEngine | null
   replayEngine: GameEngine | null
   activeEngine: GameEngine | null
@@ -26,37 +31,74 @@ const GameStateContext = createContext<GameStateContextValue | null>(null)
 
 export function GameStateProvider({ children }: { children: ReactNode }) {
   const { GameEngine: GameEngineClass, DemoLoader } = useGameModule()
+  const [platform, setPlatform] = useState<PlatformLayer | null>(null)
   const [playEngine, setPlayEngine] = useState<GameEngine | null>(null)
   const [replayEngine, setReplayEngine] = useState<GameEngine | null>(null)
   const [activeEngine, setActiveEngine] = useState<GameEngine | null>(null)
   const [gameState, setGameState] = useState<GameState | null>(null)
+  const platformContainerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    const loader = new DemoLoader()
-    const playAudioManager = new RealAudioManager()
-    const replayAudioManager = new RealAudioManager()
-    const play = new GameEngineClass(loader, playAudioManager)
-    const replay = new GameEngineClass(loader, replayAudioManager)
+    let mounted = true
+    let platformInstance: WebPlatformLayer | null = null
+    let playEngineInstance: GameEngine | null = null
+    let replayEngineInstance: GameEngine | null = null
 
-    setPlayEngine(play)
-    setReplayEngine(replay)
-    setActiveEngine(play)
+    const init = async () => {
+      const container = document.createElement("div")
+      container.style.width = "100%"
+      container.style.height = "100%"
+      platformContainerRef.current = container
+
+      const canvasSize = calculateCanvasSize()
+      platformInstance = new WebPlatformLayer(container, {
+        screenWidth: canvasSize.width,
+        screenHeight: canvasSize.height,
+        worldWidth: canvasSize.width,
+        worldHeight: canvasSize.height,
+        backgroundColor: 0x000000,
+      })
+      await platformInstance.init()
+
+      if (!mounted) return
+
+      const loader = new DemoLoader()
+      playEngineInstance = new GameEngineClass({
+        loader,
+        platform: platformInstance,
+      })
+      replayEngineInstance = new GameEngineClass({
+        loader,
+        platform: platformInstance,
+      })
+
+      if (!mounted) return
+
+      setPlatform(platformInstance)
+      setPlayEngine(playEngineInstance)
+      setReplayEngine(replayEngineInstance)
+      setActiveEngine(playEngineInstance)
+    }
+
+    init()
 
     return () => {
-      const playState = play.getState()
-      if (playState === GameState.PLAYING || playState === GameState.PAUSED) {
-        play.end()
+      mounted = false
+      if (playEngineInstance) {
+        const playState = playEngineInstance.getState()
+        if (playState === GameState.PLAYING || playState === GameState.PAUSED) {
+          playEngineInstance.end()
+        }
       }
-      playAudioManager.close()
-
-      const replayState = replay.getState()
-      if (
-        replayState === GameState.PLAYING ||
-        replayState === GameState.PAUSED
-      ) {
-        replay.end()
+      if (replayEngineInstance) {
+        const replayState = replayEngineInstance.getState()
+        if (
+          replayState === GameState.PLAYING ||
+          replayState === GameState.PAUSED
+        ) {
+          replayEngineInstance.end()
+        }
       }
-      replayAudioManager.close()
     }
   }, [GameEngineClass, DemoLoader])
 
@@ -78,13 +120,15 @@ export function GameStateProvider({ children }: { children: ReactNode }) {
 
   const contextValue = useMemo(
     () => ({
+      platform,
+      platformContainer: platformContainerRef.current,
       playEngine,
       replayEngine,
       activeEngine,
       gameState,
       setActiveEngine,
     }),
-    [playEngine, replayEngine, activeEngine, gameState],
+    [platform, playEngine, replayEngine, activeEngine, gameState],
   )
 
   return (

@@ -246,13 +246,13 @@ export class KeystrokesInputManager {
 
   bindPauseHandler(): void {
     if (this.onPauseResume) {
-      const existingHandler = this.boundHandlers.get("pause:space")
+      const existingHandler = this.boundHandlers.get("pause:p")
       if (existingHandler) {
-        unbindKey(" ", existingHandler)
+        unbindKey("p", existingHandler)
       }
       const pauseHandler = this.createPauseHandler()
-      bindKey(" ", pauseHandler)
-      this.boundHandlers.set("pause:space", pauseHandler)
+      bindKey("p", pauseHandler)
+      this.boundHandlers.set("pause:p", pauseHandler)
     }
   }
 }

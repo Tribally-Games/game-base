@@ -44,7 +44,7 @@ export function getInputInstructions(inputMapping: GameInputMapping): string[] {
   }
 
   // Always add system defaults
-  instructions.push("Space = Pause/Resume")
+  instructions.push("P = Pause/Resume")
   instructions.push("R = Reset")
 
   return instructions

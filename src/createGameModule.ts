@@ -1,26 +1,29 @@
 import { ReplayManager } from "@hiddentao/clockwork-engine"
 import type {
   GameCanvas,
+  GameCanvasOptions,
   GameEngine,
-  Loader,
+  GameEngineOptions,
+  PlatformLayer,
 } from "@hiddentao/clockwork-engine"
-import type { AudioManager } from "./audio/types"
 import type { GameMetaConfigSchema, GameMetaConfigValues } from "./metaConfig"
 import type { OperatorMetadata } from "./objectives/types"
 import { type GameInputMapping, GameInputType, GameIntent } from "./types"
 
 /**
- * Game engine constructor that accepts loader and audio manager
+ * Game engine constructor that accepts engine options with loader and platform
  */
 export type GameEngineConstructor = new (
-  loader: Loader,
-  audioManager: AudioManager,
+  options: GameEngineOptions,
 ) => GameEngine
 
 /**
- * Game canvas constructor
+ * Game canvas constructor that accepts options and platform
  */
-export type GameCanvasConstructor = new (...args: any[]) => GameCanvas
+export type GameCanvasConstructor = new (
+  options: GameCanvasOptions,
+  platform: PlatformLayer,
+) => GameCanvas
 
 /**
  * Definition of a single objective
@@ -36,25 +39,21 @@ export interface ObjectiveDefinition {
  *
  * @remarks
  * Games extending this framework must provide a GameEngine class that:
- * 1. Extends BaseGameEngine from @hiddentao/clockwork-engine
- * 2. Accepts `(loader: Loader, audioManager: AudioManager)` as constructor parameters
+ * 1. Extends GameEngine from @hiddentao/clockwork-engine
+ * 2. Accepts `GameEngineOptions` ({ loader, platform }) as constructor parameter
  *
  * @example
  * ```typescript
- * import { BaseGameEngine, Loader } from '@hiddentao/clockwork-engine'
- * import { AudioManager } from '@tribally.games/game-base'
+ * import { GameEngine, GameEngineOptions } from '@hiddentao/clockwork-engine'
  *
- * class MyGameEngine extends BaseGameEngine {
- *   private audioManager: AudioManager
- *
- *   constructor(loader: Loader, audioManager: AudioManager) {
- *     super(loader)
- *     this.audioManager = audioManager
+ * class MyGameEngine extends GameEngine {
+ *   constructor(options: GameEngineOptions) {
+ *     super(options)
  *   }
  *
  *   someMethod() {
- *     // Use audioManager instead of DOM APIs
- *     this.audioManager.playSound('jump', 0.8)
+ *     // Use platform.audio for sound playback
+ *     this.platform.audio.playSound('jump', 0.8)
  *   }
  * }
  * ```
