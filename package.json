@@ -59,7 +59,7 @@
     "release:patch": "commit-and-tag-version --release-as patch && git push --follow-tags && bun publish"
   },
   "peerDependencies": {
-    "@hiddentao/clockwork-engine": "^2.1.1"
+    "@hiddentao/clockwork-engine": "^2.2.0"
   },
   "dependencies": {
     "@rwh/keystrokes": "^1.5.6",
