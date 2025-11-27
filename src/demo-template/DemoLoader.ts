@@ -1,4 +1,5 @@
 import { Loader } from "@hiddentao/clockwork-engine"
+import mime from "mime/lite"
 
 /**
  * Demo loader implementation for development and testing environments.
@@ -47,9 +48,15 @@ export class DemoLoader extends Loader {
         )
       }
 
-      const contentType = response.headers.get("content-type") || ""
+      let contentType = response.headers.get("content-type")
+      if (!contentType || contentType === "application/octet-stream") {
+        contentType = mime.getType(url) || ""
+      }
 
-      if (contentType.includes("json") || contentType.includes("text")) {
+      const isTextContent =
+        /^(text\/|application\/(javascript|json|node))/.test(contentType)
+
+      if (isTextContent) {
         return await response.text()
       }
 
