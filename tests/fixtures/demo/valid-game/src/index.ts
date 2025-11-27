@@ -1,9 +1,10 @@
-import type { GameEngine as ClockworkGameEngine, GameCanvas as ClockworkGameCanvas, Loader } from "@hiddentao/clockwork-engine"
-
-interface AudioManager {
-  playSound(name: string, volume: number): void
-  stopSound(name: string): void
-}
+import type {
+  GameEngine as ClockworkGameEngine,
+  GameCanvas as ClockworkGameCanvas,
+  GameEngineOptions,
+  GameCanvasOptions,
+  PlatformLayer,
+} from "@hiddentao/clockwork-engine"
 
 interface BaseGameSnapshot {
   state: number
@@ -20,13 +21,7 @@ interface TestGameSnapshot extends BaseGameSnapshot {
 }
 
 class TestGameEngine implements ClockworkGameEngine {
-  private loader: Loader
-  private audioManager: AudioManager
-
-  constructor(loader: Loader, audioManager: AudioManager) {
-    this.loader = loader
-    this.audioManager = audioManager
-  }
+  constructor(_options: GameEngineOptions) {}
 
   init() {}
   start() {}
@@ -48,6 +43,8 @@ class TestGameEngine implements ClockworkGameEngine {
 }
 
 class TestGameCanvas implements ClockworkGameCanvas {
+  constructor(_options: GameCanvasOptions, _platform: PlatformLayer) {}
+
   init() {}
   render() {}
   cleanup() {}

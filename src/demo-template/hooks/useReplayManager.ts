@@ -1,5 +1,5 @@
-import type { GameRecording } from "@hiddentao/clockwork-engine"
-import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
+import type { GameRecording, PlatformLayer } from "@hiddentao/clockwork-engine"
+import type { GameEngine } from "@hiddentao/clockwork-engine"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useGameModule } from "../contexts/GameModuleContext"
 
@@ -13,7 +13,6 @@ export interface UseReplayManagerReturn {
   startReplay: (recording: GameRecording) => Promise<void>
   stopReplay: () => void
   changeSpeed: (speed: number) => void
-  setGameCanvas: (canvas: GameCanvas | null) => void
   manager: InstanceType<
     ReturnType<typeof useGameModule>["ReplayManager"]
   > | null
@@ -21,6 +20,7 @@ export interface UseReplayManagerReturn {
 
 export function useReplayManager(
   replayEngine: GameEngine | null,
+  platform: PlatformLayer | null,
   options: UseReplayManagerOptions,
 ): UseReplayManagerReturn {
   const { ReplayManager } = useGameModule()
@@ -32,7 +32,6 @@ export function useReplayManager(
     null,
   )
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
-  const gameCanvasRef = useRef<GameCanvas | null>(null)
   const onReplayCompleteRef = useRef(onReplayComplete)
 
   useEffect(() => {
@@ -99,19 +98,13 @@ export function useReplayManager(
     setReplayProgress(0)
   }, [])
 
-  const changeSpeed = useCallback((speed: number) => {
-    setReplaySpeed(speed)
-    if (gameCanvasRef.current) {
-      const app = (gameCanvasRef.current as any).getApp?.()
-      if (app?.ticker) {
-        app.ticker.speed = speed
-      }
-    }
-  }, [])
-
-  const setGameCanvas = useCallback((canvas: GameCanvas | null) => {
-    gameCanvasRef.current = canvas
-  }, [])
+  const changeSpeed = useCallback(
+    (speed: number) => {
+      setReplaySpeed(speed)
+      platform?.rendering.setTickerSpeed(speed)
+    },
+    [platform],
+  )
 
   return {
     replaySpeed,
@@ -119,7 +112,6 @@ export function useReplayManager(
     startReplay,
     stopReplay,
     changeSpeed,
-    setGameCanvas,
     manager: replayManagerRef.current,
   }
 }

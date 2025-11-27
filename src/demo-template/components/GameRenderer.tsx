@@ -9,6 +9,7 @@ import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { KeystrokesInputManager } from "../../input/KeystrokesInputManager"
 import { useGameModule } from "../contexts/GameModuleContext"
+import { useGameState } from "../contexts/GameStateContext"
 import { calculateCanvasSize } from "../hooks/useResponsiveCanvas"
 
 export interface GameRendererProps {
@@ -37,7 +38,9 @@ export function GameRenderer({
   onReset,
 }: GameRendererProps) {
   const { GameCanvas: GameCanvasClass, getGameModuleConfig } = useGameModule()
+  const { platform, platformContainer } = useGameState()
   const containerRef = useRef<HTMLDivElement>(null)
+  const platformMountedRef = useRef(false)
   const [gameCanvas, setGameCanvas] = useState<GameCanvas | null>(null)
   const [canvasSize, setCanvasSize] = useState(() => calculateCanvasSize())
   const [isInitialized, setIsInitialized] = useState(false)
@@ -55,6 +58,18 @@ export function GameRenderer({
   useEffect(() => {
     activeEngineRef.current = activeEngine
   }, [activeEngine])
+
+  // Mount platform container to the DOM
+  useEffect(() => {
+    if (
+      containerRef.current &&
+      platformContainer &&
+      !platformMountedRef.current
+    ) {
+      containerRef.current.appendChild(platformContainer)
+      platformMountedRef.current = true
+    }
+  }, [platformContainer])
 
   useEffect(() => {
     if (!activeEngine) {
@@ -81,7 +96,12 @@ export function GameRenderer({
   }, [activeEngine])
 
   const initializeCanvas = useCallback(async () => {
-    if (!containerRef.current || !activeEngineRef.current || !gameConfig) {
+    if (
+      !containerRef.current ||
+      !activeEngineRef.current ||
+      !gameConfig ||
+      !platform
+    ) {
       return
     }
 
@@ -106,10 +126,8 @@ export function GameRenderer({
         backgroundColor: 0x000000,
       }
 
-      const canvas = await (GameCanvasClass as any).create(
-        containerRef.current,
-        canvasOptions,
-      )
+      const canvas = new GameCanvasClass(canvasOptions, platform)
+      await canvas.initialize()
 
       canvas.setGameEngine(activeEngineRef.current)
 
@@ -126,16 +144,17 @@ export function GameRenderer({
   }, [
     GameCanvasClass,
     gameConfig,
+    platform,
     isInitialized,
     creatingCanvas,
     onCanvasReady,
   ])
 
   useEffect(() => {
-    if (gameConfig && !isInitialized && !creatingCanvas) {
+    if (gameConfig && platform && !isInitialized && !creatingCanvas) {
       initializeCanvas()
     }
-  }, [gameConfig, isInitialized, creatingCanvas, initializeCanvas])
+  }, [gameConfig, platform, isInitialized, creatingCanvas, initializeCanvas])
 
   useEffect(() => {
     if (!playEngine) return
