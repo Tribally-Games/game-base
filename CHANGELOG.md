@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.1.1](https://github.com/tribally-games/game-base/compare/v2.1.0...v2.1.1) (2025-11-27)
+
+
+### Code Refactoring
+
+* update to latest clockwork engine api ([#4](https://github.com/tribally-games/game-base/issues/4)) ([2270d93](https://github.com/tribally-games/game-base/commit/2270d9377585efc26a54c3edbd9c3d5b69beaa60))
+
 ## [2.1.0](https://github.com/tribally-games/game-base/compare/v0.5.17...v2.1.0) (2025-11-17)
 
 
