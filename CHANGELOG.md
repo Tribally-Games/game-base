@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.1.3](https://github.com/tribally-games/game-base/compare/v2.1.2...v2.1.3) (2025-11-29)
+
 ## [2.1.2](https://github.com/tribally-games/game-base/compare/v2.1.1...v2.1.2) (2025-11-27)
 
 
