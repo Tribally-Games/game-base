@@ -21,6 +21,7 @@ export interface GameRendererProps {
   onCanvasReady?: (canvas: GameCanvas) => void
   onRecordingStart?: () => void
   onRecordingSave?: (recording: GameRecording) => void
+  onFinalSnapshotCapture?: (snapshot: any) => void
   onPauseResume?: (key: string) => void
   onReset?: () => void
 }
@@ -34,6 +35,7 @@ export function GameRenderer({
   onCanvasReady,
   onRecordingStart,
   onRecordingSave,
+  onFinalSnapshotCapture,
   onPauseResume,
   onReset,
 }: GameRendererProps) {
@@ -188,6 +190,8 @@ export function GameRenderer({
         if (recording) {
           onRecordingSave?.(recording)
         }
+        const finalSnapshot = playEngine.getGameSnapshot()
+        onFinalSnapshotCapture?.(finalSnapshot)
       }
     }
 
@@ -196,7 +200,7 @@ export function GameRenderer({
     return () => {
       playEngine.off(GameEngineEventType.STATE_CHANGE, handleStateChange)
     }
-  }, [playEngine, onRecordingStart, onRecordingSave])
+  }, [playEngine, onRecordingStart, onRecordingSave, onFinalSnapshotCapture])
 
   useEffect(() => {
     const newInputMapping = getGameModuleConfig().getInputMapping()

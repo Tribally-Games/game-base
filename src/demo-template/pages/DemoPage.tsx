@@ -19,15 +19,18 @@ import { ObjectivesDisplay } from "../components/ObjectivesDisplay"
 import { RenderingStats } from "../components/RenderingStats"
 import { ReplayControls } from "../components/ReplayControls"
 import { SeedDisplay } from "../components/SeedDisplay"
+import { ValidationDetailsDialog } from "../components/ValidationDetailsDialog"
+import { ValidationStatus } from "../components/ValidationStatus"
 import { useDemoSession } from "../contexts/DemoSessionContext"
 import { useGameModule } from "../contexts/GameModuleContext"
 import { useGameState } from "../contexts/GameStateContext"
 import { useGameScoreTracking } from "../hooks/useGameScoreTracking"
+import { useHeadlessValidation } from "../hooks/useHeadlessValidation"
 import { useRenderingStats } from "../hooks/useRenderingStats"
 import { useReplayManager } from "../hooks/useReplayManager"
 
 export function DemoPage() {
-  const { getGameModuleConfig } = useGameModule()
+  const { getGameModuleConfig, GameEngine: GameEngineClass } = useGameModule()
   const gameModuleConfig = getGameModuleConfig()
   const objectiveMetadata = gameModuleConfig.objectiveMetadata
   const {
@@ -64,6 +67,11 @@ export function DemoPage() {
     Record<string, boolean>
   >({})
   const completedObjectivesRef = useRef<Record<string, boolean>>({})
+  const [finalSnapshot, setFinalSnapshot] = useState<any>(null)
+  const [showValidationDialog, setShowValidationDialog] = useState(false)
+
+  const { validate, isValidating, validationResult, clearResult } =
+    useHeadlessValidation(GameEngineClass)
 
   const setCanvasEngine = useCallback(
     (engine: any) => {
@@ -147,6 +155,13 @@ export function DemoPage() {
     }
   }, [gameState])
 
+  // Automatic validation when recording and snapshot are available
+  useEffect(() => {
+    if (savedRecording && finalSnapshot && !isValidating && !validationResult) {
+      validate(savedRecording, finalSnapshot)
+    }
+  }, [savedRecording, finalSnapshot, isValidating, validationResult, validate])
+
   const handleReplayComplete = useCallback(() => {
     if (playEngine) {
       setActiveEngine(playEngine)
@@ -175,15 +190,17 @@ export function DemoPage() {
 
       setActiveEngine(playEngine)
       setSavedRecording(null)
+      setFinalSnapshot(null)
       setIsRecording(false)
       setIsReplaying(false)
       replayManager.changeSpeed(1.0)
+      clearResult()
 
       setCanvasEngine(playEngine)
 
       await playEngine.reset(config)
     },
-    [playEngine, setActiveEngine, replayManager, setCanvasEngine],
+    [playEngine, setActiveEngine, replayManager, setCanvasEngine, clearResult],
   )
 
   const createConfigAndReset = useCallback(
@@ -266,6 +283,14 @@ export function DemoPage() {
     setSavedRecording(recording)
   }, [])
 
+  const handleFinalSnapshotCapture = useCallback((snapshot: any) => {
+    setFinalSnapshot(snapshot)
+  }, [])
+
+  const handleShowValidationDetails = useCallback(() => {
+    setShowValidationDialog(true)
+  }, [])
+
   return (
     <>
       <div
@@ -287,6 +312,7 @@ export function DemoPage() {
             onCanvasReady={setGameCanvas}
             onRecordingStart={handleRecordingStart}
             onRecordingSave={handleRecordingSave}
+            onFinalSnapshotCapture={handleFinalSnapshotCapture}
             onReset={handleReset}
             onPauseResume={handlePauseResume}
           />
@@ -301,6 +327,15 @@ export function DemoPage() {
             onReset={handleReset}
             onConfigure={handleConfigure}
           />
+
+          {/* Validation status shown in game section, only for user-played games */}
+          {!isReplaying && (
+            <ValidationStatus
+              isValidating={isValidating}
+              validationResult={validationResult}
+              onShowDetails={handleShowValidationDetails}
+            />
+          )}
 
           <ReplayControls
             hasRecording={savedRecording !== null}
@@ -349,6 +384,12 @@ export function DemoPage() {
         objectiveMetadata={objectiveMetadata}
         onSave={handleConfigSave}
         onClose={() => setIsConfigModalOpen(false)}
+      />
+
+      <ValidationDetailsDialog
+        isOpen={showValidationDialog}
+        result={validationResult}
+        onClose={() => setShowValidationDialog(false)}
       />
 
       <ToastContainer />
