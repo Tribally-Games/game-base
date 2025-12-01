@@ -45,7 +45,11 @@ function compareSnapshots(expected: any, actual: any): ValidationResult {
   }
 }
 
-export function useHeadlessValidation(GameEngineClass: any) {
+export function useHeadlessValidation(
+  GameEngineClass: any,
+  DemoLoader: any,
+  extractGameSnapshotInfo: (snapshot: any) => Record<string, any>,
+) {
   const [isValidating, setIsValidating] = useState(false)
   const [validationResult, setValidationResult] =
     useState<ValidationResult | null>(null)
@@ -59,7 +63,8 @@ export function useHeadlessValidation(GameEngineClass: any) {
       setValidationResult(null)
 
       try {
-        const loader = new HeadlessLoader()
+        const demoLoader = new DemoLoader()
+        const loader = new HeadlessLoader(demoLoader)
         const platform = new MemoryPlatformLayer()
         const engine = new GameEngineClass({ loader, platform })
         const replayManager = new ReplayManager(engine)
@@ -79,7 +84,9 @@ export function useHeadlessValidation(GameEngineClass: any) {
         }
 
         const actualSnapshot = engine.getGameSnapshot()
-        const result = compareSnapshots(expectedSnapshot, actualSnapshot)
+        const extractedExpected = extractGameSnapshotInfo(expectedSnapshot)
+        const extractedActual = extractGameSnapshotInfo(actualSnapshot)
+        const result = compareSnapshots(extractedExpected, extractedActual)
         setValidationResult(result)
         return result
       } catch (error: any) {
@@ -93,7 +100,7 @@ export function useHeadlessValidation(GameEngineClass: any) {
         setIsValidating(false)
       }
     },
-    [GameEngineClass],
+    [GameEngineClass, DemoLoader, extractGameSnapshotInfo],
   )
 
   const clearResult = useCallback(() => {

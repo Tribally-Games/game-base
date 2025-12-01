@@ -30,7 +30,11 @@ import { useRenderingStats } from "../hooks/useRenderingStats"
 import { useReplayManager } from "../hooks/useReplayManager"
 
 export function DemoPage() {
-  const { getGameModuleConfig, GameEngine: GameEngineClass } = useGameModule()
+  const {
+    getGameModuleConfig,
+    GameEngine: GameEngineClass,
+    DemoLoader,
+  } = useGameModule()
   const gameModuleConfig = getGameModuleConfig()
   const objectiveMetadata = gameModuleConfig.objectiveMetadata
   const {
@@ -71,7 +75,11 @@ export function DemoPage() {
   const [showValidationDialog, setShowValidationDialog] = useState(false)
 
   const { validate, isValidating, validationResult, clearResult } =
-    useHeadlessValidation(GameEngineClass)
+    useHeadlessValidation(
+      GameEngineClass,
+      DemoLoader,
+      gameModuleConfig.extractGameSnapshotInfo,
+    )
 
   const setCanvasEngine = useCallback(
     (engine: any) => {
