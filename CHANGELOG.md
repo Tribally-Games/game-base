@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.3.0](https://github.com/tribally-games/game-base/compare/v2.2.0...v2.3.0) (2025-12-01)
+
+
+### Features
+
+* **demo-template:** filter snapshots for validation using extractor function ([689e855](https://github.com/tribally-games/game-base/commit/689e855a91509b2345acb9182ea11963b2f6e2a5))
+
 ## [2.2.0](https://github.com/tribally-games/game-base/compare/v2.1.3...v2.2.0) (2025-11-30)
 
 
