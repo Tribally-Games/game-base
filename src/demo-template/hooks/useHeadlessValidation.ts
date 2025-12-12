@@ -1,9 +1,9 @@
 import {
   type GameRecording,
   HeadlessLoader,
-  MemoryPlatformLayer,
   ReplayManager,
-} from "@hiddentao/clockwork-engine"
+} from "@clockwork-engine/core"
+import { MemoryPlatformLayer } from "@clockwork-engine/platform-memory"
 import { useCallback, useState } from "react"
 
 export interface ValidationResult {

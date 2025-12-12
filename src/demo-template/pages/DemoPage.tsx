@@ -3,7 +3,7 @@ import {
   type GameConfig,
   type GameRecording,
   GameState,
-} from "@hiddentao/clockwork-engine"
+} from "@clockwork-engine/core"
 import { type GameMetaConfigValues } from "@tribally.games/game-base"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ToastContainer, toast } from "react-toastify"

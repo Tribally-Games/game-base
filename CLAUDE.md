@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `@tribally.games/game-base` is a core dependency package for Tribally arcade games, providing standardized game module structure, objectives handling, and shared utilities. It acts as a framework that individual games extend.
 
-It's for games built on `@hiddentao/clockwork-engine` dependency. Look in `node_modules/@hiddentao/clockwork-engine/docs/engine.md` for documentation on best practices when using the engine and how the engine is structured.
+It's for games built on `@clockwork-engine/core` dependency. Look in `node_modules/@clockwork-engine/core/docs/engine.md` for documentation on best practices when using the engine and how the engine is structured.
 
 ## Development Commands
 
@@ -61,7 +61,7 @@ Uses conventional commits with commitlint validation via Husky hooks ([.husky/co
 The central pattern is `createGameModule()` ([src/createGameModule.ts](src/createGameModule.ts)) - a factory that generates standardized exports expected by the Tribally arcade platform. Games call this with their engine, canvas, and configuration.
 
 **Required game exports:**
-- `GameEngine` - Game engine class (from @hiddentao/clockwork-engine)
+- `GameEngine` - Game engine class (from @clockwork-engine/core)
 - `GameCanvas` - Canvas rendering class
 - `GameInputType` - Input type enum
 - `GameIntent` - Game intent enum
@@ -136,7 +136,9 @@ Serves demo-template React app with Vite, provides `/game-assets/` endpoint for 
 
 ## Key Dependencies
 
-- **@hiddentao/clockwork-engine** (peer dependency) - Game engine framework that games build on
+- **@clockwork-engine/core** (direct dependency) - Core game engine framework
+- **@clockwork-engine/platform-memory** (peer dependency) - Headless platform for testing
+- **@clockwork-engine/platform-web-pixi** (peer dependency) - Web platform with PIXI.js rendering
 - **Bun** - Primary runtime (Node.js 22+ required for production)
 - **Biome** - Linting and formatting
 - **TypeScript** - Strict mode enabled with exactOptionalPropertyTypes

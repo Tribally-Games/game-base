@@ -1,5 +1,5 @@
-import type { GameRecording, PlatformLayer } from "@hiddentao/clockwork-engine"
-import type { GameEngine } from "@hiddentao/clockwork-engine"
+import type { GameRecording, PlatformLayer } from "@clockwork-engine/core"
+import type { GameEngine } from "@clockwork-engine/core"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useGameModule } from "../contexts/GameModuleContext"
 

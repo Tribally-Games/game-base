@@ -3,8 +3,8 @@ import {
   GameEngineEventType,
   GameState,
   type PlatformLayer,
-  WebPlatformLayer,
-} from "@hiddentao/clockwork-engine"
+} from "@clockwork-engine/core"
+import { WebPlatformLayer } from "@clockwork-engine/platform-web-pixi"
 import {
   type ReactNode,
   createContext,

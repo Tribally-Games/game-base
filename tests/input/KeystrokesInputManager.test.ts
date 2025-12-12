@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test"
-import { GameState } from "@hiddentao/clockwork-engine"
-import type { GameEngine } from "@hiddentao/clockwork-engine"
+import { GameState } from "@clockwork-engine/core"
+import type { GameEngine } from "@clockwork-engine/core"
 import {
   KeystrokesInputManager,
   type KeystrokesInputManagerOptions,

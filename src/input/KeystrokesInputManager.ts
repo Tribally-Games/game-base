@@ -1,5 +1,5 @@
-import type { GameEngine } from "@hiddentao/clockwork-engine"
-import { GameState } from "@hiddentao/clockwork-engine"
+import type { GameEngine } from "@clockwork-engine/core"
+import { GameState } from "@clockwork-engine/core"
 import {
   bindKey,
   bindKeyCombo,

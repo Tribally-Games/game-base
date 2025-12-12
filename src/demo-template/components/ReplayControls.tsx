@@ -1,4 +1,4 @@
-import { GameState } from "@hiddentao/clockwork-engine"
+import { GameState } from "@clockwork-engine/core"
 
 export interface ReplayControlsProps {
   hasRecording: boolean
