@@ -1,4 +1,4 @@
-import type { GameCanvas } from "@hiddentao/clockwork-engine"
+import type { GameCanvas } from "@clockwork-engine/core"
 import { useEffect, useState } from "react"
 
 export interface RenderingStats {

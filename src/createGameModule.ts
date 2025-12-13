@@ -1,11 +1,11 @@
-import { ReplayManager } from "@hiddentao/clockwork-engine"
+import { ReplayManager } from "@clockwork-engine/core"
 import type {
   GameCanvas,
   GameCanvasOptions,
   GameEngine,
   GameEngineOptions,
   PlatformLayer,
-} from "@hiddentao/clockwork-engine"
+} from "@clockwork-engine/core"
 import type { GameMetaConfigSchema, GameMetaConfigValues } from "./metaConfig"
 import type { OperatorMetadata } from "./objectives/types"
 import { type GameInputMapping, GameInputType, GameIntent } from "./types"
@@ -39,12 +39,12 @@ export interface ObjectiveDefinition {
  *
  * @remarks
  * Games extending this framework must provide a GameEngine class that:
- * 1. Extends GameEngine from @hiddentao/clockwork-engine
+ * 1. Extends GameEngine from @clockwork-engine/core
  * 2. Accepts `GameEngineOptions` ({ loader, platform }) as constructor parameter
  *
  * @example
  * ```typescript
- * import { GameEngine, GameEngineOptions } from '@hiddentao/clockwork-engine'
+ * import { GameEngine, GameEngineOptions } from '@clockwork-engine/core'
  *
  * class MyGameEngine extends GameEngine {
  *   constructor(options: GameEngineOptions) {
@@ -126,4 +126,4 @@ export type {
   GameEngine,
   GameCanvas,
   ReplayManager,
-} from "@hiddentao/clockwork-engine"
+} from "@clockwork-engine/core"

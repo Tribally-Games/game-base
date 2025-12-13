@@ -1,4 +1,4 @@
-import { Loader } from "@hiddentao/clockwork-engine"
+import { Loader } from "@clockwork-engine/core"
 import mime from "mime/lite"
 
 /**

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { GameState } from "@hiddentao/clockwork-engine"
+import { GameState } from "@clockwork-engine/core"
 import { OBJECTIVE_OPERATORS } from "../src/constants"
 import type { GameModuleConfig } from "../src/createGameModule"
 import {

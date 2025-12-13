@@ -4,6 +4,7 @@
     "": {
       "name": "@tribally.games/game-base",
       "dependencies": {
+        "@clockwork-engine/core": "^2.7.9",
         "@rwh/keystrokes": "^1.5.6",
         "@vitejs/plugin-react": "^4.3.4",
         "chalk": "^5.3.0",
@@ -34,7 +35,8 @@
         "typescript": "^5.8.3",
       },
       "peerDependencies": {
-        "@hiddentao/clockwork-engine": "^2.7.1",
+        "@clockwork-engine/platform-memory": "^2.7.9",
+        "@clockwork-engine/platform-web-pixi": "^2.7.9",
       },
     },
   },
@@ -96,6 +98,12 @@
     "@biomejs/cli-win32-arm64": ["@biomejs/cli-win32-arm64@1.9.4", "", { "os": "win32", "cpu": "arm64" }, "sha512-tlbhLk+WXZmgwoIKwHIHEBZUwxml7bRJgk0X2sPyNR3S93cdRq6XulAZRQJ17FYGGzWne0fgrXBKpl7l4M87Hg=="],
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@1.9.4", "", { "os": "win32", "cpu": "x64" }, "sha512-8Y5wMhVIPaWe6jw2H+KlEm4wP/f7EW3810ZLmDlrEEy5KvBsb9ECEfu/kMWD484ijfQ8+nIi0giMgu9g1UAuuA=="],
+
+    "@clockwork-engine/core": ["@clockwork-engine/core@2.7.9", "", { "dependencies": { "alea": "=1.0.1" } }, "sha512-p8VsiIUOcitNyk8sSY9bP6vLpMg1KzWrjEWgkkXHQxcOL+44oAH5aW27YwSXUiZOr027eYSJjpCKF7nHUZ1Cww=="],
+
+    "@clockwork-engine/platform-memory": ["@clockwork-engine/platform-memory@2.7.9", "", { "peerDependencies": { "@clockwork-engine/core": "^2.7.0" } }, "sha512-V5xOq0pCMP3XrX/mF40k3n1/XPIgrkCpZZBNuXjLYtfp+05ge0vEXKJlaiMfFGgxiQIwCIEdBIHGNr/bVRPeIA=="],
+
+    "@clockwork-engine/platform-web-pixi": ["@clockwork-engine/platform-web-pixi@2.7.9", "", { "dependencies": { "pixi-viewport": "=6.0.3", "pixi.js": "=8.13.2" }, "peerDependencies": { "@clockwork-engine/core": "^2.7.0" } }, "sha512-h61v3pCFT5pIcS0eSKMcQ5/MJ1k2LslsfTBlYBqOhyOoCM5+J44JG0vCEWNh9z1lVKW57uq+BqIHPNNaXjy0PA=="],
 
     "@commitlint/cli": ["@commitlint/cli@19.8.1", "", { "dependencies": { "@commitlint/format": "^19.8.1", "@commitlint/lint": "^19.8.1", "@commitlint/load": "^19.8.1", "@commitlint/read": "^19.8.1", "@commitlint/types": "^19.8.1", "tinyexec": "^1.0.0", "yargs": "^17.0.0" }, "bin": { "commitlint": "./cli.js" } }, "sha512-LXUdNIkspyxrlV6VDHWBmCZRtkEVRpBKxi2Gtw3J54cGWhLCTouVD/Q6ZSaSvd2YaDObWK8mDjrz3TIKtaQMAA=="],
 
@@ -192,8 +200,6 @@
     "@esbuild/win32-ia32": ["@esbuild/win32-ia32@0.25.12", "", { "os": "win32", "cpu": "ia32" }, "sha512-HkqnmmBoCbCwxUKKNPBixiWDGCpQGVsrQfJoVGYLPT41XWF8lHuE5N6WhVia2n4o5QK5M4tYr21827fNhi4byQ=="],
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.25.12", "", { "os": "win32", "cpu": "x64" }, "sha512-alJC0uCZpTFrSL0CCDjcgleBXPnCrEAhTBILpeAp7M/OFgoqtAetfBzX0xM00MUsVVPpVjlPuMbREqnZCXaTnA=="],
-
-    "@hiddentao/clockwork-engine": ["@hiddentao/clockwork-engine@2.7.1", "", { "dependencies": { "alea": "=1.0.1", "pixi-viewport": "=6.0.3", "pixi.js": "=8.13.2" } }, "sha512-spZzIb2BC7vhGgZV95hDb+8vlEw0DsZ6AmoT6eNim/4qi6BpWW1A612/JqcDIrJbdoEkkGyMMrT+1T2UihajAA=="],
 
     "@hutson/parse-repository-url": ["@hutson/parse-repository-url@3.0.2", "", {}, "sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q=="],
 

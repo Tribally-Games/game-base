@@ -1,4 +1,4 @@
-import type { GameState } from "@hiddentao/clockwork-engine"
+import type { GameState } from "@clockwork-engine/core"
 
 export interface Objective {
   id: number

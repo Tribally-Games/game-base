@@ -4,8 +4,8 @@ import {
   GameRecorder,
   type GameRecording,
   GameState,
-} from "@hiddentao/clockwork-engine"
-import type { GameCanvas, GameEngine } from "@hiddentao/clockwork-engine"
+} from "@clockwork-engine/core"
+import type { GameCanvas, GameEngine } from "@clockwork-engine/core"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { KeystrokesInputManager } from "../../input/KeystrokesInputManager"
 import { useGameModule } from "../contexts/GameModuleContext"

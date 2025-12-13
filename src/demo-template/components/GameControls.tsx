@@ -1,4 +1,4 @@
-import { GameState } from "@hiddentao/clockwork-engine"
+import { GameState } from "@clockwork-engine/core"
 import { getInputInstructions } from "../../input/getInputInstructions"
 import type { GameInputMapping } from "../../types"
 
