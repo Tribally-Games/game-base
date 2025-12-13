@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.3.1](https://github.com/tribally-games/game-base/compare/v2.3.0...v2.3.1) (2025-12-13)
+
+
+### Code Refactoring
+
+* migrate to clockwork-engine monorepo packages ([#5](https://github.com/tribally-games/game-base/issues/5)) ([1b501d7](https://github.com/tribally-games/game-base/commit/1b501d72e44159de53b0f7e2138a04179b6768fd))
+
 ## [2.3.0](https://github.com/tribally-games/game-base/compare/v2.2.0...v2.3.0) (2025-12-01)
 
 
