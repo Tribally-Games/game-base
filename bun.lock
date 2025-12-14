@@ -4,7 +4,7 @@
     "": {
       "name": "@tribally.games/game-base",
       "dependencies": {
-        "@clockwork-engine/core": "^2.7.9",
+        "@clockwork-engine/core": "^2.8.0",
         "@rwh/keystrokes": "^1.5.6",
         "@vitejs/plugin-react": "^4.3.4",
         "chalk": "^5.3.0",
@@ -35,8 +35,8 @@
         "typescript": "^5.8.3",
       },
       "peerDependencies": {
-        "@clockwork-engine/platform-memory": "^2.7.9",
-        "@clockwork-engine/platform-web-pixi": "^2.7.9",
+        "@clockwork-engine/platform-memory": "^2.8.0",
+        "@clockwork-engine/platform-web-pixi": "^2.8.0",
       },
     },
   },
@@ -99,11 +99,11 @@
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@1.9.4", "", { "os": "win32", "cpu": "x64" }, "sha512-8Y5wMhVIPaWe6jw2H+KlEm4wP/f7EW3810ZLmDlrEEy5KvBsb9ECEfu/kMWD484ijfQ8+nIi0giMgu9g1UAuuA=="],
 
-    "@clockwork-engine/core": ["@clockwork-engine/core@2.7.9", "", { "dependencies": { "alea": "=1.0.1" } }, "sha512-p8VsiIUOcitNyk8sSY9bP6vLpMg1KzWrjEWgkkXHQxcOL+44oAH5aW27YwSXUiZOr027eYSJjpCKF7nHUZ1Cww=="],
+    "@clockwork-engine/core": ["@clockwork-engine/core@2.8.0", "", { "dependencies": { "alea": "=1.0.1" } }, "sha512-0oZsmIKvNz3zEYXMKoglOIO55uyYcCpm+iXfhkoZtzTi3v+gO+cAyfE1sMPfhiTIYUkstWTPIGRDAWqed3VRMA=="],
 
-    "@clockwork-engine/platform-memory": ["@clockwork-engine/platform-memory@2.7.9", "", { "peerDependencies": { "@clockwork-engine/core": "^2.7.0" } }, "sha512-V5xOq0pCMP3XrX/mF40k3n1/XPIgrkCpZZBNuXjLYtfp+05ge0vEXKJlaiMfFGgxiQIwCIEdBIHGNr/bVRPeIA=="],
+    "@clockwork-engine/platform-memory": ["@clockwork-engine/platform-memory@2.8.0", "", { "peerDependencies": { "@clockwork-engine/core": "^2.7.0" } }, "sha512-J5q7LnL7+2Bp+H1uyDIAQLuLRfS6R7++p43KU8JaI0TsAUqCYimP9SnXaukn7gT8IUDimj/bCUrkWWe+r6l4hg=="],
 
-    "@clockwork-engine/platform-web-pixi": ["@clockwork-engine/platform-web-pixi@2.7.9", "", { "dependencies": { "pixi-viewport": "=6.0.3", "pixi.js": "=8.13.2" }, "peerDependencies": { "@clockwork-engine/core": "^2.7.0" } }, "sha512-h61v3pCFT5pIcS0eSKMcQ5/MJ1k2LslsfTBlYBqOhyOoCM5+J44JG0vCEWNh9z1lVKW57uq+BqIHPNNaXjy0PA=="],
+    "@clockwork-engine/platform-web-pixi": ["@clockwork-engine/platform-web-pixi@2.8.0", "", { "dependencies": { "pixi-viewport": "=6.0.3", "pixi.js": "=8.13.2" }, "peerDependencies": { "@clockwork-engine/core": "^2.7.0" } }, "sha512-fcSLznkAFBYXvJZ14lKd1DvSm3YvOUO5lH/r1KupmC/YQyEBZTgeWGbDHPuu99uuDGSYxPt7ZVApm2dV4S+PFw=="],
 
     "@commitlint/cli": ["@commitlint/cli@19.8.1", "", { "dependencies": { "@commitlint/format": "^19.8.1", "@commitlint/lint": "^19.8.1", "@commitlint/load": "^19.8.1", "@commitlint/read": "^19.8.1", "@commitlint/types": "^19.8.1", "tinyexec": "^1.0.0", "yargs": "^17.0.0" }, "bin": { "commitlint": "./cli.js" } }, "sha512-LXUdNIkspyxrlV6VDHWBmCZRtkEVRpBKxi2Gtw3J54cGWhLCTouVD/Q6ZSaSvd2YaDObWK8mDjrz3TIKtaQMAA=="],
 
