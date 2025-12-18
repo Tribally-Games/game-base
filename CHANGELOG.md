@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.4.0](https://github.com/tribally-games/game-base/compare/v2.3.2...v2.4.0) (2025-12-18)
+
+
+### Features
+
+* **recording:** add brotli compression/decompression for game recordings ([1f4795f](https://github.com/tribally-games/game-base/commit/1f4795f838f158ee92124ec1046b7ba9ba3ecb87))
+
 ## [2.3.2](https://github.com/tribally-games/game-base/compare/v2.3.1...v2.3.2) (2025-12-14)
 
 ## [2.3.1](https://github.com/tribally-games/game-base/compare/v2.3.0...v2.3.1) (2025-12-13)
