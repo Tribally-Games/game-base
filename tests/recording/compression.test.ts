@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, test } from "bun:test"
 import type { GameRecording } from "@clockwork-engine/core"
-import brotliPromise from "brotli-wasm"
+import brotli from "brotli"
 import {
   compress,
   compressRecording,
@@ -114,10 +114,19 @@ describe("Recording Compression", () => {
     })
 
     test("should throw when decompressed data is not valid recording", async () => {
-      const brotli = await brotliPromise
       const invalidData = { foo: "bar" }
       const jsonString = JSON.stringify(invalidData)
-      const compressedData = brotli.compress(new TextEncoder().encode(jsonString))
+      const inputBuffer = Buffer.from(jsonString, "utf-8")
+      const paddedInput =
+        inputBuffer.length < 75
+          ? Buffer.concat([inputBuffer, Buffer.alloc(75 - inputBuffer.length)])
+          : inputBuffer
+      const compressedResult = brotli.compress(paddedInput)
+      const sizeHeader = Buffer.alloc(4)
+      sizeHeader.writeUInt32BE(inputBuffer.length, 0)
+      const compressedData = new Uint8Array(
+        Buffer.concat([sizeHeader, Buffer.from(compressedResult!)]),
+      )
       const base64Data = uint8ArrayToBase64(compressedData)
 
       const fakeCompressed = {
