@@ -49,7 +49,7 @@ async function buildESM() {
     entrypoints: ["src/index.ts"],
     outdir: "dist/esm",
     format: "esm",
-    target: "node",
+    target: "browser",
     minify: false,
     sourcemap: "external",
   })
