@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.0.0](https://github.com/tribally-games/game-base/compare/v2.4.0...v3.0.0) (2025-12-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **recording:** Compressed recording format now includes size header,
+existing compressed recordings need re-compression
+
+### Bug Fixes
+
+* **build:** target browser for esm bundle to avoid node-specific imports ([35df4bc](https://github.com/tribally-games/game-base/commit/35df4bc7ba192826678e31c5231a6051dbd1dd06))
+
+
+### Code Refactoring
+
+* **recording:** switch from brotli-wasm to brotli.js ([d1426fe](https://github.com/tribally-games/game-base/commit/d1426fe39ce6a5e305d03918dd38d52afc51ec3c))
+
 ## [2.4.0](https://github.com/tribally-games/game-base/compare/v2.3.2...v2.4.0) (2025-12-18)
 
 
