@@ -59,3 +59,15 @@ export function base64ToUint8Array(base64: string): Uint8Array {
   }
   return bytes
 }
+
+export function isValidBase64(str: string): boolean {
+  if (str.length === 0 || str.length % 4 !== 0) return false
+  const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
+  return base64Regex.test(str)
+}
+
+export function hasValidLzmaHeader(data: Uint8Array): boolean {
+  if (data.length < 13) return false
+  const props = data[0]
+  return props <= 224
+}

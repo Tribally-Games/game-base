@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, test } from "bun:test"
 import type { GameRecording } from "@clockwork-engine/core"
-import brotli from "brotli"
+import { compressString } from "lzma1"
 import {
   compress,
   compressRecording,
@@ -27,7 +27,7 @@ describe("Recording Compression", () => {
       const result = await compressRecording(sampleRecording)
 
       expect(result.compressed.dataType).toBe("recording")
-      expect(result.compressed.compression).toBe("brotli")
+      expect(result.compressed.compression).toBe("lzma")
       expect(result.compressed.version).toBe(1)
       expect(typeof result.compressed.data).toBe("string")
       expect(result.compressed.data.length).toBeGreaterThan(0)
@@ -62,7 +62,7 @@ describe("Recording Compression", () => {
 
     test("should respect quality option", async () => {
       const lowQuality = await compressRecording(sampleRecording, { quality: 1 })
-      const highQuality = await compressRecording(sampleRecording, { quality: 11 })
+      const highQuality = await compressRecording(sampleRecording, { quality: 9 })
 
       expect(highQuality.metrics.compressedSize).toBeLessThanOrEqual(
         lowQuality.metrics.compressedSize,
@@ -103,7 +103,7 @@ describe("Recording Compression", () => {
     test("should throw on corrupted compressed data", async () => {
       const corrupted = {
         dataType: "recording" as const,
-        compression: "brotli" as const,
+        compression: "lzma" as const,
         version: 1,
         data: "invalid-base64-data!!!",
       }
@@ -116,22 +116,12 @@ describe("Recording Compression", () => {
     test("should throw when decompressed data is not valid recording", async () => {
       const invalidData = { foo: "bar" }
       const jsonString = JSON.stringify(invalidData)
-      const inputBuffer = Buffer.from(jsonString, "utf-8")
-      const paddedInput =
-        inputBuffer.length < 75
-          ? Buffer.concat([inputBuffer, Buffer.alloc(75 - inputBuffer.length)])
-          : inputBuffer
-      const compressedResult = brotli.compress(paddedInput)
-      const sizeHeader = Buffer.alloc(4)
-      sizeHeader.writeUInt32BE(inputBuffer.length, 0)
-      const compressedData = new Uint8Array(
-        Buffer.concat([sizeHeader, Buffer.from(compressedResult!)]),
-      )
+      const compressedData = compressString(jsonString, 1)
       const base64Data = uint8ArrayToBase64(compressedData)
 
       const fakeCompressed = {
         dataType: "recording" as const,
-        compression: "brotli" as const,
+        compression: "lzma" as const,
         version: 1,
         data: base64Data,
       }

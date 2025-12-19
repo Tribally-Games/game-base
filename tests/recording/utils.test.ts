@@ -50,7 +50,7 @@ describe("Recording Utils", () => {
     test("should return true for valid compressed recording", () => {
       const recording = {
         dataType: "recording" as const,
-        compression: "brotli" as const,
+        compression: "lzma" as const,
         version: 1,
         data: "abc123",
       }
@@ -60,7 +60,7 @@ describe("Recording Utils", () => {
     test("should return false for missing dataType", () => {
       expect(
         isCompressedRecording({
-          compression: "brotli",
+          compression: "lzma",
           version: 1,
           data: "abc",
         } as any),
@@ -71,7 +71,7 @@ describe("Recording Utils", () => {
       expect(
         isCompressedRecording({
           dataType: "other",
-          compression: "brotli",
+          compression: "lzma",
           version: 1,
           data: "abc",
         } as any),
@@ -93,7 +93,7 @@ describe("Recording Utils", () => {
       expect(
         isCompressedRecording({
           dataType: "recording",
-          compression: "brotli",
+          compression: "lzma",
           data: "abc",
         } as any),
       ).toBe(false)
@@ -103,7 +103,7 @@ describe("Recording Utils", () => {
       expect(
         isCompressedRecording({
           dataType: "recording",
-          compression: "brotli",
+          compression: "lzma",
           version: "1",
           data: "abc",
         } as any),
@@ -114,7 +114,7 @@ describe("Recording Utils", () => {
       expect(
         isCompressedRecording({
           dataType: "recording",
-          compression: "brotli",
+          compression: "lzma",
           version: 1,
         } as any),
       ).toBe(false)
@@ -124,7 +124,7 @@ describe("Recording Utils", () => {
       expect(
         isCompressedRecording({
           dataType: "recording",
-          compression: "brotli",
+          compression: "lzma",
           version: 1,
           data: 123,
         } as any),

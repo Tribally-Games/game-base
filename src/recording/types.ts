@@ -2,7 +2,7 @@ import type { GameRecording } from "@clockwork-engine/core"
 
 export const COMPRESSED_RECORDING = {
   DATA_TYPE: "recording",
-  COMPRESSION: "brotli",
+  COMPRESSION: "lzma",
   VERSION: 1,
 } as const
 
