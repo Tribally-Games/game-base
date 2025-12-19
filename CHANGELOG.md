@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.0.1](https://github.com/tribally-games/game-base/compare/v3.0.0...v3.0.1) (2025-12-19)
+
+
+### Code Refactoring
+
+* **recording:** switch from brotli to lzma compression ([b08b0c4](https://github.com/tribally-games/game-base/commit/b08b0c47699445f865c6b371b2578a288a16722c))
+
 ## [3.0.0](https://github.com/tribally-games/game-base/compare/v2.4.0...v3.0.0) (2025-12-18)
 
 
