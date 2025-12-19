@@ -68,6 +68,5 @@ export function isValidBase64(str: string): boolean {
 
 export function hasValidLzmaHeader(data: Uint8Array): boolean {
   if (data.length < 13) return false
-  const props = data[0]
-  return props <= 224
+  return data[0]! <= 224
 }
